@@ -25,7 +25,7 @@ MAKENSIS	= @MAKENSIS@
 OCAMLDOC        = @OCAMLDOC@
 OCAMLDOCFLAGS	:= -html -sort
 
-SUBDIRS		= @subdirs@
+SUBDIRS		= libvirt mlvirsh examples
 
 all opt depend install:
 	for d in $(SUBDIRS); do \
@@ -40,9 +40,6 @@ clean:
 	rm -f examples/list_domains
 	rm -f examples/node_info
 	rm -f mlvirsh/mlvirsh
-	rm -f virt-ctrl/virt-ctrl
-	rm -f virt-top/virt-top
-	rm -f virt-df/virt-df
 
 distclean: clean
 	rm -f config.h config.log config.status configure
@@ -53,9 +50,6 @@ distclean: clean
 	rm -f libvirt/Makefile
 	rm -f examples/Makefile
 	rm -f mlvirsh/Makefile
-	rm -f virt-ctrl/Makefile
-	rm -f virt-top/Makefile
-	rm -f virt-df/Makefile
 
 # Developer documentation (in html/ subdirectory).
 
