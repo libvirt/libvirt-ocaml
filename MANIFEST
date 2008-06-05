@@ -36,6 +36,7 @@ po/LINGUAS
 po/Makefile.in
 po/pl.po
 po/POTFILES
+po/pt_BR.po
 po/virt-top.pot
 README
 TODO.libvirt
