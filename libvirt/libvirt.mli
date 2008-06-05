@@ -126,9 +126,8 @@ v}
     {3 General safety issues}
 
     Memory allocation / automatic garbage collection of all libvirt
-    objects should be completely safe (except in the specific
-    virterror case noted below).  If you find any safety issues or if your
-    pure OCaml program ever segfaults, please contact the author.
+    objects should be completely safe.  If you find any safety issues
+    or if your pure OCaml program ever segfaults, please contact the author.
 
     You can force a libvirt object to be freed early by calling
     the [close] function on the object.  This shouldn't affect
@@ -142,12 +141,6 @@ v}
     The domain could have been shut down or deleted by another user.
     Thus domain objects can through odd exceptions at any time.
     This is just the nature of virtualisation.
-
-    Virterror has a specific design error which means that the
-    objects embedded in a virterror exception message are only
-    valid as long as the connection handle is still open.  This
-    is a design flaw in the C code of libvirt and we cannot fix
-    or work around it in the OCaml bindings.
 
     {3 Backwards and forwards compatibility}
 
@@ -425,6 +418,8 @@ sig
 
   type migrate_flag = Live
 
+  type memory_flag = Virtual
+
   type block_stats = {
     rd_req : int64;
     rd_bytes : int64;
@@ -565,6 +560,20 @@ sig
     (** Returns block device stats. *)
   val interface_stats : [>`R] t -> string -> interface_stats
     (** Returns network interface stats. *)
+
+  val block_peek : [>`R] t -> string -> int64 -> int -> string -> int -> unit
+    (** [block_peek dom path offset size buf boff] reads [size] bytes at
+	[offset] in the domain's [path] block device.
+
+	If successful then the data is written into [buf] starting
+	at offset [boff], for [size] bytes. *)
+  val memory_peek : [>`R] t -> memory_flag -> int64 -> int -> string -> int ->
+    unit
+    (** [memory_peek dom Virtual offset size] reads [size] bytes
+	at [offset] in the domain's virtual memory.
+
+	If successful then the data is written into [buf] starting
+	at offset [boff], for [size] bytes. *)
 
   external const : [>`R] t -> ro t = "%identity"
     (** [const dom] turns a read/write domain handle into a read-only
@@ -938,14 +947,11 @@ sig
     domain : domain;			(** Origin of the error. *)
     message : string option;		(** Human-readable message. *)
     level : level;			(** Error or warning. *)
-    conn : ro Connect.t option;		(** Associated connection. *)
-    dom : ro Domain.t option;		(** Associated domain. *)
     str1 : string option;		(** Informational string. *)
     str2 : string option;		(** Informational string. *)
     str3 : string option;		(** Informational string. *)
     int1 : int32;			(** Informational integer. *)
     int2 : int32;			(** Informational integer. *)
-    net : ro Network.t option;		(** Associated network. *)
   }
     (** An error object. *)
 

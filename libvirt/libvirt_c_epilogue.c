@@ -170,47 +170,21 @@ Val_virterror (virErrorPtr err)
   CAMLparam0 ();
   CAMLlocal3 (rv, connv, optv);
 
-  rv = caml_alloc (12, 0);
+  rv = caml_alloc (9, 0);
   Store_field (rv, 0, Val_err_number (err->code));
   Store_field (rv, 1, Val_err_domain (err->domain));
   Store_field (rv, 2,
 	       Val_opt (err->message, (Val_ptr_t) caml_copy_string));
   Store_field (rv, 3, Val_err_level (err->level));
 
-  /* conn, dom and net fields, all optional */
-  if (err->conn) {
-    connv = Val_connect_no_finalize (err->conn);
-    optv = caml_alloc (1, 0);
-    Store_field (optv, 0, connv);
-    Store_field (rv, 4, optv);	/* Some conn */
-
-    if (err->dom) {
-      optv = caml_alloc (1, 0);
-      Store_field (optv, 0, Val_domain_no_finalize (err->dom, connv));
-      Store_field (rv, 5, optv); /* Some (dom, conn) */
-    }
-    else
-      Store_field (rv, 5, Val_int (0)); /* None */
-    if (err->net) {
-      optv = caml_alloc (1, 0);
-      Store_field (optv, 0, Val_network_no_finalize (err->net, connv));
-      Store_field (rv, 11, optv); /* Some (net, conn) */
-    } else
-      Store_field (rv, 11, Val_int (0)); /* None */
-  } else {
-    Store_field (rv, 4, Val_int (0)); /* None */
-    Store_field (rv, 5, Val_int (0)); /* None */
-    Store_field (rv, 11, Val_int (0)); /* None */
-  }
-
-  Store_field (rv, 6,
+  Store_field (rv, 4,
 	       Val_opt (err->str1, (Val_ptr_t) caml_copy_string));
-  Store_field (rv, 7,
+  Store_field (rv, 5,
 	       Val_opt (err->str2, (Val_ptr_t) caml_copy_string));
-  Store_field (rv, 8,
+  Store_field (rv, 6,
 	       Val_opt (err->str3, (Val_ptr_t) caml_copy_string));
-  Store_field (rv, 9, caml_copy_int32 (err->int1));
-  Store_field (rv, 10, caml_copy_int32 (err->int2));
+  Store_field (rv, 7, caml_copy_int32 (err->int1));
+  Store_field (rv, 8, caml_copy_int32 (err->int2));
 
   CAMLreturn (rv);
 }
@@ -361,39 +335,6 @@ Val_jb (virJobPtr jb)
 }
 #endif
 
-/* No-finalize versions of Val_connect, Val_dom, Val_net ONLY for use
- * by virterror wrappers.
- */
-static value
-Val_connect_no_finalize (virConnectPtr conn)
-{
-  CAMLparam0 ();
-  CAMLlocal1 (rv);
-  rv = caml_alloc (1, Abstract_tag);
-  Store_field (rv, 0, (value) conn);
-  CAMLreturn (rv);
-}
-
-static value
-Val_dom_no_finalize (virDomainPtr dom)
-{
-  CAMLparam0 ();
-  CAMLlocal1 (rv);
-  rv = caml_alloc (1, Abstract_tag);
-  Store_field (rv, 0, (value) dom);
-  CAMLreturn (rv);
-}
-
-static value
-Val_net_no_finalize (virNetworkPtr net)
-{
-  CAMLparam0 ();
-  CAMLlocal1 (rv);
-  rv = caml_alloc (1, Abstract_tag);
-  Store_field (rv, 0, (value) net);
-  CAMLreturn (rv);
-}
-
 /* This wraps up the (dom, conn) pair (Domain.t). */
 static value
 Val_domain (virDomainPtr dom, value connv)
@@ -469,35 +410,6 @@ Val_job (virJobPtr jb, value connv)
   CAMLreturn (rv);
 }
 #endif
-
-/* No-finalize versions of Val_domain, Val_network ONLY for use by
- * virterror wrappers.
- */
-static value
-Val_domain_no_finalize (virDomainPtr dom, value connv)
-{
-  CAMLparam1 (connv);
-  CAMLlocal2 (rv, v);
-
-  rv = caml_alloc_tuple (2);
-  v = Val_dom_no_finalize (dom);
-  Store_field (rv, 0, v);
-  Store_field (rv, 1, connv);
-  CAMLreturn (rv);
-}
-
-static value
-Val_network_no_finalize (virNetworkPtr net, value connv)
-{
-  CAMLparam1 (connv);
-  CAMLlocal2 (rv, v);
-
-  rv = caml_alloc_tuple (2);
-  v = Val_net_no_finalize (net);
-  Store_field (rv, 0, v);
-  Store_field (rv, 1, connv);
-  CAMLreturn (rv);
-}
 
 static void
 conn_finalize (value connv)

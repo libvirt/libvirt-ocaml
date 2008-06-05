@@ -104,13 +104,6 @@ static value Val_virterror (virErrorPtr err);
  * wrappers store domains (and networks) as explicit (dom, conn)
  * pairs.
  *
- * Further complication with virterror / exceptions: Virterror gives
- * us virConnectPtr, virDomainPtr, virNetworkPtr pointers.  If we
- * follow standard practice and wrap these up in blocks with
- * finalizers then we'll end up double-freeing (in particular, calling
- * virConnectClose at the wrong time).  So for virterror, we have
- * "special" wrapper functions (Val_connect_no_finalize, etc.).
- *
  * Update 2008/01: Storage pools and volumes work the same way as
  * domains and networks.  And jobs.
  */
@@ -142,11 +135,6 @@ static value Val_vol (virStorageVolPtr vol);
 #ifdef HAVE_VIRJOBPTR
 static value Val_jb (virJobPtr jb);
 #endif
-
-/* ONLY for use by virterror wrappers. */
-static value Val_connect_no_finalize (virConnectPtr conn);
-static value Val_dom_no_finalize (virDomainPtr dom);
-static value Val_net_no_finalize (virNetworkPtr net);
 
 /* Domains and networks are stored as pairs (dom/net, conn), so have
  * some convenience functions for unwrapping and wrapping them.
@@ -185,7 +173,3 @@ static value Val_volume (virStorageVolPtr vol, value connv);
 #ifdef HAVE_VIRJOBPTR
 static value Val_job (virJobPtr jb, value connv);
 #endif
-
-/* ONLY for use by virterror wrappers. */
-static value Val_domain_no_finalize (virDomainPtr dom, value connv);
-static value Val_network_no_finalize (virNetworkPtr net, value connv);

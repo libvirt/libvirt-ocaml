@@ -17,7 +17,7 @@
 
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(ocaml-libvirt,0.4.2.1)
+AC_INIT(ocaml-libvirt,0.4.2.2)
 
 dnl Check for basic C environment.
 AC_PROG_CC
@@ -123,6 +123,8 @@ AC_CHECK_FUNCS([virConnectGetHostname \
 		virStorageVolGetInfo \
 		virStorageVolGetXMLDesc \
 		virStorageVolGetPath \
+		virDomainBlockPeek \
+		virDomainMemoryPeek \
 ])
 
 # This jobs API was never published and is due to get overhauled

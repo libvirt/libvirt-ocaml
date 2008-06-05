@@ -130,6 +130,8 @@ struct
 
   type migrate_flag = Live
 
+  type memory_flag = Virtual
+
   type block_stats = {
     rd_req : int64;
     rd_bytes : int64;
@@ -195,6 +197,8 @@ struct
   external migrate : [>`W] t -> [>`W] Connect.t -> migrate_flag list -> ?dname:string -> ?uri:string -> ?bandwidth:int -> unit -> rw t = "ocaml_libvirt_domain_migrate_bytecode" "ocaml_libvirt_domain_migrate_native"
   external block_stats : [>`R] t -> string -> block_stats = "ocaml_libvirt_domain_block_stats"
   external interface_stats : [>`R] t -> string -> interface_stats = "ocaml_libvirt_domain_interface_stats"
+  external block_peek : [>`R] t -> string -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_block_peek_bytecode" "ocaml_libvirt_domain_block_peek_native"
+  external memory_peek : [>`R] t -> memory_flag -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_memory_peek_bytecode" "ocaml_libvirt_domain_memory_peek_native"
 
   external const : [>`R] t -> ro t = "%identity"
 end
@@ -477,14 +481,11 @@ struct
     domain : domain;
     message : string option;
     level : level;
-    conn : ro Connect.t option;
-    dom : ro Domain.t option;
     str1 : string option;
     str2 : string option;
     str3 : string option;
     int1 : int32;
     int2 : int32;
-    net : ro Network.t option;
   }
 
   let to_string { code = code; domain = domain; message = message } =
@@ -503,10 +504,10 @@ struct
   external reset_last_conn_error : [>`R] Connect.t -> unit = "ocaml_libvirt_virterror_reset_last_conn_error"
 
   let no_error () =
-    { code = VIR_ERR_OK; domain = VIR_FROM_NONE; message = None;
-      level = VIR_ERR_NONE; conn = None; dom = None;
+    { code = VIR_ERR_OK; domain = VIR_FROM_NONE;
+      message = None; level = VIR_ERR_NONE;
       str1 = None; str2 = None; str3 = None;
-      int1 = 0_l; int2 = 0_l; net = None }
+      int1 = 0_l; int2 = 0_l }
 end
 
 exception Virterror of Virterror.t

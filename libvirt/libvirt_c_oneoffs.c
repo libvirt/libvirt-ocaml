@@ -661,6 +661,114 @@ ocaml_libvirt_domain_interface_stats (value domv, value pathv)
 }
 
 #ifdef HAVE_WEAK_SYMBOLS
+#ifdef HAVE_VIRDOMAINBLOCKPEEK
+extern int virDomainBlockPeek (virDomainPtr domain,
+                               const char *path,
+                               unsigned long long offset,
+                               size_t size,
+                               void *buffer,
+                               unsigned int flags)
+  __attribute__((weak));
+#endif
+#endif
+
+CAMLprim value
+ocaml_libvirt_domain_block_peek_native (value domv, value pathv, value offsetv, value sizev, value bufferv, value boffv)
+{
+#ifdef HAVE_VIRDOMAINBLOCKPEEK
+  CAMLparam5 (domv, pathv, offsetv, sizev, bufferv);
+  CAMLxparam1 (boffv);
+  virDomainPtr dom = Domain_val (domv);
+  virConnectPtr conn = Connect_domv (domv);
+  const char *path = String_val (pathv);
+  unsigned long long offset = Int64_val (offsetv);
+  size_t size = Int_val (sizev);
+  char *buffer = String_val (bufferv);
+  int boff = Int_val (boffv);
+  int r;
+
+  /* Check that the return buffer is big enough. */
+  if (caml_string_length (bufferv) < boff + size)
+    caml_failwith ("virDomainBlockPeek: return buffer too short");
+
+  WEAK_SYMBOL_CHECK (virDomainBlockPeek);
+  /* NB. not NONBLOCKING because buffer might move (XXX) */
+  r = virDomainBlockPeek (dom, path, offset, size, buffer+boff, 0);
+  CHECK_ERROR (r == -1, conn, "virDomainBlockPeek");
+
+  CAMLreturn (Val_unit);
+
+#else /* virDomainBlockPeek not supported */
+  not_supported ("virDomainBlockPeek");
+#endif
+}
+
+CAMLprim value
+ocaml_libvirt_domain_block_peek_bytecode (value *argv, int argn)
+{
+  return ocaml_libvirt_domain_block_peek_native (argv[0], argv[1], argv[2],
+                                                 argv[3], argv[4], argv[5]);
+}
+
+#ifdef HAVE_WEAK_SYMBOLS
+#ifdef HAVE_VIRDOMAINMEMORYPEEK
+extern int virDomainMemoryPeek (virDomainPtr domain,
+                                unsigned long long offset,
+                                size_t size,
+                                void *buffer,
+                                unsigned int flags)
+  __attribute__((weak));
+#endif
+#endif
+
+CAMLprim value
+ocaml_libvirt_domain_memory_peek_native (value domv, int flagsv, value offsetv, value sizev, value bufferv, value boffv)
+{
+#ifdef HAVE_VIRDOMAINMEMORYPEEK
+  CAMLparam5 (domv, flagsv, offsetv, sizev, bufferv);
+  CAMLxparam1 (boffv);
+  CAMLlocal1 (flagv);
+  virDomainPtr dom = Domain_val (domv);
+  virConnectPtr conn = Connect_domv (domv);
+  int flags = 0;
+  unsigned long long offset = Int64_val (offsetv);
+  size_t size = Int_val (sizev);
+  char *buffer = String_val (bufferv);
+  int boff = Int_val (boffv);
+  int r;
+
+  /* Check that the return buffer is big enough. */
+  if (caml_string_length (bufferv) < boff + size)
+    caml_failwith ("virDomainBlockPeek: return buffer too short");
+
+  /* Do flags. */
+  for (; flagsv != Val_int (0); flagsv = Field (flagsv, 1))
+    {
+      flagv = Field (flagsv, 0);
+      if (flagv == Int_val (0))
+        flags |= VIR_MEMORY_VIRTUAL;
+    }
+
+  WEAK_SYMBOL_CHECK (virDomainMemoryPeek);
+  /* NB. not NONBLOCKING because buffer might move (XXX) */
+  r = virDomainMemoryPeek (dom, offset, size, buffer+boff, flags);
+  CHECK_ERROR (r == -1, conn, "virDomainMemoryPeek");
+
+  CAMLreturn (Val_unit);
+
+#else /* virDomainMemoryPeek not supported */
+  not_supported ("virDomainMemoryPeek");
+#endif
+}
+
+CAMLprim value
+ocaml_libvirt_domain_memory_peek_bytecode (value *argv, int argn)
+{
+  return ocaml_libvirt_domain_memory_peek_native (argv[0], argv[1], argv[2],
+                                                  argv[3], argv[4], argv[5]);
+}
+
+#ifdef HAVE_WEAK_SYMBOLS
 #ifdef HAVE_VIRSTORAGEPOOLGETINFO
 extern int virStoragePoolGetInfo(virStoragePoolPtr pool, virStoragePoolInfoPtr info)
   __attribute__((weak));

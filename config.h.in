@@ -50,6 +50,9 @@
 /* Define to 1 if you have the `virConnectNumOfStoragePools' function. */
 #undef HAVE_VIRCONNECTNUMOFSTORAGEPOOLS
 
+/* Define to 1 if you have the `virDomainBlockPeek' function. */
+#undef HAVE_VIRDOMAINBLOCKPEEK
+
 /* Define to 1 if you have the `virDomainBlockStats' function. */
 #undef HAVE_VIRDOMAINBLOCKSTATS
 
@@ -61,6 +64,9 @@
 
 /* Define to 1 if you have the `virDomainInterfaceStats' function. */
 #undef HAVE_VIRDOMAININTERFACESTATS
+
+/* Define to 1 if you have the `virDomainMemoryPeek' function. */
+#undef HAVE_VIRDOMAINMEMORYPEEK
 
 /* Define to 1 if you have the `virDomainMigrate' function. */
 #undef HAVE_VIRDOMAINMIGRATE
