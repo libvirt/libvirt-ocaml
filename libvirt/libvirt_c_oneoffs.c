@@ -549,7 +549,7 @@ ocaml_libvirt_domain_migrate_native (value domv, value dconnv, value flagsv, val
   for (; flagsv != Val_int (0); flagsv = Field (flagsv, 1))
     {
       flagv = Field (flagsv, 0);
-      if (flagv == Int_val(0))
+      if (flagv == Val_int (0))
 	flags |= VIR_MIGRATE_LIVE;
     }
 
@@ -713,7 +713,7 @@ ocaml_libvirt_domain_block_peek_bytecode (value *argv, int argn)
 #ifdef HAVE_WEAK_SYMBOLS
 #ifdef HAVE_VIRDOMAINMEMORYPEEK
 extern int virDomainMemoryPeek (virDomainPtr domain,
-                                unsigned long long offset,
+                                unsigned long long start,
                                 size_t size,
                                 void *buffer,
                                 unsigned int flags)
@@ -722,7 +722,7 @@ extern int virDomainMemoryPeek (virDomainPtr domain,
 #endif
 
 CAMLprim value
-ocaml_libvirt_domain_memory_peek_native (value domv, int flagsv, value offsetv, value sizev, value bufferv, value boffv)
+ocaml_libvirt_domain_memory_peek_native (value domv, value flagsv, value offsetv, value sizev, value bufferv, value boffv)
 {
 #ifdef HAVE_VIRDOMAINMEMORYPEEK
   CAMLparam5 (domv, flagsv, offsetv, sizev, bufferv);
@@ -739,13 +739,13 @@ ocaml_libvirt_domain_memory_peek_native (value domv, int flagsv, value offsetv, 
 
   /* Check that the return buffer is big enough. */
   if (caml_string_length (bufferv) < boff + size)
-    caml_failwith ("virDomainBlockPeek: return buffer too short");
+    caml_failwith ("virDomainMemoryPeek: return buffer too short");
 
   /* Do flags. */
   for (; flagsv != Val_int (0); flagsv = Field (flagsv, 1))
     {
       flagv = Field (flagsv, 0);
-      if (flagv == Int_val (0))
+      if (flagv == Val_int (0))
         flags |= VIR_MEMORY_VIRTUAL;
     }
 

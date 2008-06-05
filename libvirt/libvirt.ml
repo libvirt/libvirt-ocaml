@@ -198,7 +198,7 @@ struct
   external block_stats : [>`R] t -> string -> block_stats = "ocaml_libvirt_domain_block_stats"
   external interface_stats : [>`R] t -> string -> interface_stats = "ocaml_libvirt_domain_interface_stats"
   external block_peek : [>`R] t -> string -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_block_peek_bytecode" "ocaml_libvirt_domain_block_peek_native"
-  external memory_peek : [>`R] t -> memory_flag -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_memory_peek_bytecode" "ocaml_libvirt_domain_memory_peek_native"
+  external memory_peek : [>`R] t -> memory_flag list -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_memory_peek_bytecode" "ocaml_libvirt_domain_memory_peek_native"
 
   external const : [>`R] t -> ro t = "%identity"
 end

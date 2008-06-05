@@ -567,8 +567,8 @@ sig
 
 	If successful then the data is written into [buf] starting
 	at offset [boff], for [size] bytes. *)
-  val memory_peek : [>`R] t -> memory_flag -> int64 -> int -> string -> int ->
-    unit
+  val memory_peek : [>`R] t -> memory_flag list -> int64 -> int ->
+    string -> int -> unit
     (** [memory_peek dom Virtual offset size] reads [size] bytes
 	at [offset] in the domain's virtual memory.
 

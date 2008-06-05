@@ -494,7 +494,7 @@ let do_command =
       cmd3 print_string
 	(fun dom offset size ->
 	   let buf = String.create size in
-	   D.memory_peek dom D.Virtual offset size buf 0;
+	   D.memory_peek dom [D.Virtual] offset size buf 0;
 	   buf)
 	(arg_readonly_connection domain_of_string)
 	Int64.of_string int_of_string,
