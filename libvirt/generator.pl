@@ -620,6 +620,16 @@ sub gen_c_code
   int i = Int_val (iv);
   int ids[i], r;
 
+  /* Some libvirt List* functions still throw exceptions if i == 0,
+   * so catch that and return an empty array directly.  This changes
+   * the semantics slightly (masking other failures) but it's
+   * unlikely anyone will care.  RWMJ 2008/06/10
+   */
+  if (i == 0) {
+    rv = caml_alloc (0, 0);
+    CAMLreturn (rv);
+  }
+
   NONBLOCKING (r = $c_name (conn, ids, i));
   CHECK_ERROR (r == -1, conn, \"$c_name\");
 
@@ -636,6 +646,16 @@ sub gen_c_code
   int i = Int_val (iv);
   char *names[i];
   int r;
+
+  /* Some libvirt List* functions still throw exceptions if i == 0,
+   * so catch that and return an empty array directly.  This changes
+   * the semantics slightly (masking other failures) but it's
+   * unlikely anyone will care.  RWMJ 2008/06/10
+   */
+  if (i == 0) {
+    rv = caml_alloc (0, 0);
+    CAMLreturn (rv);
+  }
 
   NONBLOCKING (r = $c_name ($1, names, i));
   CHECK_ERROR (r == -1, conn, \"$c_name\");

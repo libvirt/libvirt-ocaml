@@ -194,6 +194,16 @@ ocaml_libvirt_connect_list_domains (value connv, value iv)
   int i = Int_val (iv);
   int ids[i], r;
 
+  /* Some libvirt List* functions still throw exceptions if i == 0,
+   * so catch that and return an empty array directly.  This changes
+   * the semantics slightly (masking other failures) but it's
+   * unlikely anyone will care.  RWMJ 2008/06/10
+   */
+  if (i == 0) {
+    rv = caml_alloc (0, 0);
+    CAMLreturn (rv);
+  }
+
   NONBLOCKING (r = virConnectListDomains (conn, ids, i));
   CHECK_ERROR (r == -1, conn, "virConnectListDomains");
 
@@ -236,6 +246,16 @@ ocaml_libvirt_connect_list_defined_domains (value connv, value iv)
   int i = Int_val (iv);
   char *names[i];
   int r;
+
+  /* Some libvirt List* functions still throw exceptions if i == 0,
+   * so catch that and return an empty array directly.  This changes
+   * the semantics slightly (masking other failures) but it's
+   * unlikely anyone will care.  RWMJ 2008/06/10
+   */
+  if (i == 0) {
+    rv = caml_alloc (0, 0);
+    CAMLreturn (rv);
+  }
 
   NONBLOCKING (r = virConnectListDefinedDomains (conn, names, i));
   CHECK_ERROR (r == -1, conn, "virConnectListDefinedDomains");
@@ -283,6 +303,16 @@ ocaml_libvirt_connect_list_networks (value connv, value iv)
   char *names[i];
   int r;
 
+  /* Some libvirt List* functions still throw exceptions if i == 0,
+   * so catch that and return an empty array directly.  This changes
+   * the semantics slightly (masking other failures) but it's
+   * unlikely anyone will care.  RWMJ 2008/06/10
+   */
+  if (i == 0) {
+    rv = caml_alloc (0, 0);
+    CAMLreturn (rv);
+  }
+
   NONBLOCKING (r = virConnectListNetworks (conn, names, i));
   CHECK_ERROR (r == -1, conn, "virConnectListNetworks");
 
@@ -328,6 +358,16 @@ ocaml_libvirt_connect_list_defined_networks (value connv, value iv)
   int i = Int_val (iv);
   char *names[i];
   int r;
+
+  /* Some libvirt List* functions still throw exceptions if i == 0,
+   * so catch that and return an empty array directly.  This changes
+   * the semantics slightly (masking other failures) but it's
+   * unlikely anyone will care.  RWMJ 2008/06/10
+   */
+  if (i == 0) {
+    rv = caml_alloc (0, 0);
+    CAMLreturn (rv);
+  }
 
   NONBLOCKING (r = virConnectListDefinedNetworks (conn, names, i));
   CHECK_ERROR (r == -1, conn, "virConnectListDefinedNetworks");
@@ -406,6 +446,16 @@ ocaml_libvirt_connect_list_storage_pools (value connv, value iv)
   char *names[i];
   int r;
 
+  /* Some libvirt List* functions still throw exceptions if i == 0,
+   * so catch that and return an empty array directly.  This changes
+   * the semantics slightly (masking other failures) but it's
+   * unlikely anyone will care.  RWMJ 2008/06/10
+   */
+  if (i == 0) {
+    rv = caml_alloc (0, 0);
+    CAMLreturn (rv);
+  }
+
   NONBLOCKING (r = virConnectListStoragePools (conn, names, i));
   CHECK_ERROR (r == -1, conn, "virConnectListStoragePools");
 
@@ -483,6 +533,16 @@ ocaml_libvirt_connect_list_defined_storage_pools (value connv, value iv)
   int i = Int_val (iv);
   char *names[i];
   int r;
+
+  /* Some libvirt List* functions still throw exceptions if i == 0,
+   * so catch that and return an empty array directly.  This changes
+   * the semantics slightly (masking other failures) but it's
+   * unlikely anyone will care.  RWMJ 2008/06/10
+   */
+  if (i == 0) {
+    rv = caml_alloc (0, 0);
+    CAMLreturn (rv);
+  }
 
   NONBLOCKING (r = virConnectListDefinedStoragePools (conn, names, i));
   CHECK_ERROR (r == -1, conn, "virConnectListDefinedStoragePools");
@@ -2427,6 +2487,16 @@ ocaml_libvirt_storage_pool_list_volumes (value poolv, value iv)
   int i = Int_val (iv);
   char *names[i];
   int r;
+
+  /* Some libvirt List* functions still throw exceptions if i == 0,
+   * so catch that and return an empty array directly.  This changes
+   * the semantics slightly (masking other failures) but it's
+   * unlikely anyone will care.  RWMJ 2008/06/10
+   */
+  if (i == 0) {
+    rv = caml_alloc (0, 0);
+    CAMLreturn (rv);
+  }
 
   NONBLOCKING (r = virStoragePoolListVolumes (pool, names, i));
   CHECK_ERROR (r == -1, conn, "virStoragePoolListVolumes");
