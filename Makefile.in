@@ -86,7 +86,7 @@ configure: force
 
 # Distribution.
 
-dist:
+dist: ChangeLog
 	$(MAKE) check-manifest
 	rm -rf $(PACKAGE)-$(VERSION)
 	mkdir $(PACKAGE)-$(VERSION)
@@ -102,6 +102,10 @@ check-manifest:
 	diff -u .orig-manifest .check-manifest; rv=$$?; \
 	rm -f .orig-manifest .check-manifest; \
 	exit $$rv
+
+ChangeLog:
+	hg log --style changelog > $@.new
+	mv $@.new $@
 
 # Do a release (update the website).
 
