@@ -122,8 +122,6 @@ release_stage_3:
 	cp html/*.{html,css} $(WEBSITE)/ocaml-libvirt/html/
 	cp README $(WEBSITE)/ocaml-libvirt/README.txt
 	cp ChangeLog $(WEBSITE)/ocaml-libvirt/ChangeLog.txt
-#	cp virt-top/virt-top.txt $(WEBSITE)/virt-top/
-#	cp ChangeLog $(WEBSITE)/virt-top/ChangeLog.txt
 
 # Upload to main website.
 
