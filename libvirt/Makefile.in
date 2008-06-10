@@ -102,6 +102,11 @@ endif
 libvirt_c.c: generator.pl
 	perl -w $<
 
+# Extra dependencies.
+libvirt_c.c: libvirt_c_prologue.c
+libvirt_c.c: libvirt_c_oneoffs.c
+libvirt_c.c: libvirt_c_epilogue.c
+
 # Status of automatically generated bindings.
 autostatus: libvirt_c.c
 	@echo -n "Functions which have manual bindings:    "
