@@ -124,8 +124,15 @@ libvirt.cmi: libvirt.mli
 libvirt_version.cmo: libvirt_version.cmi
 libvirt_version.cmi: libvirt_version.mli
 
-install:
-	ocamlfind install libvirt \
-	  ../META *.so *.a *.cmx *.cma *.cmxa *.cmi *.mli
+
+install-byte:
+	mkdir -p $(OCAMLDESTDIR)
+	ocamlfind install -destdir $(OCAMLDESTDIR) -ldconf ignore libvirt \
+	  ../META *.so *.a *.cma *.cmi *.mli
+
+install-opt:
+	mkdir -p $(OCAMLDESTDIR)
+	ocamlfind install -destdir $(OCAMLDESTDIR) -ldconf ignore libvirt \
+	  ../META *.so *.a *.cma *.cmx *.cmxa *.cmi *.mli
 
 include ../Make.rules

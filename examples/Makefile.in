@@ -54,6 +54,6 @@ node_info.opt: node_info.cmx
 	  $(OCAMLOPTPACKAGES) $(OCAMLOPTFLAGS) $(OCAMLOPTLIBS) \
 	  ../libvirt/mllibvirt.cmxa -o $@ $<
 
-install:
+install-opt install-byte:
 
 include ../Make.rules

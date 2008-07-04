@@ -27,7 +27,7 @@ OCAMLDOCFLAGS	:= -html -sort
 
 SUBDIRS		= libvirt mlvirsh examples
 
-all opt depend install:
+all opt depend install-opt install-byte:
 	for d in $(SUBDIRS); do \
 	  $(MAKE) -C $$d $@; \
 	  if [ $$? -ne 0 ]; then exit 1; fi; \

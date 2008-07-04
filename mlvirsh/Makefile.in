@@ -84,10 +84,16 @@ mlvirsh.opt: $(XOBJS)
 	  ../libvirt/mllibvirt.cmxa -o $@ $^
 endif
 
-install:
+install-opt:
 	if [ -x mlvirsh.opt ]; then \
 	  mkdir -p $(DESTDIR)$(bindir); \
 	  $(INSTALL) -m 0755 mlvirsh.opt $(DESTDIR)$(bindir)/mlvirsh; \
+	fi
+
+install-byte:
+	if [ -x mlvirsh ]; then \
+	  mkdir -p $(DESTDIR)$(bindir); \
+	  $(INSTALL) -m 0755 mlvirsh $(DESTDIR)$(bindir)/mlvirsh; \
 	fi
 
 include ../Make.rules
