@@ -47,9 +47,12 @@ distclean: clean
 	rm -f META
 	rm -f libvirt/libvirt_version.ml
 	rm -f Makefile
+	rm -f Make.rules
 	rm -f libvirt/Makefile
 	rm -f examples/Makefile
 	rm -f mlvirsh/Makefile
+	rm -f mlvirsh/mlvirsh_gettext.ml
+	rm -f po/Makefile
 
 # Developer documentation (in html/ subdirectory).
 
