@@ -8,7 +8,6 @@ http://libvirt.org/
 This is a complete set of OCaml bindings around libvirt, exposing all
 known functionality to OCaml programs.
 
-
 Building
 ----------------------------------------------------------------------
 
@@ -91,6 +90,18 @@ For documentation on these bindings, read libvirt.mli and/or 'make
 doc' and browse the HTML documentation in the html/ subdirectory.
 
 For documentation on libvirt itself, see http://libvirt.org/html/
+
+
+License
+----------------------------------------------------------------------
+
+The library is distributed under the GNU LGPL, version 2 or above,
+with the OCaml linking exception.  Please see COPYING.LIB for details.
+
+The standalone program 'mlvirsh' is distributed under the GNU GPL,
+version 2 or above.  Please see COPYING for details.
+
+Examples are public domain.
 
 
 Subdirectories
