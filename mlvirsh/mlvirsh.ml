@@ -454,7 +454,17 @@ let do_command =
       cmd4 print_string
 	(fun dom path offset size ->
 	   let buf = String.create size in
-	   D.block_peek dom path offset size buf 0;
+	   let max_peek = D.max_peek dom in
+	   let rec loop i =
+	     let remaining = size-i in
+	     if remaining > 0 then (
+	       let size = min remaining max_peek in
+	       D.block_peek dom path
+		 (Int64.add offset (Int64.of_int i)) size buf i;
+	       loop (i+size)
+	     )
+	   in
+	   loop 0;
 	   buf)
 	(arg_readonly_connection domain_of_string)
 	string_of_string Int64.of_string int_of_string,
@@ -494,7 +504,17 @@ let do_command =
       cmd3 print_string
 	(fun dom offset size ->
 	   let buf = String.create size in
-	   D.memory_peek dom [D.Virtual] offset size buf 0;
+	   let max_peek = D.max_peek dom in
+	   let rec loop i =
+	     let remaining = size-i in
+	     if remaining > 0 then (
+	       let size = min remaining max_peek in
+	       D.memory_peek dom [D.Virtual]
+		 (Int64.add offset (Int64.of_int i)) size buf i;
+	       loop (i+size)
+	     )
+	   in
+	   loop 0;
 	   buf)
 	(arg_readonly_connection domain_of_string)
 	Int64.of_string int_of_string,
