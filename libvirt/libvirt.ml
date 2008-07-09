@@ -152,6 +152,12 @@ struct
     tx_drop : int64;
   }
 
+  (* The maximum size for Domain.memory_peek and Domain.block_peek
+   * supported by libvirt.  This may change with different versions
+   * of libvirt in the future, hence it's a function.
+   *)
+  let max_peek _ = 65536
+
   external create_linux : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_domain_create_linux"
   external create_linux_job : [>`W] Connect.t -> xml -> ([`Domain], rw) job_t = "ocaml_libvirt_domain_create_linux_job"
   external lookup_by_id : 'a Connect.t -> int -> 'a t = "ocaml_libvirt_domain_lookup_by_id"

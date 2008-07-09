@@ -440,6 +440,11 @@ sig
     tx_drop : int64;
   }
 
+  val max_peek : [>`R] t -> int
+    (** Maximum size supported by the {!block_peek} and {!memory_peek}
+	functions.  If you want to peek more than this then you must
+	break your request into chunks. *)
+
   val create_linux : [>`W] Connect.t -> xml -> rw t
     (** Create a new guest domain (not necessarily a Linux one)
 	from the given XML.
@@ -567,14 +572,18 @@ sig
 	[offset] in the domain's [path] block device.
 
 	If successful then the data is written into [buf] starting
-	at offset [boff], for [size] bytes. *)
+	at offset [boff], for [size] bytes.
+
+	See also {!max_peek}. *)
   val memory_peek : [>`R] t -> memory_flag list -> int64 -> int ->
     string -> int -> unit
     (** [memory_peek dom Virtual offset size] reads [size] bytes
 	at [offset] in the domain's virtual memory.
 
 	If successful then the data is written into [buf] starting
-	at offset [boff], for [size] bytes. *)
+	at offset [boff], for [size] bytes.
+
+	See also {!max_peek}. *)
 
   external const : [>`R] t -> ro t = "%identity"
     (** [const dom] turns a read/write domain handle into a read-only
