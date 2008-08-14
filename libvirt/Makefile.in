@@ -126,11 +126,11 @@ libvirt_version.cmi: libvirt_version.mli
 
 
 install-byte:
-	ocamlfind install -ldconf ignore libvirt \
+	ocamlfind install $(OCAMLFIND_INSTFLAGS) -ldconf ignore libvirt \
 	  ../META *.so *.a *.cma *.cmi *.mli
 
 install-opt:
-	ocamlfind install -ldconf ignore libvirt \
+	ocamlfind install $(OCAMLFIND_INSTFLAGS) -ldconf ignore libvirt \
 	  ../META *.so *.a *.cma *.cmx *.cmxa *.cmi *.mli
 
 include ../Make.rules
