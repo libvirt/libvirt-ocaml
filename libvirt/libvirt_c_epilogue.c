@@ -80,8 +80,7 @@ _raise_virterror (virConnectPtr conn, const char *fn)
   caml_raise_with_arg (*caml_named_value ("ocaml_libvirt_virterror"), rv);
 
   /*NOTREACHED*/
-  /* Suppresses a compiler warning. */
-  (void) caml__frame;
+  CAMLreturn0;
 }
 
 /* Raise an error if a function is not supported. */
@@ -95,8 +94,7 @@ not_supported (const char *fn)
   caml_raise_with_arg (*caml_named_value ("ocaml_libvirt_not_supported"), fnv);
 
   /*NOTREACHED*/
-  /* Suppresses a compiler warning. */
-  (void) caml__frame;
+  CAMLreturn0;
 }
 
 /* Convert the virErrorNumber, virErrorDomain and virErrorLevel enums
