@@ -194,6 +194,96 @@ ocaml_libvirt_connect_node_get_cells_free_memory (value connv,
 #endif
 }
 
+#ifdef HAVE_WEAK_SYMBOLS
+#ifdef HAVE_VIRCONNECTLISTALLDOMAINS
+extern int virConnectListAllDomains (virConnectPtr conn,
+                                     virDomainPtr **domains,
+                                     virDomainInfo **infos,
+                                     int stateflags)
+  __attribute__((weak));
+#endif
+#endif
+
+CAMLprim value
+ocaml_libvirt_connect_list_all_domains (value connv,
+                                        value wantinfov,
+                                        value flagsv)
+{
+#ifdef HAVE_VIRCONNECTLISTALLDOMAINS
+  CAMLparam3 (connv, wantinfov, flagsv);
+  CAMLlocal4 (flagv, rv, rv1, rv2);
+  CAMLlocal2 (v1, v2);
+  virConnectPtr conn = Connect_val (connv);
+  virDomainPtr *domains;
+  virDomainInfo *infos;
+  int want_info, i, r, flag, flags = 0;
+
+  /* ?want_info */
+  if (wantinfov == Val_int (0)) /* None == true */
+    want_info = 1;
+  else
+    want_info = Bool_val (Field (wantinfov, 0));
+
+  /* Iterate over the list of flags. */
+  for (; flagsv != Val_int (0); flagsv = Field (flagsv, 1)) {
+    flagv = Field (flagsv, 0);
+    flag = Int_val (flagv);
+    switch (flag) {
+    case 0: flags |= VIR_DOMAIN_LIST_NOSTATE; break;
+    case 1: flags |= VIR_DOMAIN_LIST_RUNNING; break;
+    case 2: flags |= VIR_DOMAIN_LIST_BLOCKED; break;
+    case 3: flags |= VIR_DOMAIN_LIST_PAUSED; break;
+    case 4: flags |= VIR_DOMAIN_LIST_SHUTDOWN; break;
+    case 5: flags |= VIR_DOMAIN_LIST_SHUTOFF; break;
+    case 6: flags |= VIR_DOMAIN_LIST_CRASHED; break;
+    case 7: flags |= VIR_DOMAIN_LIST_ACTIVE; break;
+    case 8: flags |= VIR_DOMAIN_LIST_INACTIVE; break;
+    case 9: flags |= VIR_DOMAIN_LIST_ALL; break;
+    }
+  }
+
+  WEAK_SYMBOL_CHECK (virConnectListAllDomains);
+  NONBLOCKING (r = virConnectListAllDomains (conn, &domains,
+                                             want_info ? &infos : NULL,
+                                             flags));
+  CHECK_ERROR (r == -1, conn, "virConnectListAllDomains");
+
+  /* Convert the result into a pair of arrays. */
+  rv1 = caml_alloc (r, 0);
+  for (i = 0; i < r; ++i) {
+    v1 = Val_domain (domains[i], connv);
+    Store_field (rv1, i, v1);
+  }
+  free (domains);
+
+  if (want_info) {
+    rv2 = caml_alloc (r, 0);
+
+    for (i = 0; i < r; ++i) {
+      v1 = caml_alloc (5, 0);
+      Store_field (v1, 0, Val_int (infos[i].state));
+      v2 = caml_copy_int64 (infos[i].maxMem); Store_field (v1, 1, v2);
+      v2 = caml_copy_int64 (infos[i].memory); Store_field (v1, 2, v2);
+      Store_field (v1, 3, Val_int (infos[i].nrVirtCpu));
+      v2 = caml_copy_int64 (infos[i].cpuTime); Store_field (v1, 4, v2);
+
+      Store_field (rv2, i, v1);
+    }
+
+    free (infos);
+  }
+  else
+    rv2 = caml_alloc (0, 0); /* zero-length array */
+
+  rv = caml_alloc_tuple (2);
+  Store_field (rv, 0, rv1);
+  Store_field (rv, 1, rv2);
+  CAMLreturn (rv);
+#else
+  not_supported ("virConnectListAllDomains");
+#endif
+}
+
 CAMLprim value
 ocaml_libvirt_domain_get_id (value domv)
 {

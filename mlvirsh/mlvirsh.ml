@@ -302,8 +302,8 @@ let do_command =
     | D.VcpuRunning -> s_"running"
     | D.VcpuBlocked -> s_"blocked"
   in
-  let print_domain_array doms =
-    Array.iter (
+  let print_domain_list doms =
+    List.iter (
       fun dom ->
 	let id =
 	  try sprintf "%d" (D.get_id dom)
@@ -576,21 +576,17 @@ let do_command =
       s_"Print the hostname.",
       [];
     "list",
-      cmd0 print_domain_array
+      cmd0 print_domain_list
 	(fun () ->
 	   let c = get_readonly_connection () in
-	   let n = C.num_of_domains c in
-	   let domids = C.list_domains c n in
-	   Array.map (D.lookup_by_id c) domids),
+	   fst (Libvirt.get_domains c ~want_info:false [D.ListActive])),
       s_"List the running domains.",
       [];
     "list-defined",
-      cmd0 print_domain_array
+      cmd0 print_domain_list
 	(fun () ->
 	   let c = get_readonly_connection () in
-	   let n = C.num_of_defined_domains c in
-	   let domnames = C.list_defined_domains c n in
-	   Array.map (D.lookup_by_name c) domnames),
+	   fst (Libvirt.get_domains c ~want_info:false [D.ListInactive])),
       s_"List the defined but not running domains.",
       [];
     "quit",

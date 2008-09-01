@@ -36,6 +36,9 @@
 /* Define to 1 if you have the `virConnectGetURI' function. */
 #undef HAVE_VIRCONNECTGETURI
 
+/* Define to 1 if you have the `virConnectListAllDomains' function. */
+#undef HAVE_VIRCONNECTLISTALLDOMAINS
+
 /* Define to 1 if you have the `virConnectListDefinedStoragePools' function.
    */
 #undef HAVE_VIRCONNECTLISTDEFINEDSTORAGEPOOLS

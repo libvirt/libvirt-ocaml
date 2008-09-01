@@ -50,6 +50,13 @@ struct
     threads : int;
   }
 
+  type list_flag =
+    | ListNoState | ListRunning | ListBlocked
+    | ListPaused | ListShutdown | ListShutoff | ListCrashed
+    | ListActive
+    | ListInactive
+    | ListAll
+
   external connect : ?name:string -> unit -> rw t = "ocaml_libvirt_connect_open"
   external connect_readonly : ?name:string -> unit -> ro t = "ocaml_libvirt_connect_open_readonly"
   external close : [>`R] t -> unit = "ocaml_libvirt_connect_close"
@@ -133,6 +140,13 @@ struct
 
   type memory_flag = Virtual
 
+  type list_flag =
+    | ListNoState | ListRunning | ListBlocked
+    | ListPaused | ListShutdown | ListShutoff | ListCrashed
+    | ListActive
+    | ListInactive
+    | ListAll
+
   type block_stats = {
     rd_req : int64;
     rd_bytes : int64;
@@ -157,6 +171,8 @@ struct
    * of libvirt in the future, hence it's a function.
    *)
   let max_peek _ = 65536
+
+  external list_all_domains : 'a Connect.t -> ?want_info:bool -> list_flag list -> 'a t array * info array = "ocaml_libvirt_connect_list_all_domains"
 
   external create_linux : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_domain_create_linux"
   external create_linux_job : [>`W] Connect.t -> xml -> ([`Domain], rw) job_t = "ocaml_libvirt_domain_create_linux_job"
@@ -519,6 +535,105 @@ end
 
 exception Virterror of Virterror.t
 exception Not_supported of string
+
+let rec map_ignore_errors f = function
+  | [] -> []
+  | x :: xs ->
+      try f x :: map_ignore_errors f xs
+      with Virterror _ -> map_ignore_errors f xs
+
+(* First time we are called, we will check if
+ * virConnectListAllDomains is supported.
+ *)
+let have_list_all_domains = ref None
+
+let get_domains conn ?(want_info = true) flags =
+  let have_list_all_domains =
+    match !have_list_all_domains with
+    | Some v -> v
+    | None ->
+	(* Check if virConnectListAllDomains is supported
+	 * by this version of libvirt.
+	 *)
+	let v =
+	  (* libvirt has a short-cut which makes this very quick ... *)
+	  try ignore (Domain.list_all_domains conn []); true
+	  with Not_supported "virConnectListAllDomains" -> false in
+	have_list_all_domains := Some v;
+	v in
+
+  if have_list_all_domains then (
+    (* Good, we can use the shiny new method. *)
+    let doms, infos = Domain.list_all_domains conn ~want_info flags in
+    Array.to_list doms, Array.to_list infos
+  )
+  else (
+    (* Old/slow/inefficient method. *)
+    let get_all, get_active, get_inactive, another_flag =
+      let rec loop ((all, active, inactive, another) as xs) = function
+	| [] -> xs
+	| Domain.ListAll :: _ -> (true, true, true, false)
+	| Domain.ListActive :: fs -> loop (all, true, inactive, another) fs
+	| Domain.ListInactive :: fs -> loop (all, active, true, another) fs
+	| _ -> (true, true, true, true)
+      in
+      loop (false, false, false, false) flags in
+
+    let active_doms =
+      if get_active then (
+	let n = Connect.num_of_domains conn in
+	let ids = Connect.list_domains conn n in
+	let ids = Array.to_list ids in
+	map_ignore_errors (Domain.lookup_by_id conn) ids
+      ) else [] in
+
+    let inactive_doms =
+      if get_inactive then (
+	let n = Connect.num_of_defined_domains conn in
+	let names = Connect.list_defined_domains conn n in
+	let names = Array.to_list names in
+	map_ignore_errors (Domain.lookup_by_name conn) names
+      ) else [] in
+
+    let doms = active_doms @ inactive_doms in
+
+    if not another_flag then (
+      if want_info then
+	List.split (
+	  map_ignore_errors (fun dom -> (dom, Domain.get_info dom)) doms
+	)
+      else
+	doms, []
+    ) else (
+      (* Slow method: We have to get the infos and filter on state. *)
+      let flag_is_set =
+	let h = Hashtbl.create 13 in
+	List.iter (fun flag -> Hashtbl.add h flag ()) flags;
+	Hashtbl.mem h
+      in
+
+      let doms =
+	map_ignore_errors (fun dom -> (dom, Domain.get_info dom)) doms in
+      let doms = List.filter (
+	fun (dom, { Domain.state = state }) ->
+	  match state with
+	  | Domain.InfoNoState -> flag_is_set Domain.ListNoState
+	  | Domain.InfoRunning ->
+	      flag_is_set Domain.ListActive || flag_is_set Domain.ListRunning
+	  | Domain.InfoBlocked ->
+	      flag_is_set Domain.ListActive || flag_is_set Domain.ListBlocked
+	  | Domain.InfoPaused ->
+	      flag_is_set Domain.ListActive || flag_is_set Domain.ListPaused
+	  | Domain.InfoShutdown ->
+	      flag_is_set Domain.ListActive || flag_is_set Domain.ListShutdown
+	  | Domain.InfoShutoff ->
+	      flag_is_set Domain.ListInactive
+	      || flag_is_set Domain.ListShutoff
+	  | Domain.InfoCrashed -> flag_is_set Domain.ListCrashed
+      ) doms in
+      List.split doms
+    )
+  )
 
 (* Initialization. *)
 external c_init : unit -> unit = "ocaml_libvirt_init"

@@ -125,6 +125,7 @@ AC_CHECK_FUNCS([virConnectGetHostname \
 		virStorageVolGetPath \
 		virDomainBlockPeek \
 		virDomainMemoryPeek \
+		virConnectListAllDomains \
 ])
 
 # This jobs API was never published and is due to get overhauled
