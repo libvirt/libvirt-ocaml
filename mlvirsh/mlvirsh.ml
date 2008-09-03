@@ -304,7 +304,7 @@ let do_command =
   in
   let print_domain_list doms =
     List.iter (
-      fun dom ->
+      fun (dom, info) ->
 	let id =
 	  try sprintf "%d" (D.get_id dom)
 	  with Libvirt.Virterror _ -> "" in
@@ -313,7 +313,7 @@ let do_command =
 	  with Libvirt.Virterror _ -> "" in
 	let state =
 	  try
-	    let { D.state = state } = D.get_info dom in
+	    let { D.state = state } = info in
 	    string_of_domain_state state
 	  with Libvirt.Virterror _ -> "" in
 	printf "%5s %-30s %s\n" id name state
@@ -579,14 +579,21 @@ let do_command =
       cmd0 print_domain_list
 	(fun () ->
 	   let c = get_readonly_connection () in
-	   D.get_domains c [D.ListActive]),
+	   D.get_domains_and_infos c [D.ListActive]),
+      s_"List the running domains.",
+      [];
+    "list-all",
+      cmd0 print_domain_list
+	(fun () ->
+	   let c = get_readonly_connection () in
+	   D.get_domains_and_infos c [D.ListAll]),
       s_"List the running domains.",
       [];
     "list-defined",
       cmd0 print_domain_list
 	(fun () ->
 	   let c = get_readonly_connection () in
-	   D.get_domains c [D.ListInactive]),
+	   D.get_domains_and_infos c [D.ListInactive]),
       s_"List the defined but not running domains.",
       [];
     "quit",
