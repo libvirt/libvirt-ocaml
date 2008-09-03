@@ -32,11 +32,13 @@ let () =
     let domains = D.get_domains_and_infos conn [D.ListAll] in
     List.iter (
       fun (dom, info) ->
-	if info.D.state <> D.InfoShutoff then
-	  printf "%8d %-20s %s\n%!"
-	    (D.get_id dom) (D.get_name dom) (string_of_state info.D.state)
+	let id = D.get_id dom in
+	let name = D.get_name dom in
+	let state = string_of_state info.D.state in
+	if id >= 0 then
+	  printf "%8d %-20s %s\n%!" id name state
 	else
-	  printf "%8s %-20s shutoff\n%!" "" (D.get_name dom)
+	  printf "%8s %-20s %s\n%!" "inactive" name state
     ) domains
   with
     Libvirt.Virterror err ->

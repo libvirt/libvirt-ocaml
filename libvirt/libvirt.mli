@@ -543,12 +543,8 @@ sig
   val get_uuid_string : [>`R] t -> string
     (** Get the domain UUID (as a printable string). *)
   val get_id : [>`R] t -> int
-    (** [getid dom] returns the ID of the domain.
-
-	Do not call this on a defined but not running domain.  Those
-	domains don't have IDs, and you'll get an error here.
-    *)
-
+    (** [get_id dom] returns the ID of the domain.  In most cases
+	this returns [-1] if the domain is not running. *)
   val get_os_type : [>`R] t -> string
     (** Get the operating system type. *)
   val get_max_memory : [>`R] t -> int64

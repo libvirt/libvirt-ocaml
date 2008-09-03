@@ -284,15 +284,14 @@ ocaml_libvirt_domain_get_id (value domv)
 {
   CAMLparam1 (domv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
+  /*virConnectPtr conn = Connect_domv (domv);*/
   unsigned int r;
 
   NONBLOCKING (r = virDomainGetID (dom));
-  /* There's a bug in libvirt which means that if you try to get
-   * the ID of a defined-but-not-running domain, it returns -1,
-   * and there's no way to distinguish that from an error.
+  /* In theory this could return -1 on error, but in practice
+   * libvirt never does this unless you call it with a corrupted
+   * or NULL dom object.  So ignore errors here.
    */
-  CHECK_ERROR (r == (unsigned int) -1, conn, "virDomainGetID");
 
   CAMLreturn (Val_int ((int) r));
 }
