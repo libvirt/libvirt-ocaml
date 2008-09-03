@@ -579,14 +579,14 @@ let do_command =
       cmd0 print_domain_list
 	(fun () ->
 	   let c = get_readonly_connection () in
-	   fst (Libvirt.get_domains c ~want_info:false [D.ListActive])),
+	   D.get_domains c [D.ListActive]),
       s_"List the running domains.",
       [];
     "list-defined",
       cmd0 print_domain_list
 	(fun () ->
 	   let c = get_readonly_connection () in
-	   fst (Libvirt.get_domains c ~want_info:false [D.ListInactive])),
+	   D.get_domains c [D.ListInactive]),
       s_"List the defined but not running domains.",
       [];
     "quit",

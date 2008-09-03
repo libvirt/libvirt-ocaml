@@ -105,236 +105,6 @@ struct
   external const : [>`R] t -> ro t = "%identity"
 end
 
-module Domain =
-struct
-  type 'rw t
-
-  type state =
-    | InfoNoState | InfoRunning | InfoBlocked | InfoPaused
-    | InfoShutdown | InfoShutoff | InfoCrashed
-
-  type info = {
-    state : state;
-    max_mem : int64;
-    memory : int64;
-    nr_virt_cpu : int;
-    cpu_time : int64;
-  }
-
-  type vcpu_state = VcpuOffline | VcpuRunning | VcpuBlocked
-
-  type vcpu_info = {
-    number : int;
-    vcpu_state : vcpu_state;
-    vcpu_time : int64;
-    cpu : int;
-  }
-
-  type sched_param = string * sched_param_value
-  and sched_param_value =
-    | SchedFieldInt32 of int32 | SchedFieldUInt32 of int32
-    | SchedFieldInt64 of int64 | SchedFieldUInt64 of int64
-    | SchedFieldFloat of float | SchedFieldBool of bool
-
-  type migrate_flag = Live
-
-  type memory_flag = Virtual
-
-  type list_flag =
-    | ListNoState | ListRunning | ListBlocked
-    | ListPaused | ListShutdown | ListShutoff | ListCrashed
-    | ListActive
-    | ListInactive
-    | ListAll
-
-  type block_stats = {
-    rd_req : int64;
-    rd_bytes : int64;
-    wr_req : int64;
-    wr_bytes : int64;
-    errs : int64;
-  }
-
-  type interface_stats = {
-    rx_bytes : int64;
-    rx_packets : int64;
-    rx_errs : int64;
-    rx_drop : int64;
-    tx_bytes : int64;
-    tx_packets : int64;
-    tx_errs : int64;
-    tx_drop : int64;
-  }
-
-  (* The maximum size for Domain.memory_peek and Domain.block_peek
-   * supported by libvirt.  This may change with different versions
-   * of libvirt in the future, hence it's a function.
-   *)
-  let max_peek _ = 65536
-
-  external list_all_domains : 'a Connect.t -> ?want_info:bool -> list_flag list -> 'a t array * info array = "ocaml_libvirt_connect_list_all_domains"
-
-  external create_linux : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_domain_create_linux"
-  external create_linux_job : [>`W] Connect.t -> xml -> ([`Domain], rw) job_t = "ocaml_libvirt_domain_create_linux_job"
-  external lookup_by_id : 'a Connect.t -> int -> 'a t = "ocaml_libvirt_domain_lookup_by_id"
-  external lookup_by_uuid : 'a Connect.t -> uuid -> 'a t = "ocaml_libvirt_domain_lookup_by_uuid"
-  external lookup_by_uuid_string : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_domain_lookup_by_uuid_string"
-  external lookup_by_name : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_domain_lookup_by_name"
-  external destroy : [>`W] t -> unit = "ocaml_libvirt_domain_destroy"
-  external free : [>`R] t -> unit = "ocaml_libvirt_domain_free"
-  external suspend : [>`W] t -> unit = "ocaml_libvirt_domain_suspend"
-  external resume : [>`W] t -> unit = "ocaml_libvirt_domain_resume"
-  external save : [>`W] t -> filename -> unit = "ocaml_libvirt_domain_save"
-  external save_job : [>`W] t -> filename -> ([`Domain_nocreate], rw) job_t = "ocaml_libvirt_domain_save_job"
-  external restore : [>`W] Connect.t -> filename -> unit = "ocaml_libvirt_domain_restore"
-  external restore_job : [>`W] Connect.t -> filename -> ([`Domain_nocreate], rw) job_t = "ocaml_libvirt_domain_restore_job"
-  external core_dump : [>`W] t -> filename -> unit = "ocaml_libvirt_domain_core_dump"
-  external core_dump_job : [>`W] t -> filename -> ([`Domain_nocreate], rw) job_t = "ocaml_libvirt_domain_core_dump_job"
-  external shutdown : [>`W] t -> unit = "ocaml_libvirt_domain_shutdown"
-  external reboot : [>`W] t -> unit = "ocaml_libvirt_domain_reboot"
-  external get_name : [>`R] t -> string = "ocaml_libvirt_domain_get_name"
-  external get_uuid : [>`R] t -> uuid = "ocaml_libvirt_domain_get_uuid"
-  external get_uuid_string : [>`R] t -> string = "ocaml_libvirt_domain_get_uuid_string"
-  external get_id : [>`R] t -> int = "ocaml_libvirt_domain_get_id"
-  external get_os_type : [>`R] t -> string = "ocaml_libvirt_domain_get_os_type"
-  external get_max_memory : [>`R] t -> int64 = "ocaml_libvirt_domain_get_max_memory"
-  external set_max_memory : [>`W] t -> int64 -> unit = "ocaml_libvirt_domain_set_max_memory"
-  external set_memory : [>`W] t -> int64 -> unit = "ocaml_libvirt_domain_set_memory"
-  external get_info : [>`R] t -> info = "ocaml_libvirt_domain_get_info"
-  external get_xml_desc : [>`R] t -> xml = "ocaml_libvirt_domain_get_xml_desc"
-  external get_scheduler_type : [>`R] t -> string * int = "ocaml_libvirt_domain_get_scheduler_type"
-  external get_scheduler_parameters : [>`R] t -> int -> sched_param array = "ocaml_libvirt_domain_get_scheduler_parameters"
-  external set_scheduler_parameters : [>`W] t -> sched_param array -> unit = "ocaml_libvirt_domain_set_scheduler_parameters"
-  external define_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_domain_define_xml"
-  external undefine : [>`W] t -> unit = "ocaml_libvirt_domain_undefine"
-  external create : [>`W] t -> unit = "ocaml_libvirt_domain_create"
-  external create_job : [>`W] t -> ([`Domain_nocreate], rw) job_t = "ocaml_libvirt_domain_create_job"
-  external get_autostart : [>`R] t -> bool = "ocaml_libvirt_domain_get_autostart"
-  external set_autostart : [>`W] t -> bool -> unit = "ocaml_libvirt_domain_set_autostart"
-  external set_vcpus : [>`W] t -> int -> unit = "ocaml_libvirt_domain_set_vcpus"
-  external pin_vcpu : [>`W] t -> int -> string -> unit = "ocaml_libvirt_domain_pin_vcpu"
-  external get_vcpus : [>`R] t -> int -> int -> int * vcpu_info array * string = "ocaml_libvirt_domain_get_vcpus"
-  external get_max_vcpus : [>`R] t -> int = "ocaml_libvirt_domain_get_max_vcpus"
-  external attach_device : [>`W] t -> xml -> unit = "ocaml_libvirt_domain_attach_device"
-  external detach_device : [>`W] t -> xml -> unit = "ocaml_libvirt_domain_detach_device"
-  external migrate : [>`W] t -> [>`W] Connect.t -> migrate_flag list -> ?dname:string -> ?uri:string -> ?bandwidth:int -> unit -> rw t = "ocaml_libvirt_domain_migrate_bytecode" "ocaml_libvirt_domain_migrate_native"
-  external block_stats : [>`R] t -> string -> block_stats = "ocaml_libvirt_domain_block_stats"
-  external interface_stats : [>`R] t -> string -> interface_stats = "ocaml_libvirt_domain_interface_stats"
-  external block_peek : [>`R] t -> string -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_block_peek_bytecode" "ocaml_libvirt_domain_block_peek_native"
-  external memory_peek : [>`R] t -> memory_flag list -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_memory_peek_bytecode" "ocaml_libvirt_domain_memory_peek_native"
-
-  external const : [>`R] t -> ro t = "%identity"
-end
-
-module Network =
-struct
-  type 'rw t
-
-  external lookup_by_name : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_network_lookup_by_name"
-  external lookup_by_uuid : 'a Connect.t -> uuid -> 'a t = "ocaml_libvirt_network_lookup_by_uuid"
-  external lookup_by_uuid_string : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_network_lookup_by_uuid_string"
-  external create_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_network_create_xml"
-  external create_xml_job : [>`W] Connect.t -> xml -> ([`Network], rw) job_t = "ocaml_libvirt_network_create_xml_job"
-  external define_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_network_define_xml"
-  external undefine : [>`W] t -> unit = "ocaml_libvirt_network_undefine"
-  external create : [>`W] t -> unit = "ocaml_libvirt_network_create"
-  external create_job : [>`W] t -> ([`Network_nocreate], rw) job_t = "ocaml_libvirt_network_create_job"
-  external destroy : [>`W] t -> unit = "ocaml_libvirt_network_destroy"
-  external free : [>`R] t -> unit = "ocaml_libvirt_network_free"
-  external get_name : [>`R] t -> string = "ocaml_libvirt_network_get_name"
-  external get_uuid : [>`R] t -> uuid = "ocaml_libvirt_network_get_uuid"
-  external get_uuid_string : [>`R] t -> string = "ocaml_libvirt_network_get_uuid_string"
-  external get_xml_desc : [>`R] t -> xml = "ocaml_libvirt_network_get_xml_desc"
-  external get_bridge_name : [>`R] t -> string = "ocaml_libvirt_network_get_bridge_name"
-  external get_autostart : [>`R] t -> bool = "ocaml_libvirt_network_get_autostart"
-  external set_autostart : [>`W] t -> bool -> unit = "ocaml_libvirt_network_set_autostart"
-
-  external const : [>`R] t -> ro t = "%identity"
-end
-
-module Pool =
-struct
-  type 'rw t
-  type pool_state = Inactive | Building | Running | Degraded
-  type pool_build_flags = New | Repair | Resize
-  type pool_delete_flags = Normal | Zeroed
-  type pool_info = {
-    state : pool_state;
-    capacity : int64;
-    allocation : int64;
-    available : int64;
-  }
-
-  external lookup_by_name : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_storage_pool_lookup_by_name"
-  external lookup_by_uuid : 'a Connect.t -> uuid -> 'a t = "ocaml_libvirt_storage_pool_lookup_by_uuid"
-  external lookup_by_uuid_string : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_storage_pool_lookup_by_uuid_string"
-  external create_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_storage_pool_create_xml"
-  external define_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_storage_pool_define_xml"
-  external build : [>`W] t -> pool_build_flags -> unit = "ocaml_libvirt_storage_pool_build"
-  external undefine : [>`W] t -> unit = "ocaml_libvirt_storage_pool_undefine"
-  external create : [>`W] t -> unit = "ocaml_libvirt_storage_pool_create"
-  external destroy : [>`W] t -> unit = "ocaml_libvirt_storage_pool_destroy"
-  external delete : [>`W] t -> unit = "ocaml_libvirt_storage_pool_delete"
-  external free : [>`R] t -> unit = "ocaml_libvirt_storage_pool_free"
-  external refresh : [`R] t -> unit = "ocaml_libvirt_storage_pool_refresh"
-  external get_name : [`R] t -> string = "ocaml_libvirt_storage_pool_get_name"
-  external get_uuid : [`R] t -> uuid = "ocaml_libvirt_storage_pool_get_uuid"
-  external get_uuid_string : [`R] t -> string = "ocaml_libvirt_storage_pool_get_uuid_string"
-  external get_info : [`R] t -> pool_info = "ocaml_libvirt_storage_pool_get_info"
-  external get_xml_desc : [`R] t -> xml = "ocaml_libvirt_storage_pool_get_xml_desc"
-  external get_autostart : [`R] t -> bool = "ocaml_libvirt_storage_pool_get_autostart"
-  external set_autostart : [`W] t -> bool -> unit = "ocaml_libvirt_storage_pool_set_autostart"
-  external num_of_volumes : [`R] t -> int = "ocaml_libvirt_storage_pool_num_of_volumes"
-  external list_volumes : [`R] t -> int -> string array = "ocaml_libvirt_storage_pool_list_volumes"
-  external const : [>`R] t -> ro t = "%identity"
-end
-
-module Volume =
-struct
-  type 'rw t
-  type vol_type = File | Block
-  type vol_delete_flags = Normal | Zeroed
-  type vol_info = {
-    typ : vol_type;
-    capacity : int64;
-    allocation : int64;
-  }
-
-  external lookup_by_name : 'a Pool.t -> string -> 'a t = "ocaml_libvirt_storage_vol_lookup_by_name"
-  external lookup_by_key : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_storage_vol_lookup_by_key"
-  external lookup_by_path : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_storage_vol_lookup_by_path"
-  external pool_of_volume : 'a t -> 'a Pool.t = "ocaml_libvirt_storage_pool_lookup_by_volume"
-  external get_name : [`R] t -> string = "ocaml_libvirt_storage_vol_get_name"
-  external get_key : [`R] t -> string = "ocaml_libvirt_storage_vol_get_key"
-  external get_path : [`R] t -> string = "ocaml_libvirt_storage_vol_get_path"
-  external get_info : [`R] t -> vol_info = "ocaml_libvirt_storage_vol_get_info"
-  external get_xml_desc : [`R] t -> xml = "ocaml_libvirt_storage_vol_get_xml_desc"
-  external create_xml : [`W] Pool.t -> xml -> unit = "ocaml_libvirt_storage_vol_create_xml"
-  external delete : [`W] t -> unit = "ocaml_libvirt_storage_vol_delete"
-  external free : [>`R] t -> unit = "ocaml_libvirt_storage_vol_free"
-  external const : [>`R] t -> ro t = "%identity"
-end
-
-module Job =
-struct
-  type ('jobclass, 'rw) t = ('jobclass, 'rw) job_t
-  type job_type = Bounded | Unbounded
-  type job_state = Running | Complete | Failed | Cancelled
-  type job_info = {
-    typ : job_type;
-    state : job_state;
-    running_time : int;
-    remaining_time : int;
-    percent_complete : int
-  }
-  external get_info : ('a,'b) t -> job_info = "ocaml_libvirt_job_get_info"
-  external get_domain : ([`Domain], 'a) t -> 'a Domain.t = "ocaml_libvirt_job_get_domain"
-  external get_network : ([`Network], 'a) t -> 'a Network.t = "ocaml_libvirt_job_get_network"
-  external cancel : ('a,'b) t -> unit = "ocaml_libvirt_job_cancel"
-  external free : ('a, [>`R]) t -> unit = "ocaml_libvirt_job_free"
-  external const : ('a, [>`R]) t -> ('a, ro) t = "%identity"
-end
-
 module Virterror =
 struct
   type code =
@@ -542,13 +312,130 @@ let rec map_ignore_errors f = function
       try f x :: map_ignore_errors f xs
       with Virterror _ -> map_ignore_errors f xs
 
-(* First time we are called, we will check if
- * virConnectListAllDomains is supported.
- *)
-let have_list_all_domains = ref None
+module Domain =
+struct
+  type 'rw t
 
-let get_domains conn ?(want_info = true) flags =
-  let have_list_all_domains =
+  type state =
+    | InfoNoState | InfoRunning | InfoBlocked | InfoPaused
+    | InfoShutdown | InfoShutoff | InfoCrashed
+
+  type info = {
+    state : state;
+    max_mem : int64;
+    memory : int64;
+    nr_virt_cpu : int;
+    cpu_time : int64;
+  }
+
+  type vcpu_state = VcpuOffline | VcpuRunning | VcpuBlocked
+
+  type vcpu_info = {
+    number : int;
+    vcpu_state : vcpu_state;
+    vcpu_time : int64;
+    cpu : int;
+  }
+
+  type sched_param = string * sched_param_value
+  and sched_param_value =
+    | SchedFieldInt32 of int32 | SchedFieldUInt32 of int32
+    | SchedFieldInt64 of int64 | SchedFieldUInt64 of int64
+    | SchedFieldFloat of float | SchedFieldBool of bool
+
+  type migrate_flag = Live
+
+  type memory_flag = Virtual
+
+  type list_flag =
+    | ListActive
+    | ListInactive
+    | ListAll
+
+  type block_stats = {
+    rd_req : int64;
+    rd_bytes : int64;
+    wr_req : int64;
+    wr_bytes : int64;
+    errs : int64;
+  }
+
+  type interface_stats = {
+    rx_bytes : int64;
+    rx_packets : int64;
+    rx_errs : int64;
+    rx_drop : int64;
+    tx_bytes : int64;
+    tx_packets : int64;
+    tx_errs : int64;
+    tx_drop : int64;
+  }
+
+  (* The maximum size for Domain.memory_peek and Domain.block_peek
+   * supported by libvirt.  This may change with different versions
+   * of libvirt in the future, hence it's a function.
+   *)
+  let max_peek _ = 65536
+
+  external list_all_domains : 'a Connect.t -> ?want_info:bool -> list_flag list -> 'a t array * info array = "ocaml_libvirt_connect_list_all_domains"
+
+  external create_linux : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_domain_create_linux"
+  external create_linux_job : [>`W] Connect.t -> xml -> ([`Domain], rw) job_t = "ocaml_libvirt_domain_create_linux_job"
+  external lookup_by_id : 'a Connect.t -> int -> 'a t = "ocaml_libvirt_domain_lookup_by_id"
+  external lookup_by_uuid : 'a Connect.t -> uuid -> 'a t = "ocaml_libvirt_domain_lookup_by_uuid"
+  external lookup_by_uuid_string : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_domain_lookup_by_uuid_string"
+  external lookup_by_name : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_domain_lookup_by_name"
+  external destroy : [>`W] t -> unit = "ocaml_libvirt_domain_destroy"
+  external free : [>`R] t -> unit = "ocaml_libvirt_domain_free"
+  external suspend : [>`W] t -> unit = "ocaml_libvirt_domain_suspend"
+  external resume : [>`W] t -> unit = "ocaml_libvirt_domain_resume"
+  external save : [>`W] t -> filename -> unit = "ocaml_libvirt_domain_save"
+  external save_job : [>`W] t -> filename -> ([`Domain_nocreate], rw) job_t = "ocaml_libvirt_domain_save_job"
+  external restore : [>`W] Connect.t -> filename -> unit = "ocaml_libvirt_domain_restore"
+  external restore_job : [>`W] Connect.t -> filename -> ([`Domain_nocreate], rw) job_t = "ocaml_libvirt_domain_restore_job"
+  external core_dump : [>`W] t -> filename -> unit = "ocaml_libvirt_domain_core_dump"
+  external core_dump_job : [>`W] t -> filename -> ([`Domain_nocreate], rw) job_t = "ocaml_libvirt_domain_core_dump_job"
+  external shutdown : [>`W] t -> unit = "ocaml_libvirt_domain_shutdown"
+  external reboot : [>`W] t -> unit = "ocaml_libvirt_domain_reboot"
+  external get_name : [>`R] t -> string = "ocaml_libvirt_domain_get_name"
+  external get_uuid : [>`R] t -> uuid = "ocaml_libvirt_domain_get_uuid"
+  external get_uuid_string : [>`R] t -> string = "ocaml_libvirt_domain_get_uuid_string"
+  external get_id : [>`R] t -> int = "ocaml_libvirt_domain_get_id"
+  external get_os_type : [>`R] t -> string = "ocaml_libvirt_domain_get_os_type"
+  external get_max_memory : [>`R] t -> int64 = "ocaml_libvirt_domain_get_max_memory"
+  external set_max_memory : [>`W] t -> int64 -> unit = "ocaml_libvirt_domain_set_max_memory"
+  external set_memory : [>`W] t -> int64 -> unit = "ocaml_libvirt_domain_set_memory"
+  external get_info : [>`R] t -> info = "ocaml_libvirt_domain_get_info"
+  external get_xml_desc : [>`R] t -> xml = "ocaml_libvirt_domain_get_xml_desc"
+  external get_scheduler_type : [>`R] t -> string * int = "ocaml_libvirt_domain_get_scheduler_type"
+  external get_scheduler_parameters : [>`R] t -> int -> sched_param array = "ocaml_libvirt_domain_get_scheduler_parameters"
+  external set_scheduler_parameters : [>`W] t -> sched_param array -> unit = "ocaml_libvirt_domain_set_scheduler_parameters"
+  external define_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_domain_define_xml"
+  external undefine : [>`W] t -> unit = "ocaml_libvirt_domain_undefine"
+  external create : [>`W] t -> unit = "ocaml_libvirt_domain_create"
+  external create_job : [>`W] t -> ([`Domain_nocreate], rw) job_t = "ocaml_libvirt_domain_create_job"
+  external get_autostart : [>`R] t -> bool = "ocaml_libvirt_domain_get_autostart"
+  external set_autostart : [>`W] t -> bool -> unit = "ocaml_libvirt_domain_set_autostart"
+  external set_vcpus : [>`W] t -> int -> unit = "ocaml_libvirt_domain_set_vcpus"
+  external pin_vcpu : [>`W] t -> int -> string -> unit = "ocaml_libvirt_domain_pin_vcpu"
+  external get_vcpus : [>`R] t -> int -> int -> int * vcpu_info array * string = "ocaml_libvirt_domain_get_vcpus"
+  external get_max_vcpus : [>`R] t -> int = "ocaml_libvirt_domain_get_max_vcpus"
+  external attach_device : [>`W] t -> xml -> unit = "ocaml_libvirt_domain_attach_device"
+  external detach_device : [>`W] t -> xml -> unit = "ocaml_libvirt_domain_detach_device"
+  external migrate : [>`W] t -> [>`W] Connect.t -> migrate_flag list -> ?dname:string -> ?uri:string -> ?bandwidth:int -> unit -> rw t = "ocaml_libvirt_domain_migrate_bytecode" "ocaml_libvirt_domain_migrate_native"
+  external block_stats : [>`R] t -> string -> block_stats = "ocaml_libvirt_domain_block_stats"
+  external interface_stats : [>`R] t -> string -> interface_stats = "ocaml_libvirt_domain_interface_stats"
+  external block_peek : [>`R] t -> string -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_block_peek_bytecode" "ocaml_libvirt_domain_block_peek_native"
+  external memory_peek : [>`R] t -> memory_flag list -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_memory_peek_bytecode" "ocaml_libvirt_domain_memory_peek_native"
+
+  external const : [>`R] t -> ro t = "%identity"
+
+  (* First time we are called, we will check if
+   * virConnectListAllDomains is supported.
+   *)
+  let have_list_all_domains = ref None
+
+  let check_have_list_all_domains conn =
     match !have_list_all_domains with
     | Some v -> v
     | None ->
@@ -557,83 +444,190 @@ let get_domains conn ?(want_info = true) flags =
 	 *)
 	let v =
 	  (* libvirt has a short-cut which makes this very quick ... *)
-	  try ignore (Domain.list_all_domains conn []); true
+	  try ignore (list_all_domains conn []); true
 	  with Not_supported "virConnectListAllDomains" -> false in
 	have_list_all_domains := Some v;
-	v in
+	v
 
-  if have_list_all_domains then (
-    (* Good, we can use the shiny new method. *)
-    let doms, infos = Domain.list_all_domains conn ~want_info flags in
-    Array.to_list doms, Array.to_list infos
-  )
-  else (
-    (* Old/slow/inefficient method. *)
-    let get_all, get_active, get_inactive, another_flag =
-      let rec loop ((all, active, inactive, another) as xs) = function
-	| [] -> xs
-	| Domain.ListAll :: _ -> (true, true, true, false)
-	| Domain.ListActive :: fs -> loop (all, true, inactive, another) fs
-	| Domain.ListInactive :: fs -> loop (all, active, true, another) fs
-	| _ -> (true, true, true, true)
-      in
-      loop (false, false, false, false) flags in
+  let get_domains conn flags =
+    let have_list_all_domains = check_have_list_all_domains conn in
 
-    let active_doms =
-      if get_active then (
-	let n = Connect.num_of_domains conn in
-	let ids = Connect.list_domains conn n in
-	let ids = Array.to_list ids in
-	map_ignore_errors (Domain.lookup_by_id conn) ids
-      ) else [] in
-
-    let inactive_doms =
-      if get_inactive then (
-	let n = Connect.num_of_defined_domains conn in
-	let names = Connect.list_defined_domains conn n in
-	let names = Array.to_list names in
-	map_ignore_errors (Domain.lookup_by_name conn) names
-      ) else [] in
-
-    let doms = active_doms @ inactive_doms in
-
-    if not another_flag then (
-      if want_info then
-	List.split (
-	  map_ignore_errors (fun dom -> (dom, Domain.get_info dom)) doms
-	)
-      else
-	doms, []
-    ) else (
-      (* Slow method: We have to get the infos and filter on state. *)
-      let flag_is_set =
-	let h = Hashtbl.create 13 in
-	List.iter (fun flag -> Hashtbl.add h flag ()) flags;
-	Hashtbl.mem h
-      in
-
-      let doms =
-	map_ignore_errors (fun dom -> (dom, Domain.get_info dom)) doms in
-      let doms = List.filter (
-	fun (dom, { Domain.state = state }) ->
-	  match state with
-	  | Domain.InfoNoState -> flag_is_set Domain.ListNoState
-	  | Domain.InfoRunning ->
-	      flag_is_set Domain.ListActive || flag_is_set Domain.ListRunning
-	  | Domain.InfoBlocked ->
-	      flag_is_set Domain.ListActive || flag_is_set Domain.ListBlocked
-	  | Domain.InfoPaused ->
-	      flag_is_set Domain.ListActive || flag_is_set Domain.ListPaused
-	  | Domain.InfoShutdown ->
-	      flag_is_set Domain.ListActive || flag_is_set Domain.ListShutdown
-	  | Domain.InfoShutoff ->
-	      flag_is_set Domain.ListInactive
-	      || flag_is_set Domain.ListShutoff
-	  | Domain.InfoCrashed -> flag_is_set Domain.ListCrashed
-      ) doms in
-      List.split doms
+    if have_list_all_domains then (
+      (* Good, we can use the shiny new method. *)
+      let doms, _ = list_all_domains conn ~want_info:false flags in
+      Array.to_list doms
     )
-  )
+    else (
+      (* Old/slow/inefficient method. *)
+      let get_active, get_inactive =
+	if List.mem ListAll flags then
+	  (true, true)
+	else
+	  (List.mem ListActive flags, List.mem ListInactive flags) in
+      let active_doms =
+	if get_active then (
+	  let n = Connect.num_of_domains conn in
+	  let ids = Connect.list_domains conn n in
+	  let ids = Array.to_list ids in
+	  map_ignore_errors (lookup_by_id conn) ids
+	) else [] in
+
+      let inactive_doms =
+	if get_inactive then (
+	  let n = Connect.num_of_defined_domains conn in
+	  let names = Connect.list_defined_domains conn n in
+	  let names = Array.to_list names in
+	  map_ignore_errors (lookup_by_name conn) names
+	) else [] in
+
+      active_doms @ inactive_doms
+    )
+
+  let get_domains_and_infos conn flags =
+    let have_list_all_domains = check_have_list_all_domains conn in
+
+    if have_list_all_domains then (
+      (* Good, we can use the shiny new method. *)
+      let doms, infos = list_all_domains conn ~want_info:true flags in
+      let doms = Array.to_list doms and infos = Array.to_list infos in
+      List.combine doms infos
+    )
+    else (
+      (* Old/slow/inefficient method. *)
+      let get_active, get_inactive =
+	if List.mem ListAll flags then
+	  (true, true)
+	else (List.mem ListActive flags, List.mem ListInactive flags) in
+      let active_doms =
+	if get_active then (
+	  let n = Connect.num_of_domains conn in
+	  let ids = Connect.list_domains conn n in
+	  let ids = Array.to_list ids in
+	  map_ignore_errors (lookup_by_id conn) ids
+	) else [] in
+
+      let inactive_doms =
+	if get_inactive then (
+	  let n = Connect.num_of_defined_domains conn in
+	  let names = Connect.list_defined_domains conn n in
+	  let names = Array.to_list names in
+	  map_ignore_errors (lookup_by_name conn) names
+	) else [] in
+
+      let doms = active_doms @ inactive_doms in
+
+      map_ignore_errors (fun dom -> (dom, get_info dom)) doms
+    )
+end
+
+module Network =
+struct
+  type 'rw t
+
+  external lookup_by_name : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_network_lookup_by_name"
+  external lookup_by_uuid : 'a Connect.t -> uuid -> 'a t = "ocaml_libvirt_network_lookup_by_uuid"
+  external lookup_by_uuid_string : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_network_lookup_by_uuid_string"
+  external create_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_network_create_xml"
+  external create_xml_job : [>`W] Connect.t -> xml -> ([`Network], rw) job_t = "ocaml_libvirt_network_create_xml_job"
+  external define_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_network_define_xml"
+  external undefine : [>`W] t -> unit = "ocaml_libvirt_network_undefine"
+  external create : [>`W] t -> unit = "ocaml_libvirt_network_create"
+  external create_job : [>`W] t -> ([`Network_nocreate], rw) job_t = "ocaml_libvirt_network_create_job"
+  external destroy : [>`W] t -> unit = "ocaml_libvirt_network_destroy"
+  external free : [>`R] t -> unit = "ocaml_libvirt_network_free"
+  external get_name : [>`R] t -> string = "ocaml_libvirt_network_get_name"
+  external get_uuid : [>`R] t -> uuid = "ocaml_libvirt_network_get_uuid"
+  external get_uuid_string : [>`R] t -> string = "ocaml_libvirt_network_get_uuid_string"
+  external get_xml_desc : [>`R] t -> xml = "ocaml_libvirt_network_get_xml_desc"
+  external get_bridge_name : [>`R] t -> string = "ocaml_libvirt_network_get_bridge_name"
+  external get_autostart : [>`R] t -> bool = "ocaml_libvirt_network_get_autostart"
+  external set_autostart : [>`W] t -> bool -> unit = "ocaml_libvirt_network_set_autostart"
+
+  external const : [>`R] t -> ro t = "%identity"
+end
+
+module Pool =
+struct
+  type 'rw t
+  type pool_state = Inactive | Building | Running | Degraded
+  type pool_build_flags = New | Repair | Resize
+  type pool_delete_flags = Normal | Zeroed
+  type pool_info = {
+    state : pool_state;
+    capacity : int64;
+    allocation : int64;
+    available : int64;
+  }
+
+  external lookup_by_name : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_storage_pool_lookup_by_name"
+  external lookup_by_uuid : 'a Connect.t -> uuid -> 'a t = "ocaml_libvirt_storage_pool_lookup_by_uuid"
+  external lookup_by_uuid_string : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_storage_pool_lookup_by_uuid_string"
+  external create_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_storage_pool_create_xml"
+  external define_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_storage_pool_define_xml"
+  external build : [>`W] t -> pool_build_flags -> unit = "ocaml_libvirt_storage_pool_build"
+  external undefine : [>`W] t -> unit = "ocaml_libvirt_storage_pool_undefine"
+  external create : [>`W] t -> unit = "ocaml_libvirt_storage_pool_create"
+  external destroy : [>`W] t -> unit = "ocaml_libvirt_storage_pool_destroy"
+  external delete : [>`W] t -> unit = "ocaml_libvirt_storage_pool_delete"
+  external free : [>`R] t -> unit = "ocaml_libvirt_storage_pool_free"
+  external refresh : [`R] t -> unit = "ocaml_libvirt_storage_pool_refresh"
+  external get_name : [`R] t -> string = "ocaml_libvirt_storage_pool_get_name"
+  external get_uuid : [`R] t -> uuid = "ocaml_libvirt_storage_pool_get_uuid"
+  external get_uuid_string : [`R] t -> string = "ocaml_libvirt_storage_pool_get_uuid_string"
+  external get_info : [`R] t -> pool_info = "ocaml_libvirt_storage_pool_get_info"
+  external get_xml_desc : [`R] t -> xml = "ocaml_libvirt_storage_pool_get_xml_desc"
+  external get_autostart : [`R] t -> bool = "ocaml_libvirt_storage_pool_get_autostart"
+  external set_autostart : [`W] t -> bool -> unit = "ocaml_libvirt_storage_pool_set_autostart"
+  external num_of_volumes : [`R] t -> int = "ocaml_libvirt_storage_pool_num_of_volumes"
+  external list_volumes : [`R] t -> int -> string array = "ocaml_libvirt_storage_pool_list_volumes"
+  external const : [>`R] t -> ro t = "%identity"
+end
+
+module Volume =
+struct
+  type 'rw t
+  type vol_type = File | Block
+  type vol_delete_flags = Normal | Zeroed
+  type vol_info = {
+    typ : vol_type;
+    capacity : int64;
+    allocation : int64;
+  }
+
+  external lookup_by_name : 'a Pool.t -> string -> 'a t = "ocaml_libvirt_storage_vol_lookup_by_name"
+  external lookup_by_key : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_storage_vol_lookup_by_key"
+  external lookup_by_path : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_storage_vol_lookup_by_path"
+  external pool_of_volume : 'a t -> 'a Pool.t = "ocaml_libvirt_storage_pool_lookup_by_volume"
+  external get_name : [`R] t -> string = "ocaml_libvirt_storage_vol_get_name"
+  external get_key : [`R] t -> string = "ocaml_libvirt_storage_vol_get_key"
+  external get_path : [`R] t -> string = "ocaml_libvirt_storage_vol_get_path"
+  external get_info : [`R] t -> vol_info = "ocaml_libvirt_storage_vol_get_info"
+  external get_xml_desc : [`R] t -> xml = "ocaml_libvirt_storage_vol_get_xml_desc"
+  external create_xml : [`W] Pool.t -> xml -> unit = "ocaml_libvirt_storage_vol_create_xml"
+  external delete : [`W] t -> unit = "ocaml_libvirt_storage_vol_delete"
+  external free : [>`R] t -> unit = "ocaml_libvirt_storage_vol_free"
+  external const : [>`R] t -> ro t = "%identity"
+end
+
+module Job =
+struct
+  type ('jobclass, 'rw) t = ('jobclass, 'rw) job_t
+  type job_type = Bounded | Unbounded
+  type job_state = Running | Complete | Failed | Cancelled
+  type job_info = {
+    typ : job_type;
+    state : job_state;
+    running_time : int;
+    remaining_time : int;
+    percent_complete : int
+  }
+  external get_info : ('a,'b) t -> job_info = "ocaml_libvirt_job_get_info"
+  external get_domain : ([`Domain], 'a) t -> 'a Domain.t = "ocaml_libvirt_job_get_domain"
+  external get_network : ([`Network], 'a) t -> 'a Network.t = "ocaml_libvirt_job_get_network"
+  external cancel : ('a,'b) t -> unit = "ocaml_libvirt_job_cancel"
+  external free : ('a, [>`R]) t -> unit = "ocaml_libvirt_job_free"
+  external const : ('a, [>`R]) t -> ('a, ro) t = "%identity"
+end
 
 (* Initialization. *)
 external c_init : unit -> unit = "ocaml_libvirt_init"

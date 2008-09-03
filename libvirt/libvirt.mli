@@ -79,8 +79,7 @@ let conn = C.connect_readonly ~name ()
 {[
 open Printf
 
-let domains =
-  fst (Libvirt.get_domains conn ~want_info:false [D.ListActive]) in
+let domains = D.get_domains conn [D.ListActive] in
 List.iter (
   fun dom ->
     printf "%8d %s\n%!" (D.get_id dom) (D.get_name dom)
@@ -90,8 +89,7 @@ List.iter (
    {3 Example: List inactive domains}
 
 {[
-let domains =
-  fst (Libvirt.get_domains conn ~want_info:false [D.ListInactive]) in
+let domains = D.get_domains conn [D.ListInactive] in
 List.iter (
   fun dom ->
     printf "inactive %s\n%!" (D.get_name dom)
@@ -157,11 +155,12 @@ printf "uri = %s\n%!" uri
 
     We don't support libvirt < 0.2.1, and never will so don't ask us.
 
-    {3 Get list of domains}
+    {3 Get list of domains and domain infos}
 
     This is a very common operation, and libvirt supports various
     different methods to do it.  We have hidden the complexity in a
-    flexible {!Libvirt.get_domains} call which is easy to use and
+    flexible {!Libvirt.Domain.get_domains} and
+    {!Libvirt.Domain.get_domains_and_infos} calls which is easy to use and
     automatically chooses the most efficient method depending on the
     version of libvirt in use.
 
@@ -309,7 +308,9 @@ sig
 
 	Call {!num_of_domains} first to get a value for [max].
 
-	See also: {!Libvirt.get_domains}.
+	See also:
+	{!Libvirt.Domain.get_domains},
+	{!Libvirt.Domain.get_domains_and_infos}.
     *)
   val num_of_domains : [>`R] t -> int
     (** Returns the number of running domains. *)
@@ -324,7 +325,9 @@ sig
 
 	Call {!num_of_defined_domains} first to get a value for [max].
 
-	See also: {!Libvirt.get_domains}.
+	See also:
+	{!Libvirt.Domain.get_domains},
+	{!Libvirt.Domain.get_domains_and_infos}.
     *)
   val num_of_networks : [>`R] t -> int
     (** Returns the number of networks. *)
@@ -441,8 +444,6 @@ sig
   type memory_flag = Virtual
 
   type list_flag =
-    | ListNoState | ListRunning | ListBlocked
-    | ListPaused | ListShutdown | ListShutoff | ListCrashed
     | ListActive
     | ListInactive
     | ListAll
@@ -487,9 +488,9 @@ sig
 
 	This call was introduced in libvirt 0.4.5.  Because you
 	might dynamically link to an older version of libvirt which
-	doesn't have this call, you should use {!Libvirt.get_domains}
-	which uses the most efficient way to get domains for the
-	available version of libvirt.
+	doesn't have this call, you should use {!get_domains}
+	or {!get_domains_and_infos} which use the most efficient
+	way to get domains for the available version of libvirt.
     *)
   val create_linux : [>`W] Connect.t -> xml -> rw t
     (** Create a new guest domain (not necessarily a Linux one)
@@ -635,6 +636,32 @@ sig
     (** [const dom] turns a read/write domain handle into a read-only
 	domain handle.  Note that the opposite operation is impossible.
       *)
+
+  val get_domains : ([>`R] as 'a) Connect.t -> list_flag list -> 'a t list
+    (** Get the active and/or inactive domains using the most
+	efficient method available.
+
+	See also:
+	{!get_domains_and_infos},
+	{!list_all_domains},
+	{!Connect.list_domains},
+	{!Connect.list_defined_domains}.
+  *)
+
+  val get_domains_and_infos : ([>`R] as 'a) Connect.t -> list_flag list ->
+    ('a t * info) list
+    (** This gets the active and/or inactive domains and the
+	domain info for each one using the most efficient
+	method available.
+
+	See also:
+	{!get_domains},
+	{!list_all_domains},
+	{!Connect.list_domains},
+	{!Connect.list_defined_domains},
+	{!get_info}.
+    *)
+
 end
   (** Module dealing with domains.  [Domain.t] is the
       domain object. *)
@@ -1067,19 +1094,3 @@ val map_ignore_errors : ('a -> 'b) -> 'a list -> 'b list
     might 'disappear' asynchronously from the currently running
     program.
 *)
-
-val get_domains : ([>`R] as 'a) Connect.t -> ?want_info:bool -> Domain.list_flag list -> 'a Domain.t list * Domain.info list
-  (** Get the active and/or inactive domains using the most
-      efficient method available.
-
-      The two lists returned will have the same length, unless
-      [~want_info] is [false] in which case the info list will be
-      zero-length.  The default for [~want_info] is [true].  In most
-      cases there is no extra penalty for getting the info fields, or
-      the penalty is insignificant.
-
-      See also:
-      {!Domain.list_all_domains},
-      {!Connect.list_domains},
-      {!Connect.list_defined_domains}.
-  *)

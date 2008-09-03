@@ -199,7 +199,8 @@ ocaml_libvirt_connect_node_get_cells_free_memory (value connv,
 extern int virConnectListAllDomains (virConnectPtr conn,
                                      virDomainPtr **domains,
                                      virDomainInfo **infos,
-                                     int stateflags)
+                                     unsigned long stateflags,
+                                     unsigned long flags)
   __attribute__((weak));
 #endif
 #endif
@@ -216,7 +217,8 @@ ocaml_libvirt_connect_list_all_domains (value connv,
   virConnectPtr conn = Connect_val (connv);
   virDomainPtr *domains;
   virDomainInfo *infos;
-  int want_info, i, r, flag, flags = 0;
+  int want_info, i, r, flag;
+  unsigned long flags = 0;
 
   /* ?want_info */
   if (wantinfov == Val_int (0)) /* None == true */
@@ -229,23 +231,16 @@ ocaml_libvirt_connect_list_all_domains (value connv,
     flagv = Field (flagsv, 0);
     flag = Int_val (flagv);
     switch (flag) {
-    case 0: flags |= VIR_DOMAIN_LIST_NOSTATE; break;
-    case 1: flags |= VIR_DOMAIN_LIST_RUNNING; break;
-    case 2: flags |= VIR_DOMAIN_LIST_BLOCKED; break;
-    case 3: flags |= VIR_DOMAIN_LIST_PAUSED; break;
-    case 4: flags |= VIR_DOMAIN_LIST_SHUTDOWN; break;
-    case 5: flags |= VIR_DOMAIN_LIST_SHUTOFF; break;
-    case 6: flags |= VIR_DOMAIN_LIST_CRASHED; break;
-    case 7: flags |= VIR_DOMAIN_LIST_ACTIVE; break;
-    case 8: flags |= VIR_DOMAIN_LIST_INACTIVE; break;
-    case 9: flags |= VIR_DOMAIN_LIST_ALL; break;
+    case 0: flags |= VIR_DOMAIN_LIST_ACTIVE; break;
+    case 1: flags |= VIR_DOMAIN_LIST_INACTIVE; break;
+    case 2: flags |= VIR_DOMAIN_LIST_ALL; break;
     }
   }
 
   WEAK_SYMBOL_CHECK (virConnectListAllDomains);
   NONBLOCKING (r = virConnectListAllDomains (conn, &domains,
                                              want_info ? &infos : NULL,
-                                             flags));
+                                             flags, 0));
   CHECK_ERROR (r == -1, conn, "virConnectListAllDomains");
 
   /* Convert the result into a pair of arrays. */
