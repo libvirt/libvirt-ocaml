@@ -466,7 +466,7 @@ let do_command =
 	   in
 	   loop 0;
 	   buf)
-	(arg_readonly_connection domain_of_string)
+	(arg_full_connection domain_of_string)
 	string_of_string Int64.of_string int_of_string,
       s_"Peek into a block device of a domain.",
       [dom_help; s_"path",s_"Path to block device";
@@ -516,7 +516,7 @@ let do_command =
 	   in
 	   loop 0;
 	   buf)
-	(arg_readonly_connection domain_of_string)
+	(arg_full_connection domain_of_string)
 	Int64.of_string int_of_string,
       s_"Peek into memory of a device.",
       [dom_help; s_"offset",s_"Offset in memory";
