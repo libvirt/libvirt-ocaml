@@ -1,1 +1,4 @@
 Turn VIR_ERR_NO_DOMAIN and NO_NETWORK errors into Not_found exceptions.
+
+libvirt has added a few new calls since we last looked, particularly
+in the area around storage management.  Need to add these.
