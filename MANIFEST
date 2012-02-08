@@ -8,6 +8,7 @@ configure.ac
 COPYING
 COPYING.LIB
 examples/.depend
+examples/get_cpu_stats.ml
 examples/list_domains.ml
 examples/node_info.ml
 examples/Makefile.in

@@ -435,6 +435,13 @@ sig
     | SchedFieldInt64 of int64 | SchedFieldUInt64 of int64
     | SchedFieldFloat of float | SchedFieldBool of bool
 
+  type typed_param = string * typed_param_value
+  and typed_param_value =
+    | TypedFieldInt32 of int32 | TypedFieldUInt32 of int32
+    | TypedFieldInt64 of int64 | TypedFieldUInt64 of int64
+    | TypedFieldFloat of float | TypedFieldBool of bool
+    | TypedFieldString of string
+
   type migrate_flag = Live
 
   type memory_flag = Virtual
@@ -551,6 +558,10 @@ sig
     (** [get_vcpus dom maxinfo maplen] returns the pinning information
 	for a domain.  See the libvirt documentation for details
 	of the array and bitmap returned from this function.
+    *)
+  val get_cpu_stats : [>`R] t -> int -> typed_param list array
+    (** [get_pcpu_stats dom nr_pcpu] returns the physical CPU stats
+	for a domain.  See the libvirt documentation for details.
     *)
   val get_max_vcpus : [>`R] t -> int
     (** Returns the maximum number of vCPUs supported for this domain. *)

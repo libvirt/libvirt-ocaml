@@ -520,6 +520,118 @@ ocaml_libvirt_domain_get_vcpus (value domv, value maxinfov, value maplenv)
 }
 
 #ifdef HAVE_WEAK_SYMBOLS
+#ifdef HAVE_VIRDOMAINGETCPUSTATS
+extern int virDomainGetCPUStats (virDomainPtr domain,
+                         virTypedParameterPtr params,
+                         unsigned int nparams,
+                         int start_cpu,
+                         unsigned int ncpus,
+                         unsigned int flags)
+  __attribute__((weak));
+#endif
+#endif
+
+CAMLprim value
+ocaml_libvirt_domain_get_cpu_stats (value domv, value nr_pcpusv)
+{
+#ifdef HAVE_VIRDOMAINGETCPUSTATS
+  CAMLparam2 (domv, nr_pcpusv);
+  CAMLlocal5 (cpustats, param_head, param_node, typed_param, typed_param_value);
+  CAMLlocal1 (v);
+  virDomainPtr dom = Domain_val (domv);
+  virConnectPtr conn = Connect_domv (domv);
+  int nr_pcpus = Int_val (nr_pcpusv);
+  virTypedParameterPtr params;
+  int r, cpu, ncpus, nparams, i, j, pos;
+
+  /* get percpu information */
+  NONBLOCKING (nparams = virDomainGetCPUStats(dom, NULL, 0, -1, 1, 0));
+  CHECK_ERROR (nparams < 0, conn, "virDomainGetCPUStats");
+
+  if ((params = malloc(sizeof(*params) * nparams * 128)) == NULL)
+    caml_failwith ("virDomainGetCPUStats: malloc");
+
+  cpustats = caml_alloc (nr_pcpus, 0); /* cpustats: array of params(list of typed_param) */
+  cpu = 0;
+  while (cpu < nr_pcpus) {
+    ncpus = nr_pcpus - cpu > 128 ? 128 : nr_pcpus - cpu;
+
+    NONBLOCKING (r = virDomainGetCPUStats(dom, params, nparams, cpu, ncpus, 0));
+    CHECK_ERROR (r < 0, conn, "virDomainGetCPUStats");
+
+    for (i = 0; i < ncpus; i++) {
+      /* list of typed_param: single linked list of param_nodes */
+      param_head = Val_emptylist; /* param_head: the head param_node of list of typed_param */
+
+      if (params[i * nparams].type == 0) {
+        Store_field(cpustats, cpu + i, param_head);
+        continue;
+      }
+
+      for (j = nparams - 1; j >= 0; j--) {
+        pos = i * nparams + j;
+          if (params[pos].type == 0)
+            continue;
+
+        param_node = caml_alloc(2, 0); /* param_node: typed_param, next param_node */
+        Store_field(param_node, 1, param_head);
+        param_head = param_node;
+
+        typed_param = caml_alloc(2, 0); /* typed_param: field name(string), typed_param_value */
+        Store_field(param_node, 0, typed_param);
+        Store_field(typed_param, 0, caml_copy_string(params[pos].field));
+
+        /* typed_param_value: value with the corresponding type tag */
+        switch(params[pos].type) {
+        case VIR_TYPED_PARAM_INT:
+          typed_param_value = caml_alloc (1, 0);
+          v = caml_copy_int32 (params[pos].value.i);
+          break;
+        case VIR_TYPED_PARAM_UINT:
+          typed_param_value = caml_alloc (1, 1);
+          v = caml_copy_int32 (params[pos].value.ui);
+          break;
+        case VIR_TYPED_PARAM_LLONG:
+          typed_param_value = caml_alloc (1, 2);
+          v = caml_copy_int64 (params[pos].value.l);
+          break;
+        case VIR_TYPED_PARAM_ULLONG:
+          typed_param_value = caml_alloc (1, 3);
+          v = caml_copy_int64 (params[pos].value.ul);
+          break;
+        case VIR_TYPED_PARAM_DOUBLE:
+          typed_param_value = caml_alloc (1, 4);
+          v = caml_copy_double (params[pos].value.d);
+          break;
+        case VIR_TYPED_PARAM_BOOLEAN:
+          typed_param_value = caml_alloc (1, 5);
+          v = Val_bool (params[pos].value.b);
+          break;
+        case VIR_TYPED_PARAM_STRING:
+          typed_param_value = caml_alloc (1, 6);
+          v = caml_copy_string (params[pos].value.s);
+          free (params[pos].value.s);
+          break;
+        default:
+          free (params);
+          caml_failwith ("virDomainGetCPUStats: "
+                         "unknown parameter type returned");
+        }
+        Store_field (typed_param_value, 0, v);
+        Store_field (typed_param, 1, typed_param_value);
+      }
+      Store_field (cpustats, cpu + i, param_head);
+    }
+    cpu += ncpus;
+  }
+  free(params);
+  CAMLreturn (cpustats);
+#else
+  not_supported ("virDomainGetCPUStats");
+#endif
+}
+
+#ifdef HAVE_WEAK_SYMBOLS
 #ifdef HAVE_VIRDOMAINMIGRATE
 extern virDomainPtr virDomainMigrate (virDomainPtr domain, virConnectPtr dconn,
 				      unsigned long flags, const char *dname,

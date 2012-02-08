@@ -26,6 +26,7 @@ core.*
 *.exe
 *~
 libvirt/libvirt_version.ml
+examples/get_cpu_stats
 examples/list_domains
 examples/node_info
 virt-ctrl/virt-ctrl
