@@ -602,44 +602,6 @@ ocaml_libvirt_domain_create_linux (value connv, value strv)
   CAMLreturn (rv);
 }
 
-/* Automatically generated binding for virDomainCreateLinuxJob.
- * In generator.pl this function has signature "conn, string, 0U : job".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRDOMAINCREATELINUXJOB
-extern virJobPtr virDomainCreateLinuxJob (virConnectPtr conn, const char *str, unsigned int flags) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_domain_create_linux_job (value connv, value strv)
-{
-  CAMLparam2 (connv, strv);
-#ifndef HAVE_VIRDOMAINCREATELINUXJOB
-  /* Symbol virDomainCreateLinuxJob not found at compile time. */
-  not_supported ("virDomainCreateLinuxJob");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virDomainCreateLinuxJob
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virDomainCreateLinuxJob);
-
-  CAMLlocal1 (rv);
-  virConnectPtr conn = Connect_val (connv);
-  char *str = String_val (strv);
-  virJobPtr r;
-
-  NONBLOCKING (r = virDomainCreateLinuxJob (conn, str, 0));
-  CHECK_ERROR (!r, conn, "virDomainCreateLinuxJob");
-
-  rv = Val_job (r, connv);
-
-  CAMLreturn (rv);
-#endif
-}
-
 /* Automatically generated binding for virDomainFree.
  * In generator.pl this function has signature "dom : free".
  */
@@ -922,46 +884,6 @@ ocaml_libvirt_domain_save (value domv, value strv)
   CAMLreturn (Val_unit);
 }
 
-/* Automatically generated binding for virDomainSaveJob.
- * In generator.pl this function has signature "dom, string : job from dom".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRDOMAINSAVEJOB
-extern virJobPtr virDomainSaveJob (virDomainPtr dom, const char *str) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_domain_save_job (value domv, value strv)
-{
-  CAMLparam2 (domv, strv);
-#ifndef HAVE_VIRDOMAINSAVEJOB
-  /* Symbol virDomainSaveJob not found at compile time. */
-  not_supported ("virDomainSaveJob");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virDomainSaveJob
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virDomainSaveJob);
-
-  CAMLlocal2 (rv, connv);
-  virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
-  char *str = String_val (strv);
-  virJobPtr r;
-
-  NONBLOCKING (r = virDomainSaveJob (dom, str));
-  CHECK_ERROR (!r, conn, "virDomainSaveJob");
-
-  connv = Field (domv, 1);
-  rv = Val_job (r, connv);
-
-  CAMLreturn (rv);
-#endif
-}
-
 /* Automatically generated binding for virDomainRestore.
  * In generator.pl this function has signature "conn, string : unit".
  */
@@ -979,44 +901,6 @@ ocaml_libvirt_domain_restore (value connv, value strv)
   CHECK_ERROR (r == -1, conn, "virDomainRestore");
 
   CAMLreturn (Val_unit);
-}
-
-/* Automatically generated binding for virDomainRestoreJob.
- * In generator.pl this function has signature "conn, string : job".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRDOMAINRESTOREJOB
-extern virJobPtr virDomainRestoreJob (virConnectPtr conn, const char *str) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_domain_restore_job (value connv, value strv)
-{
-  CAMLparam2 (connv, strv);
-#ifndef HAVE_VIRDOMAINRESTOREJOB
-  /* Symbol virDomainRestoreJob not found at compile time. */
-  not_supported ("virDomainRestoreJob");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virDomainRestoreJob
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virDomainRestoreJob);
-
-  CAMLlocal1 (rv);
-  virConnectPtr conn = Connect_val (connv);
-  char *str = String_val (strv);
-  virJobPtr r;
-
-  NONBLOCKING (r = virDomainRestoreJob (conn, str));
-  CHECK_ERROR (!r, conn, "virDomainRestoreJob");
-
-  rv = Val_job (r, connv);
-
-  CAMLreturn (rv);
-#endif
 }
 
 /* Automatically generated binding for virDomainCoreDump.
@@ -1038,46 +922,6 @@ ocaml_libvirt_domain_core_dump (value domv, value strv)
   CHECK_ERROR (!r, conn, "virDomainCoreDump");
 
   CAMLreturn (Val_unit);
-}
-
-/* Automatically generated binding for virDomainCoreDumpJob.
- * In generator.pl this function has signature "dom, string, 0 : job from dom".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRDOMAINCOREDUMPJOB
-extern virJobPtr virDomainCoreDumpJob (virDomainPtr dom, const char *str,  int flags) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_domain_core_dump_job (value domv, value strv)
-{
-  CAMLparam2 (domv, strv);
-#ifndef HAVE_VIRDOMAINCOREDUMPJOB
-  /* Symbol virDomainCoreDumpJob not found at compile time. */
-  not_supported ("virDomainCoreDumpJob");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virDomainCoreDumpJob
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virDomainCoreDumpJob);
-
-  CAMLlocal2 (rv, connv);
-  virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
-  char *str = String_val (strv);
-  virJobPtr r;
-
-  NONBLOCKING (r = virDomainCoreDumpJob (dom, str, 0));
-  CHECK_ERROR (!r, conn, "virDomainCoreDumpJob");
-
-  connv = Field (domv, 1);
-  rv = Val_job (r, connv);
-
-  CAMLreturn (rv);
-#endif
 }
 
 /* Automatically generated binding for virDomainSuspend.
@@ -1214,45 +1058,6 @@ ocaml_libvirt_domain_create (value domv)
   CHECK_ERROR (r == -1, conn, "virDomainCreate");
 
   CAMLreturn (Val_unit);
-}
-
-/* Automatically generated binding for virDomainCreateJob.
- * In generator.pl this function has signature "dom, 0U : job from dom".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRDOMAINCREATEJOB
-extern virJobPtr virDomainCreateJob (virDomainPtr dom, unsigned  int flags) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_domain_create_job (value domv)
-{
-  CAMLparam1 (domv);
-#ifndef HAVE_VIRDOMAINCREATEJOB
-  /* Symbol virDomainCreateJob not found at compile time. */
-  not_supported ("virDomainCreateJob");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virDomainCreateJob
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virDomainCreateJob);
-
-  CAMLlocal2 (rv, connv);
-  virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
-  virJobPtr r;
-
-  NONBLOCKING (r = virDomainCreateJob (dom, 0));
-  CHECK_ERROR (!r, conn, "virDomainCreateJob");
-
-  connv = Field (domv, 1);
-  rv = Val_job (r, connv);
-
-  CAMLreturn (rv);
-#endif
 }
 
 /* Automatically generated binding for virDomainAttachDevice.
@@ -1597,44 +1402,6 @@ ocaml_libvirt_network_create_xml (value connv, value strv)
   CAMLreturn (rv);
 }
 
-/* Automatically generated binding for virNetworkCreateXMLJob.
- * In generator.pl this function has signature "conn, string : job".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRNETWORKCREATEXMLJOB
-extern virJobPtr virNetworkCreateXMLJob (virConnectPtr conn, const char *str) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_network_create_xml_job (value connv, value strv)
-{
-  CAMLparam2 (connv, strv);
-#ifndef HAVE_VIRNETWORKCREATEXMLJOB
-  /* Symbol virNetworkCreateXMLJob not found at compile time. */
-  not_supported ("virNetworkCreateXMLJob");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virNetworkCreateXMLJob
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virNetworkCreateXMLJob);
-
-  CAMLlocal1 (rv);
-  virConnectPtr conn = Connect_val (connv);
-  char *str = String_val (strv);
-  virJobPtr r;
-
-  NONBLOCKING (r = virNetworkCreateXMLJob (conn, str));
-  CHECK_ERROR (!r, conn, "virNetworkCreateXMLJob");
-
-  rv = Val_job (r, connv);
-
-  CAMLreturn (rv);
-#endif
-}
-
 /* Automatically generated binding for virNetworkDefineXML.
  * In generator.pl this function has signature "conn, string : net".
  */
@@ -1674,45 +1441,6 @@ ocaml_libvirt_network_create (value netv)
   CHECK_ERROR (r == -1, conn, "virNetworkCreate");
 
   CAMLreturn (Val_unit);
-}
-
-/* Automatically generated binding for virNetworkCreateJob.
- * In generator.pl this function has signature "net : job from net".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRNETWORKCREATEJOB
-extern virJobPtr virNetworkCreateJob (virNetworkPtr net) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_network_create_job (value netv)
-{
-  CAMLparam1 (netv);
-#ifndef HAVE_VIRNETWORKCREATEJOB
-  /* Symbol virNetworkCreateJob not found at compile time. */
-  not_supported ("virNetworkCreateJob");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virNetworkCreateJob
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virNetworkCreateJob);
-
-  CAMLlocal2 (rv, connv);
-  virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
-  virJobPtr r;
-
-  NONBLOCKING (r = virNetworkCreateJob (net));
-  CHECK_ERROR (!r, conn, "virNetworkCreateJob");
-
-  connv = Field (netv, 1);
-  rv = Val_job (r, connv);
-
-  CAMLreturn (rv);
-#endif
 }
 
 /* Automatically generated binding for virNetworkGetAutostart.
@@ -2927,157 +2655,6 @@ ocaml_libvirt_storage_pool_lookup_by_volume (value volv)
 
   connv = Field (volv, 1);
   rv = Val_pool (r, connv);
-
-  CAMLreturn (rv);
-#endif
-}
-
-/* Automatically generated binding for virJobFree.
- * In generator.pl this function has signature "job : free".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRJOBFREE
-extern int virJobFree (virJobPtr job) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_job_free (value jobv)
-{
-  CAMLparam1 (jobv);
-#ifndef HAVE_VIRJOBFREE
-  /* Symbol virJobFree not found at compile time. */
-  not_supported ("virJobFree");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virJobFree
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virJobFree);
-
-  virJobPtr job = Job_val (jobv);
-  virConnectPtr conn = Connect_jobv (jobv);
-  int r;
-
-  NONBLOCKING (r = virJobFree (job));
-  CHECK_ERROR (r == -1, conn, "virJobFree");
-
-  /* So that we don't double-free in the finalizer: */
-  Job_val (jobv) = NULL;
-
-  CAMLreturn (Val_unit);
-#endif
-}
-
-/* Automatically generated binding for virJobCancel.
- * In generator.pl this function has signature "job : unit".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRJOBCANCEL
-extern int virJobCancel (virJobPtr job) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_job_cancel (value jobv)
-{
-  CAMLparam1 (jobv);
-#ifndef HAVE_VIRJOBCANCEL
-  /* Symbol virJobCancel not found at compile time. */
-  not_supported ("virJobCancel");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virJobCancel
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virJobCancel);
-
-  virJobPtr job = Job_val (jobv);
-  virConnectPtr conn = Connect_jobv (jobv);
-  int r;
-
-  NONBLOCKING (r = virJobCancel (job));
-  CHECK_ERROR (r == -1, conn, "virJobCancel");
-
-  CAMLreturn (Val_unit);
-#endif
-}
-
-/* Automatically generated binding for virJobGetNetwork.
- * In generator.pl this function has signature "job : net from job".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRJOBGETNETWORK
-extern virNetworkPtr virJobGetNetwork (virJobPtr job) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_job_get_network (value jobv)
-{
-  CAMLparam1 (jobv);
-#ifndef HAVE_VIRJOBGETNETWORK
-  /* Symbol virJobGetNetwork not found at compile time. */
-  not_supported ("virJobGetNetwork");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virJobGetNetwork
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virJobGetNetwork);
-
-  CAMLlocal2 (rv, connv);
-  virJobPtr job = Job_val (jobv);
-  virConnectPtr conn = Connect_jobv (jobv);
-  virNetworkPtr r;
-
-  NONBLOCKING (r = virJobGetNetwork (job));
-  CHECK_ERROR (!r, conn, "virJobGetNetwork");
-
-  connv = Field (jobv, 1);
-  rv = Val_network (r, connv);
-
-  CAMLreturn (rv);
-#endif
-}
-
-/* Automatically generated binding for virJobGetDomain.
- * In generator.pl this function has signature "job : dom from job".
- */
-
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRJOBGETDOMAIN
-extern virDomainPtr virJobGetDomain (virJobPtr job) __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_job_get_domain (value jobv)
-{
-  CAMLparam1 (jobv);
-#ifndef HAVE_VIRJOBGETDOMAIN
-  /* Symbol virJobGetDomain not found at compile time. */
-  not_supported ("virJobGetDomain");
-  CAMLnoreturn;
-#else
-  /* Check that the symbol virJobGetDomain
-   * is in runtime version of libvirt.
-   */
-  WEAK_SYMBOL_CHECK (virJobGetDomain);
-
-  CAMLlocal2 (rv, connv);
-  virJobPtr job = Job_val (jobv);
-  virConnectPtr conn = Connect_jobv (jobv);
-  virDomainPtr r;
-
-  NONBLOCKING (r = virJobGetDomain (job));
-  CHECK_ERROR (!r, conn, "virJobGetDomain");
-
-  connv = Field (jobv, 1);
-  rv = Val_domain (r, connv);
 
   CAMLreturn (rv);
 #endif

@@ -63,8 +63,6 @@ my @functions = (
     { name => "virConnectGetCapabilities", sig => "conn : string" },
 
     { name => "virDomainCreateLinux", sig => "conn, string, 0U : dom" },
-    { name => "virDomainCreateLinuxJob",
-      sig => "conn, string, 0U : job", weak => 1 },
     { name => "virDomainFree", sig => "dom : free" },
     { name => "virDomainDestroy", sig => "dom : free" },
     { name => "virDomainLookupByName", sig => "conn, string : dom" },
@@ -78,14 +76,8 @@ my @functions = (
     { name => "virDomainGetUUIDString", sig => "dom : uuid string" },
     { name => "virDomainGetMaxVcpus", sig => "dom : int" },
     { name => "virDomainSave", sig => "dom, string : unit" },
-    { name => "virDomainSaveJob",
-      sig => "dom, string : job from dom", weak => 1 },
     { name => "virDomainRestore", sig => "conn, string : unit" },
-    { name => "virDomainRestoreJob",
-      sig => "conn, string : job", weak => 1 },
     { name => "virDomainCoreDump", sig => "dom, string, 0 : unit" },
-    { name => "virDomainCoreDumpJob",
-      sig => "dom, string, 0 : job from dom", weak => 1 },
     { name => "virDomainSuspend", sig => "dom : unit" },
     { name => "virDomainResume", sig => "dom : unit" },
     { name => "virDomainShutdown", sig => "dom : unit" },
@@ -93,8 +85,6 @@ my @functions = (
     { name => "virDomainDefineXML", sig => "conn, string : dom" },
     { name => "virDomainUndefine", sig => "dom : unit" },
     { name => "virDomainCreate", sig => "dom : unit" },
-    { name => "virDomainCreateJob",
-      sig => "dom, 0U : job from dom", weak => 1 },
     { name => "virDomainAttachDevice", sig => "dom, string : unit" },
     { name => "virDomainDetachDevice", sig => "dom, string : unit" },
     { name => "virDomainGetAutostart", sig => "dom : bool" },
@@ -112,12 +102,8 @@ my @functions = (
     { name => "virNetworkGetUUIDString", sig => "net : uuid string" },
     { name => "virNetworkUndefine", sig => "net : unit" },
     { name => "virNetworkCreateXML", sig => "conn, string : net" },
-    { name => "virNetworkCreateXMLJob",
-      sig => "conn, string : job", weak => 1 },
     { name => "virNetworkDefineXML", sig => "conn, string : net" },
     { name => "virNetworkCreate", sig => "net : unit" },
-    { name => "virNetworkCreateJob",
-      sig => "net : job from net", weak => 1 },
     { name => "virNetworkGetAutostart", sig => "net : bool" },
     { name => "virNetworkSetAutostart", sig => "net, bool : unit" },
 
@@ -181,15 +167,6 @@ my @functions = (
       sig => "vol : static string", weak => 1 },
     { name => "virStoragePoolLookupByVolume",
       sig => "vol : pool from vol", weak => 1 },
-
-    { name => "virJobFree",
-      sig => "job : free", weak => 1 },
-    { name => "virJobCancel",
-      sig => "job : unit", weak => 1 },
-    { name => "virJobGetNetwork",
-      sig => "job : net from job", weak => 1 },
-    { name => "virJobGetDomain",
-      sig => "job : dom from job", weak => 1 },
 
     );
 
@@ -288,7 +265,6 @@ sub short_name_to_c_type
     elsif ($_ eq "net") { "virNetworkPtr" }
     elsif ($_ eq "pool") { "virStoragePoolPtr" }
     elsif ($_ eq "vol") { "virStorageVolPtr" }
-    elsif ($_ eq "job") { "virJobPtr" }
     else {
 	die "unknown short name $_"
     }
@@ -484,9 +460,6 @@ sub gen_unpack_args
     } elsif ($_ eq "vol") {
 	"virStorageVolPtr vol = Volume_val (volv);\n".
 	"  virConnectPtr conn = Connect_volv (volv);"
-    } elsif ($_ eq "job") {
-	"virJobPtr job = Job_val (jobv);\n".
-	"  virConnectPtr conn = Connect_jobv (jobv);"
     } else {
 	die "unknown short name $_"
     }
@@ -502,7 +475,6 @@ sub gen_pack_result
     elsif ($_ eq "net") {  "rv = Val_network (r, connv);" }
     elsif ($_ eq "pool") { "rv = Val_pool (r, connv);" }
     elsif ($_ eq "vol") {  "rv = Val_volume (r, connv);" }
-    elsif ($_ eq "job") {  "rv = Val_job (r, connv);" }
     else {
 	die "unknown short name $_"
     }
@@ -517,7 +489,6 @@ sub gen_free_arg
     elsif ($_ eq "net") {   "Network_val (netv) = NULL;" }
     elsif ($_ eq "pool") {  "Pool_val (poolv) = NULL;" }
     elsif ($_ eq "vol") {   "Volume_val (volv) = NULL;" }
-    elsif ($_ eq "job") {   "Job_val (jobv) = NULL;" }
     else {
 	die "unknown short name $_"
     }

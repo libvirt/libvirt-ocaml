@@ -919,41 +919,6 @@ ocaml_libvirt_storage_vol_get_info (value volv)
 #endif
 }
 
-#ifdef HAVE_WEAK_SYMBOLS
-#ifdef HAVE_VIRJOBGETINFO
-extern int virJobGetInfo(virJobPtr job, virJobInfoPtr info)
-  __attribute__((weak));
-#endif
-#endif
-
-CAMLprim value
-ocaml_libvirt_job_get_info (value jobv)
-{
-#if HAVE_VIRJOBGETINFO
-  CAMLparam1 (jobv);
-  CAMLlocal1 (rv);
-  virJobPtr job = Job_val (jobv);
-  virConnectPtr conn = Connect_jobv (jobv);
-  virJobInfo info;
-  int r;
-
-  WEAK_SYMBOL_CHECK (virJobGetInfo);
-  NONBLOCKING (r = virJobGetInfo (job, &info));
-  CHECK_ERROR (r == -1, conn, "virJobGetInfo");
-
-  rv = caml_alloc (5, 0);
-  Store_field (rv, 0, Val_int (info.type));
-  Store_field (rv, 1, Val_int (info.state));
-  Store_field (rv, 2, Val_int (info.runningTime));
-  Store_field (rv, 3, Val_int (info.remainingTime));
-  Store_field (rv, 4, Val_int (info.percentComplete));
-
-  CAMLreturn (rv);
-#else
-  not_supported ("virJobGetInfo");
-#endif
-}
-
 /*----------------------------------------------------------------------*/
 
 CAMLprim value

@@ -248,9 +248,6 @@ type conn_t =
     use recursive module dependencies.
 *)
 
-type ('a, 'b) job_t
-(** Forward definition of {!Job.t}. *)
-
 (** {3 Connections} *)
 
 module Connect :
@@ -496,8 +493,6 @@ sig
     (** Create a new guest domain (not necessarily a Linux one)
 	from the given XML.
     *)
-  val create_linux_job : [>`W] Connect.t -> xml -> ([`Domain], rw) job_t
-    (** Asynchronous domain creation. *)
   val lookup_by_id : 'a Connect.t -> int -> 'a t
     (** Lookup a domain by ID. *)
   val lookup_by_uuid : 'a Connect.t -> uuid -> 'a t
@@ -522,16 +517,10 @@ sig
     (** Resume a domain. *)
   val save : [>`W] t -> filename -> unit
     (** Suspend a domain, then save it to the file. *)
-  val save_job : [>`W] t -> filename -> ([`Domain_nocreate], rw) job_t
-    (** Asynchronous domain suspend. *)
   val restore : [>`W] Connect.t -> filename -> unit
     (** Restore a domain from a file. *)
-  val restore_job : [>`W] Connect.t -> filename -> ([`Domain_nocreate], rw) job_t
-    (** Asynchronous domain restore. *)
   val core_dump : [>`W] t -> filename -> unit
     (** Force a domain to core dump to the named file. *)
-  val core_dump_job : [>`W] t -> filename -> ([`Domain_nocreate], rw) job_t
-    (** Asynchronous core dump. *)
   val shutdown : [>`W] t -> unit
     (** Shutdown a domain. *)
   val reboot : [>`W] t -> unit
@@ -569,8 +558,6 @@ sig
     (** Undefine a domain - removes its configuration. *)
   val create : [>`W] t -> unit
     (** Launch a defined (inactive) domain. *)
-  val create_job : [>`W] t -> ([`Domain_nocreate], rw) job_t
-    (** Asynchronous launch domain. *)
   val get_autostart : [>`R] t -> bool
     (** Get the autostart flag for a domain. *)
   val set_autostart : [>`W] t -> bool -> unit
@@ -679,16 +666,12 @@ sig
     (** Lookup a network by UUID string. *)
   val create_xml : [>`W] Connect.t -> xml -> rw t
     (** Create a network. *)
-  val create_xml_job : [>`W] Connect.t -> xml -> ([`Network], rw) job_t
-    (** Asynchronous create network. *)
   val define_xml : [>`W] Connect.t -> xml -> rw t
     (** Define but don't activate a network. *)
   val undefine : [>`W] t -> unit
     (** Undefine configuration of a network. *)
   val create : [>`W] t -> unit
     (** Start up a defined (inactive) network. *)
-  val create_job : [>`W] t -> ([`Network_nocreate], rw) job_t
-    (** Asynchronous start network. *)
   val destroy : [>`W] t -> unit
     (** Destroy a network. *)
   val free : [>`R] t -> unit
@@ -857,70 +840,6 @@ sig
       *)
 end
   (** Module dealing with storage volumes. *)
-
-(** {3 Jobs and asynchronous processing} *)
-
-module Job :
-sig
-  type ('jobclass, 'rw) t = ('jobclass, 'rw) job_t
-    (** A background asynchronous job.
-
-        Jobs represent a pending operation such as domain creation.
-	The possible types for a job are:
-
-{v
-(`Domain, `W) Job.t            Job creating a new domain
-(`Domain_nocreate, `W) Job.t   Job acting on an existing domain
-(`Network, `W) Job.t           Job creating a new network
-(`Network_nocreate, `W) Job.t  Job acting on an existing network
-v}
-      *)
-
-  type job_type = Bounded | Unbounded
-    (** A Bounded job is one where we can estimate time to completion. *)
-
-  type job_state = Running | Complete | Failed | Cancelled
-    (** State of the job. *)
-
-  type job_info = {
-    typ : job_type;			(** Job type (Bounded, Unbounded) *)
-    state : job_state;			(** Job state (Running, etc.) *)
-    running_time : int;			(** Actual running time (seconds) *)
-    (** The following fields are only available in Bounded jobs: *)
-    remaining_time : int;		(** Estimated time left (seconds) *)
-    percent_complete : int		(** Estimated percent complete *)
-  }
-
-  val get_info : ('a,'b) t -> job_info
-    (** Get information and status about the job. *)
-
-  val get_domain : ([`Domain], 'a) t -> 'a Domain.t
-    (** Get the completed domain from a job.
-
-        You should only call it on a job in state Complete. *)
-
-  val get_network : ([`Network], 'a) t -> 'a Network.t
-    (** Get the completed network from a job.
-
-        You should only call it on a job in state Complete. *)
-
-  val cancel : ('a,'b) t -> unit
-    (** Cancel a job. *)
-
-  val free : ('a, [>`R]) t -> unit
-    (** Free a job object in memory.
-
-	The job object is automatically freed if it is garbage
-	collected.  This function just forces it to be freed right
-	away.
-    *)
-
-  external const : ('a, [>`R]) t -> ('a, ro) t = "%identity"
-    (** [const conn] turns a read/write job into a read-only
-	job.  Note that the opposite operation is impossible.
-      *)
-end
-  (** Module dealing with asynchronous jobs. *)
 
 (** {3 Error handling and exceptions} *)
 

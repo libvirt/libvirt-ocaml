@@ -128,23 +128,8 @@ AC_CHECK_FUNCS([virConnectGetHostname \
 		virConnectListAllDomains \
 ])
 
-# This jobs API was never published and is due to get overhauled
-# in the near future:
-#		virJobGetInfo
-#		virJobGetDomain
-#		virJobGetNetwork
-#		virJobCancel
-#		virJobFree
-#		virDomainCreateLinuxJob
-#		virDomainSaveJob
-#		virDomainRestoreJob
-#		virDomainCoreDumpJob
-#		virDomainCreateJob
-#		virNetworkCreateXMLJob
-#		virNetworkCreateJob
-
 dnl Check for optional types added since 0.2.1.
-AC_CHECK_TYPES([virJobPtr, virStoragePoolPtr, virStorageVolPtr],,,
+AC_CHECK_TYPES([virStoragePoolPtr, virStorageVolPtr],,,
 	       [#include <libvirt/libvirt.h>])
 
 dnl Check for basic OCaml environment & findlib.
