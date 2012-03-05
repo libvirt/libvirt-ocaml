@@ -77,9 +77,6 @@
 /* Define to 1 if you have the `virDomainSetSchedulerParameters' function. */
 #undef HAVE_VIRDOMAINSETSCHEDULERPARAMETERS
 
-/* Define to 1 if the system has the type `virJobPtr'. */
-#undef HAVE_VIRJOBPTR
-
 /* Define to 1 if you have the `virNodeGetCellsFreeMemory' function. */
 #undef HAVE_VIRNODEGETCELLSFREEMEMORY
 

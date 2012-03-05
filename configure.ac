@@ -148,14 +148,6 @@ if test "x$pkg_unix" != "xyes"; then
     AC_MSG_ERROR([Cannot find required OCaml package 'unix'])
 fi
 
-dnl Check for optional OCaml packages.
-AC_CHECK_OCAML_PKG(gettext)
-
-AC_SUBST(pkg_gettext)
-
-dnl Check for recommended ocaml-gettext tool.
-AC_CHECK_PROG(OCAML_GETTEXT,ocaml-gettext,ocaml-gettext)
-
 dnl Check for optional NSIS (for building a Windows installer).
 dnl XXX This probably doesn't work at the moment XXX
 AC_ARG_WITH([nsis],
@@ -246,42 +238,6 @@ AC_SUBST(GNUTLS_DLL_PATH)
 AC_SUBST(GTK_DLL_PATH)
 AC_SUBST(GTK_PATH)
 
-dnl Write gettext modules for the programs.
-dnl http://www.le-gall.net/sylvain+violaine/documentation/ocaml-gettext/html/reference-manual/ch03s04.html
-for d in mlvirsh; do
-    f=`echo $d | tr - _`_gettext.ml
-    AC_MSG_NOTICE([creating $d/$f])
-    rm -f $d/$f
-    echo "(* This file is generated automatically by ./configure. *)" > $d/$f
-    if test "x$pkg_gettext" != "xno"; then
-        # Gettext module is available, so use it.
-        cat <<EOT >>$d/$f
-module Gettext = Gettext.Program (
-  struct
-    let textdomain = "$d"
-    let codeset = None
-    let dir = None
-    let dependencies = [[]]
-  end
-) (GettextStub.Native)
-EOT
-    else
-        # No gettext module is available, so fake the translation functions.
-        cat <<EOT >>$d/$f
-module Gettext = struct
-  external s_ : string -> string = "%identity"
-  external f_ : ('a -> 'b, 'c, 'd) format -> ('a -> 'b, 'c, 'd) format
-    = "%identity"
-  let sn_ : string -> string -> int -> string
-    = fun s p n -> if n = 1 then s else p
-  let fn_ : ('a -> 'b, 'c, 'd) format -> ('a -> 'b, 'c, 'd) format -> int
-      -> ('a -> 'b, 'c, 'd) format
-    = fun s p n -> if n = 1 then s else p
-end
-EOT
-    fi
-done
-
 dnl Summary.
 echo "------------------------------------------------------------"
 echo "Thanks for downloading" $PACKAGE_STRING
@@ -293,10 +249,8 @@ AC_CONFIG_FILES([META
 	libvirt/libvirt_version.ml
 	Makefile
 	Make.rules
-	po/Makefile
 	libvirt/Makefile
 	examples/Makefile
-	mlvirsh/Makefile
 	])
 if test "x$MAKENSIS" != "x"; then
 	AC_CONFIG_FILES([wininstaller.nsis])

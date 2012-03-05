@@ -239,7 +239,6 @@ type conn_t =
     | Read_only of Libvirt.ro Libvirt.Connect.t
     | Read_write of Libvirt.rw Libvirt.Connect.t
 ]}
-	See also the source of [mlvirsh].
     *)
 
 (** {3 Forward definitions}
