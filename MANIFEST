@@ -10,7 +10,6 @@ examples/.depend
 examples/list_domains.ml
 examples/node_info.ml
 examples/Makefile.in
-.hgignore
 install-sh
 libvirt/.depend
 libvirt/generator.pl
