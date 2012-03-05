@@ -375,8 +375,6 @@ struct
    *)
   let max_peek _ = 65536
 
-  external list_all_domains : 'a Connect.t -> ?want_info:bool -> list_flag list -> 'a t array * info array = "ocaml_libvirt_connect_list_all_domains"
-
   external create_linux : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_domain_create_linux"
   external lookup_by_id : 'a Connect.t -> int -> 'a t = "ocaml_libvirt_domain_lookup_by_id"
   external lookup_by_uuid : 'a Connect.t -> uuid -> 'a t = "ocaml_libvirt_domain_lookup_by_uuid"
@@ -423,94 +421,56 @@ struct
 
   external const : [>`R] t -> ro t = "%identity"
 
-  (* First time we are called, we will check if
-   * virConnectListAllDomains is supported.
-   *)
-  let have_list_all_domains = ref None
-
-  let check_have_list_all_domains conn =
-    match !have_list_all_domains with
-    | Some v -> v
-    | None ->
-	(* Check if virConnectListAllDomains is supported
-	 * by this version of libvirt.
-	 *)
-	let v =
-	  (* libvirt has a short-cut which makes this very quick ... *)
-	  try ignore (list_all_domains conn []); true
-	  with Not_supported "virConnectListAllDomains" -> false in
-	have_list_all_domains := Some v;
-	v
-
   let get_domains conn flags =
-    let have_list_all_domains = check_have_list_all_domains conn in
+    (* Old/slow/inefficient method. *)
+    let get_active, get_inactive =
+      if List.mem ListAll flags then
+	(true, true)
+      else
+	(List.mem ListActive flags, List.mem ListInactive flags) in
+    let active_doms =
+      if get_active then (
+	let n = Connect.num_of_domains conn in
+	let ids = Connect.list_domains conn n in
+	let ids = Array.to_list ids in
+	map_ignore_errors (lookup_by_id conn) ids
+      ) else [] in
 
-    if have_list_all_domains then (
-      (* Good, we can use the shiny new method. *)
-      let doms, _ = list_all_domains conn ~want_info:false flags in
-      Array.to_list doms
-    )
-    else (
-      (* Old/slow/inefficient method. *)
-      let get_active, get_inactive =
-	if List.mem ListAll flags then
-	  (true, true)
-	else
-	  (List.mem ListActive flags, List.mem ListInactive flags) in
-      let active_doms =
-	if get_active then (
-	  let n = Connect.num_of_domains conn in
-	  let ids = Connect.list_domains conn n in
-	  let ids = Array.to_list ids in
-	  map_ignore_errors (lookup_by_id conn) ids
-	) else [] in
+    let inactive_doms =
+      if get_inactive then (
+	let n = Connect.num_of_defined_domains conn in
+	let names = Connect.list_defined_domains conn n in
+	let names = Array.to_list names in
+	map_ignore_errors (lookup_by_name conn) names
+      ) else [] in
 
-      let inactive_doms =
-	if get_inactive then (
-	  let n = Connect.num_of_defined_domains conn in
-	  let names = Connect.list_defined_domains conn n in
-	  let names = Array.to_list names in
-	  map_ignore_errors (lookup_by_name conn) names
-	) else [] in
-
-      active_doms @ inactive_doms
-    )
+    active_doms @ inactive_doms
 
   let get_domains_and_infos conn flags =
-    let have_list_all_domains = check_have_list_all_domains conn in
+    (* Old/slow/inefficient method. *)
+    let get_active, get_inactive =
+      if List.mem ListAll flags then
+	(true, true)
+      else (List.mem ListActive flags, List.mem ListInactive flags) in
+    let active_doms =
+      if get_active then (
+	let n = Connect.num_of_domains conn in
+	let ids = Connect.list_domains conn n in
+	let ids = Array.to_list ids in
+	map_ignore_errors (lookup_by_id conn) ids
+      ) else [] in
 
-    if have_list_all_domains then (
-      (* Good, we can use the shiny new method. *)
-      let doms, infos = list_all_domains conn ~want_info:true flags in
-      let doms = Array.to_list doms and infos = Array.to_list infos in
-      List.combine doms infos
-    )
-    else (
-      (* Old/slow/inefficient method. *)
-      let get_active, get_inactive =
-	if List.mem ListAll flags then
-	  (true, true)
-	else (List.mem ListActive flags, List.mem ListInactive flags) in
-      let active_doms =
-	if get_active then (
-	  let n = Connect.num_of_domains conn in
-	  let ids = Connect.list_domains conn n in
-	  let ids = Array.to_list ids in
-	  map_ignore_errors (lookup_by_id conn) ids
-	) else [] in
+    let inactive_doms =
+      if get_inactive then (
+	let n = Connect.num_of_defined_domains conn in
+	let names = Connect.list_defined_domains conn n in
+	let names = Array.to_list names in
+	map_ignore_errors (lookup_by_name conn) names
+      ) else [] in
 
-      let inactive_doms =
-	if get_inactive then (
-	  let n = Connect.num_of_defined_domains conn in
-	  let names = Connect.list_defined_domains conn n in
-	  let names = Array.to_list names in
-	  map_ignore_errors (lookup_by_name conn) names
-	) else [] in
+    let doms = active_doms @ inactive_doms in
 
-      let doms = active_doms @ inactive_doms in
-
-      map_ignore_errors (fun dom -> (dom, get_info dom)) doms
-    )
+    map_ignore_errors (fun dom -> (dom, get_info dom)) doms
 end
 
 module Network =

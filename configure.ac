@@ -125,7 +125,6 @@ AC_CHECK_FUNCS([virConnectGetHostname \
 		virStorageVolGetPath \
 		virDomainBlockPeek \
 		virDomainMemoryPeek \
-		virConnectListAllDomains \
 ])
 
 dnl Check for optional types added since 0.2.1.

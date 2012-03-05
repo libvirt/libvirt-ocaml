@@ -468,26 +468,6 @@ sig
 	functions.  If you want to peek more than this then you must
 	break your request into chunks. *)
 
-  val list_all_domains : 'a Connect.t -> ?want_info:bool -> list_flag list -> 'a t array * info array
-    (** [list_all_domains conn flags] returns all domains which
-	match [flags].
-
-	This can return both active and inactive domains.  The
-	list of flags controls what domains are returned.  See
-	{!list_flag}.
-
-	The two arrays returned will have the same length, unless
-	[~want_info] is [false] in which case the info array
-	will be zero-length.  The default for [~want_info] is [true].
-	In most cases there is no extra penalty for getting the
-	info fields, or the penalty is insignificant.
-
-	This call was introduced in libvirt 0.4.5.  Because you
-	might dynamically link to an older version of libvirt which
-	doesn't have this call, you should use {!get_domains}
-	or {!get_domains_and_infos} which use the most efficient
-	way to get domains for the available version of libvirt.
-    *)
   val create_linux : [>`W] Connect.t -> xml -> rw t
     (** Create a new guest domain (not necessarily a Linux one)
 	from the given XML.
@@ -625,7 +605,6 @@ sig
 
 	See also:
 	{!get_domains_and_infos},
-	{!list_all_domains},
 	{!Connect.list_domains},
 	{!Connect.list_defined_domains}.
   *)
@@ -638,7 +617,6 @@ sig
 
 	See also:
 	{!get_domains},
-	{!list_all_domains},
 	{!Connect.list_domains},
 	{!Connect.list_defined_domains},
 	{!get_info}.
