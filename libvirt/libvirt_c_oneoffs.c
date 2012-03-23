@@ -545,7 +545,7 @@ ocaml_libvirt_domain_get_cpu_stats (value domv, value nr_pcpusv)
   int r, cpu, ncpus, nparams, i, j, pos;
 
   /* get percpu information */
-  NONBLOCKING (nparams = virDomainGetCPUStats(dom, NULL, 0, -1, 1, 0));
+  NONBLOCKING (nparams = virDomainGetCPUStats(dom, NULL, 0, 0, 1, 0));
   CHECK_ERROR (nparams < 0, conn, "virDomainGetCPUStats");
 
   if ((params = malloc(sizeof(*params) * nparams * 128)) == NULL)
@@ -568,7 +568,7 @@ ocaml_libvirt_domain_get_cpu_stats (value domv, value nr_pcpusv)
         continue;
       }
 
-      for (j = nparams - 1; j >= 0; j--) {
+      for (j = r - 1; j >= 0; j--) {
         pos = i * nparams + j;
           if (params[pos].type == 0)
             continue;
@@ -613,6 +613,9 @@ ocaml_libvirt_domain_get_cpu_stats (value domv, value nr_pcpusv)
           free (params[pos].value.s);
           break;
         default:
+            /* XXX Memory leak on this path, if there are more
+             * VIR_TYPED_PARAM_STRING past this point in the array.
+             */
           free (params);
           caml_failwith ("virDomainGetCPUStats: "
                          "unknown parameter type returned");
