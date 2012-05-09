@@ -532,17 +532,21 @@ extern int virDomainGetCPUStats (virDomainPtr domain,
 #endif
 
 CAMLprim value
-ocaml_libvirt_domain_get_cpu_stats (value domv, value nr_pcpusv)
+ocaml_libvirt_domain_get_cpu_stats (value domv)
 {
 #ifdef HAVE_VIRDOMAINGETCPUSTATS
-  CAMLparam2 (domv, nr_pcpusv);
+  CAMLparam1 (domv);
   CAMLlocal5 (cpustats, param_head, param_node, typed_param, typed_param_value);
   CAMLlocal1 (v);
   virDomainPtr dom = Domain_val (domv);
   virConnectPtr conn = Connect_domv (domv);
-  int nr_pcpus = Int_val (nr_pcpusv);
   virTypedParameterPtr params;
   int r, cpu, ncpus, nparams, i, j, pos;
+  int nr_pcpus;
+
+  /* get number of pcpus */
+  NONBLOCKING (nr_pcpus = virDomainGetCPUStats(dom, NULL, 0, 0, 0, 0));
+  CHECK_ERROR (nr_pcpus < 0, conn, "virDomainGetCPUStats");
 
   /* get percpu information */
   NONBLOCKING (nparams = virDomainGetCPUStats(dom, NULL, 0, 0, 1, 0));

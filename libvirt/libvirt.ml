@@ -417,7 +417,7 @@ struct
   external set_vcpus : [>`W] t -> int -> unit = "ocaml_libvirt_domain_set_vcpus"
   external pin_vcpu : [>`W] t -> int -> string -> unit = "ocaml_libvirt_domain_pin_vcpu"
   external get_vcpus : [>`R] t -> int -> int -> int * vcpu_info array * string = "ocaml_libvirt_domain_get_vcpus"
-  external get_cpu_stats : [>`R] t -> int -> typed_param list array = "ocaml_libvirt_domain_get_cpu_stats"
+  external get_cpu_stats : [>`R] t -> typed_param list array = "ocaml_libvirt_domain_get_cpu_stats"
   external get_max_vcpus : [>`R] t -> int = "ocaml_libvirt_domain_get_max_vcpus"
   external attach_device : [>`W] t -> xml -> unit = "ocaml_libvirt_domain_attach_device"
   external detach_device : [>`W] t -> xml -> unit = "ocaml_libvirt_domain_detach_device"

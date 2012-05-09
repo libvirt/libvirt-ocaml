@@ -25,7 +25,7 @@ let () =
 
     let stats =
       let dom = D.lookup_by_name conn domname in
-      D.get_cpu_stats dom nr_pcpus in
+      D.get_cpu_stats dom in
 
     Array.iteri (
       fun n params ->

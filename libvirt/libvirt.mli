@@ -559,8 +559,8 @@ sig
 	for a domain.  See the libvirt documentation for details
 	of the array and bitmap returned from this function.
     *)
-  val get_cpu_stats : [>`R] t -> int -> typed_param list array
-    (** [get_pcpu_stats dom nr_pcpu] returns the physical CPU stats
+  val get_cpu_stats : [>`R] t -> typed_param list array
+    (** [get_pcpu_stats dom] returns the physical CPU stats
 	for a domain.  See the libvirt documentation for details.
     *)
   val get_max_vcpus : [>`R] t -> int
