@@ -7,7 +7,9 @@ config.sub
 configure.ac
 COPYING
 COPYING.LIB
+contrib/0001-Add-Libvirt.Domain.get_cpu_stats_total.patch
 examples/.depend
+examples/domain_events.ml
 examples/get_cpu_stats.ml
 examples/list_domains.ml
 examples/node_info.ml
