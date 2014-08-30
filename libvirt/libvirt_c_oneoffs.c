@@ -140,7 +140,7 @@ ocaml_libvirt_connect_node_get_free_memory (value connv)
   NONBLOCKING (r = virNodeGetFreeMemory (conn));
   CHECK_ERROR (r == 0, conn, "virNodeGetFreeMemory");
 
-  rv = caml_copy_int64 ((int64) r);
+  rv = caml_copy_int64 ((int64_t) r);
   CAMLreturn (rv);
 }
 
@@ -161,7 +161,7 @@ ocaml_libvirt_connect_node_get_cells_free_memory (value connv,
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
-    iv = caml_copy_int64 ((int64) freemems[i]);
+    iv = caml_copy_int64 ((int64_t) freemems[i]);
     Store_field (rv, i, iv);
   }
 
