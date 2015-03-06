@@ -1,5 +1,5 @@
 (** OCaml bindings for libvirt. *)
-(* (C) Copyright 2007 Richard W.M. Jones, Red Hat Inc.
+(* (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
    http://libvirt.org/
 
    This library is free software; you can redistribute it and/or
@@ -430,6 +430,13 @@ sig
     cpu : int;				(** real CPU number, -1 if offline *)
   }
 
+  type domain_create_flag =
+  | START_PAUSED                        (** Launch guest in paused state *)
+  | START_AUTODESTROY                   (** Automatically kill guest on close *)
+  | START_BYPASS_CACHE                  (** Avoid filesystem cache pollution *)
+  | START_FORCE_BOOT                    (** Discard any managed save *)
+  | START_VALIDATE                      (** Validate XML against schema *)
+
   type sched_param = string * sched_param_value
   and sched_param_value =
     | SchedFieldInt32 of int32 | SchedFieldUInt32 of int32
@@ -478,8 +485,10 @@ sig
 
   val create_linux : [>`W] Connect.t -> xml -> rw t
     (** Create a new guest domain (not necessarily a Linux one)
-	from the given XML.
+	from the given XML.  Use {!create_xml} instead.
     *)
+  val create_xml : [>`W] Connect.t -> xml -> domain_create_flag list -> rw t
+    (** Create a new guest domain from the given XML. *)
   val lookup_by_id : 'a Connect.t -> int -> 'a t
     (** Lookup a domain by ID. *)
   val lookup_by_uuid : 'a Connect.t -> uuid -> 'a t

@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # OCaml bindings for libvirt.
-# (C) Copyright 2007-2008 Richard W.M. Jones, Red Hat Inc.
+# (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
 # http://libvirt.org/
 #
 # This library is free software; you can redistribute it and/or
@@ -63,6 +63,7 @@ my @functions = (
       sig => "conn, int : unit" },
 
     { name => "virDomainCreateLinux", sig => "conn, string, 0U : dom" },
+    { name => "virDomainCreateXML", sig => "conn, string, unsigned : dom" },
     { name => "virDomainFree", sig => "dom : free" },
     { name => "virDomainDestroy", sig => "dom : free" },
     { name => "virDomainLookupByName", sig => "conn, string : dom" },
@@ -198,7 +199,7 @@ print F <<'END';
  */
 
 /* OCaml bindings for libvirt.
- * (C) Copyright 2007-2008 Richard W.M. Jones, Red Hat Inc.
+ * (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
  * http://libvirt.org/
  *
  * This library is free software; you can redistribute it and/or
@@ -310,6 +311,8 @@ sub gen_arg_names
 	( "$1v", "strv" )
     } elsif ($sig =~ /^(\w+), string, 0U? : (\w+)$/) {
 	( "$1v", "strv" )
+    } elsif ($sig =~ /^(\w+), string, unsigned : (\w+)$/) {
+	( "$1v", "strv", "uv" )
     } elsif ($sig =~ /^(\w+), u?int : (\w+)$/) {
 	( "$1v", "iv" )
     } elsif ($sig =~ /^(\w+), uuid : (\w+)$/) {
@@ -626,6 +629,22 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, str, 0));
+  CHECK_ERROR (!r, conn, \"$c_name\");
+
+  " . gen_pack_result ($2) . "
+
+  CAMLreturn (rv);
+"
+    } elsif ($sig =~ /^(\w+), string, unsigned : (\w+)$/) {
+	my $c_ret_type = short_name_to_c_type ($2);
+	"\
+  CAMLlocal1 (rv);
+  " . gen_unpack_args ($1) . "
+  char *str = String_val (strv);
+  unsigned int u = Int_val (uv);
+  $c_ret_type r;
+
+  NONBLOCKING (r = $c_name ($1, str, u));
   CHECK_ERROR (!r, conn, \"$c_name\");
 
   " . gen_pack_result ($2) . "

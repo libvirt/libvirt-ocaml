@@ -6,7 +6,7 @@
  */
 
 /* OCaml bindings for libvirt.
- * (C) Copyright 2007-2008 Richard W.M. Jones, Red Hat Inc.
+ * (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
  * http://libvirt.org/
  *
  * This library is free software; you can redistribute it and/or
@@ -519,6 +519,29 @@ ocaml_libvirt_domain_create_linux (value connv, value strv)
 
   NONBLOCKING (r = virDomainCreateLinux (conn, str, 0));
   CHECK_ERROR (!r, conn, "virDomainCreateLinux");
+
+  rv = Val_domain (r, connv);
+
+  CAMLreturn (rv);
+}
+
+/* Automatically generated binding for virDomainCreateXML.
+ * In generator.pl this function has signature "conn, string, unsigned : dom".
+ */
+
+CAMLprim value
+ocaml_libvirt_domain_create_xml (value connv, value strv, value uv)
+{
+  CAMLparam3 (connv, strv, uv);
+
+  CAMLlocal1 (rv);
+  virConnectPtr conn = Connect_val (connv);
+  char *str = String_val (strv);
+  unsigned int u = Int_val (uv);
+  virDomainPtr r;
+
+  NONBLOCKING (r = virDomainCreateXML (conn, str, u));
+  CHECK_ERROR (!r, conn, "virDomainCreateXML");
 
   rv = Val_domain (r, connv);
 

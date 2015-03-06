@@ -1,5 +1,5 @@
 (* OCaml bindings for libvirt.
-   (C) Copyright 2007 Richard W.M. Jones, Red Hat Inc.
+   (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
    http://libvirt.org/
 
    This library is free software; you can redistribute it and/or
@@ -337,6 +337,20 @@ struct
     cpu : int;
   }
 
+  type domain_create_flag =
+  | START_PAUSED
+  | START_AUTODESTROY
+  | START_BYPASS_CACHE
+  | START_FORCE_BOOT
+  | START_VALIDATE
+  let rec int_of_domain_create_flags = function
+    | [] -> 0
+    | START_PAUSED :: flags ->       1 lor int_of_domain_create_flags flags
+    | START_AUTODESTROY :: flags ->  2 lor int_of_domain_create_flags flags
+    | START_BYPASS_CACHE :: flags -> 4 lor int_of_domain_create_flags flags
+    | START_FORCE_BOOT :: flags ->   8 lor int_of_domain_create_flags flags
+    | START_VALIDATE :: flags ->    16 lor int_of_domain_create_flags flags
+
   type sched_param = string * sched_param_value
   and sched_param_value =
     | SchedFieldInt32 of int32 | SchedFieldUInt32 of int32
@@ -385,6 +399,9 @@ struct
   let max_peek _ = 65536
 
   external create_linux : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_domain_create_linux"
+  external _create_xml : [>`W] Connect.t -> xml -> int -> rw t = "ocaml_libvirt_domain_create_xml"
+  let create_xml conn xml flags =
+    _create_xml conn xml (int_of_domain_create_flags flags)
   external lookup_by_id : 'a Connect.t -> int -> 'a t = "ocaml_libvirt_domain_lookup_by_id"
   external lookup_by_uuid : 'a Connect.t -> uuid -> 'a t = "ocaml_libvirt_domain_lookup_by_uuid"
   external lookup_by_uuid_string : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_domain_lookup_by_uuid_string"
