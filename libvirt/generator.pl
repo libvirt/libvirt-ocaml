@@ -343,17 +343,13 @@ sub gen_unpack_args
     if ($_ eq "conn") {
 	"virConnectPtr conn = Connect_val (connv);"
     } elsif ($_ eq "dom") {
-	"virDomainPtr dom = Domain_val (domv);\n".
-	"  virConnectPtr conn = Connect_domv (domv);"
+	"virDomainPtr dom = Domain_val (domv);"
     } elsif ($_ eq "net") {
-	"virNetworkPtr net = Network_val (netv);\n".
-	"  virConnectPtr conn = Connect_netv (netv);"
+	"virNetworkPtr net = Network_val (netv);"
     } elsif ($_ eq "pool") {
-	"virStoragePoolPtr pool = Pool_val (poolv);\n".
-	"  virConnectPtr conn = Connect_polv (poolv);"
+	"virStoragePoolPtr pool = Pool_val (poolv);"
     } elsif ($_ eq "vol") {
-	"virStorageVolPtr vol = Volume_val (volv);\n".
-	"  virConnectPtr conn = Connect_volv (volv);"
+	"virStorageVolPtr vol = Volume_val (volv);"
     } else {
 	die "unknown short name $_"
     }
@@ -402,7 +398,7 @@ sub gen_c_code
   char *r;
 
   NONBLOCKING (r = $c_name ($1));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   rv = caml_copy_string (r);
   free (r);
@@ -415,7 +411,7 @@ sub gen_c_code
   const char *r;
 
   NONBLOCKING (r = $c_name ($1));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   rv = caml_copy_string (r);
   CAMLreturn (rv);
@@ -426,7 +422,7 @@ sub gen_c_code
   int r;
 
   NONBLOCKING (r = $c_name ($1));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   CAMLreturn (Val_int (r));
 "
@@ -438,7 +434,7 @@ sub gen_c_code
   int r;
 
   NONBLOCKING (r = $c_name ($1, uuid));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   /* UUIDs are byte arrays with a fixed length. */
   rv = caml_alloc_string (VIR_UUID_BUFLEN);
@@ -453,7 +449,7 @@ sub gen_c_code
   int r;
 
   NONBLOCKING (r = $c_name ($1, uuid));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   rv = caml_copy_string (uuid);
   CAMLreturn (rv);
@@ -464,7 +460,7 @@ sub gen_c_code
   int r, b;
 
   NONBLOCKING (r = $c_name ($1, &b));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   CAMLreturn (b ? Val_true : Val_false);
 "
@@ -476,7 +472,7 @@ sub gen_c_code
   b = bv == Val_true ? 1 : 0;
 
   NONBLOCKING (r = $c_name ($1, b));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   CAMLreturn (Val_unit);
 "
@@ -498,7 +494,7 @@ sub gen_c_code
   }
 
   NONBLOCKING (r = $c_name (conn, ids, i));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i)
@@ -525,7 +521,7 @@ sub gen_c_code
   }
 
   NONBLOCKING (r = $c_name ($1, names, i));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -543,7 +539,7 @@ sub gen_c_code
   char *r;
 
   NONBLOCKING (r = $c_name ($1, 0));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   rv = caml_copy_string (r);
   free (r);
@@ -555,7 +551,7 @@ sub gen_c_code
   int r;
 
   NONBLOCKING (r = $c_name ($1, 0));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   CAMLreturn (Val_unit);
 "
@@ -565,7 +561,7 @@ sub gen_c_code
   int r;
 
   NONBLOCKING (r = $c_name ($1));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   CAMLreturn (Val_unit);
 "
@@ -575,7 +571,7 @@ sub gen_c_code
   int r;
 
   NONBLOCKING (r = $c_name ($1));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   /* So that we don't double-free in the finalizer: */
   " . gen_free_arg ($1) . "
@@ -589,7 +585,7 @@ sub gen_c_code
   int r;
 
   NONBLOCKING (r = $c_name ($1, str));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   CAMLreturn (Val_unit);
 "
@@ -601,7 +597,7 @@ sub gen_c_code
   int r;
 
   NONBLOCKING (r = $c_name ($1, str, 0));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   CAMLreturn (Val_unit);
 "
@@ -614,7 +610,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, str));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   " . gen_pack_result ($2) . "
 
@@ -629,7 +625,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, str, 0));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   " . gen_pack_result ($2) . "
 
@@ -645,7 +641,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, str, u));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   " . gen_pack_result ($2) . "
 
@@ -659,7 +655,7 @@ sub gen_c_code
   int r;
 
   NONBLOCKING (r = $c_name ($1, i));
-  CHECK_ERROR (r == -1, conn, \"$c_name\");
+  CHECK_ERROR (r == -1, \"$c_name\");
 
   CAMLreturn (Val_unit);
 "
@@ -673,7 +669,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, i));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   " . gen_pack_result ($3) . "
 
@@ -688,7 +684,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, uuid));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   " . gen_pack_result ($2) . "
 
@@ -702,7 +698,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, 0));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   " . gen_pack_result ($2) . "
 
@@ -716,7 +712,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   " . gen_pack_result ($2) . "
 
@@ -731,7 +727,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, str));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   connv = Field ($3v, 1);
   " . gen_pack_result ($2) . "
@@ -747,7 +743,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, str, 0));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   connv = Field ($3v, 1);
   " . gen_pack_result ($2) . "
@@ -762,7 +758,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1, 0));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   connv = Field ($3v, 1);
   " . gen_pack_result ($2) . "
@@ -777,7 +773,7 @@ sub gen_c_code
   $c_ret_type r;
 
   NONBLOCKING (r = $c_name ($1));
-  CHECK_ERROR (!r, conn, \"$c_name\");
+  CHECK_ERROR (!r, \"$c_name\");
 
   connv = Field ($3v, 1);
   " . gen_pack_result ($2) . "

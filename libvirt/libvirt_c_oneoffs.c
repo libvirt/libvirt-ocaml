@@ -32,7 +32,7 @@ ocaml_libvirt_get_version (value driverv, value unit)
 
   typeVer_ptr = driver ? &typeVer : NULL;
   NONBLOCKING (r = virGetVersion (&libVer, driver, typeVer_ptr));
-  CHECK_ERROR (r == -1, NULL, "virGetVersion");
+  CHECK_ERROR (r == -1, "virGetVersion");
 
   rv = caml_alloc_tuple (2);
   Store_field (rv, 0, Val_int (libVer));
@@ -53,7 +53,7 @@ ocaml_libvirt_connect_open (value namev, value unit)
   virConnectPtr conn;
 
   NONBLOCKING (conn = virConnectOpen (name));
-  CHECK_ERROR (!conn, NULL, "virConnectOpen");
+  CHECK_ERROR (!conn, "virConnectOpen");
 
   rv = Val_connect (conn);
 
@@ -69,7 +69,7 @@ ocaml_libvirt_connect_open_readonly (value namev, value unit)
   virConnectPtr conn;
 
   NONBLOCKING (conn = virConnectOpenReadOnly (name));
-  CHECK_ERROR (!conn, NULL, "virConnectOpen");
+  CHECK_ERROR (!conn, "virConnectOpen");
 
   rv = Val_connect (conn);
 
@@ -85,7 +85,7 @@ ocaml_libvirt_connect_get_version (value connv)
   int r;
 
   NONBLOCKING (r = virConnectGetVersion (conn, &hvVer));
-  CHECK_ERROR (r == -1, conn, "virConnectGetVersion");
+  CHECK_ERROR (r == -1, "virConnectGetVersion");
 
   CAMLreturn (Val_int (hvVer));
 }
@@ -99,7 +99,7 @@ ocaml_libvirt_connect_get_max_vcpus (value connv, value typev)
   int r;
 
   NONBLOCKING (r = virConnectGetMaxVcpus (conn, type));
-  CHECK_ERROR (r == -1, conn, "virConnectGetMaxVcpus");
+  CHECK_ERROR (r == -1, "virConnectGetMaxVcpus");
 
   CAMLreturn (Val_int (r));
 }
@@ -114,7 +114,7 @@ ocaml_libvirt_connect_get_node_info (value connv)
   int r;
 
   NONBLOCKING (r = virNodeGetInfo (conn, &info));
-  CHECK_ERROR (r == -1, conn, "virNodeGetInfo");
+  CHECK_ERROR (r == -1, "virNodeGetInfo");
 
   rv = caml_alloc (8, 0);
   v = caml_copy_string (info.model); Store_field (rv, 0, v);
@@ -138,7 +138,7 @@ ocaml_libvirt_connect_node_get_free_memory (value connv)
   unsigned long long r;
 
   NONBLOCKING (r = virNodeGetFreeMemory (conn));
-  CHECK_ERROR (r == 0, conn, "virNodeGetFreeMemory");
+  CHECK_ERROR (r == 0, "virNodeGetFreeMemory");
 
   rv = caml_copy_int64 ((int64_t) r);
   CAMLreturn (rv);
@@ -157,7 +157,7 @@ ocaml_libvirt_connect_node_get_cells_free_memory (value connv,
   unsigned long long freemems[max];
 
   NONBLOCKING (r = virNodeGetCellsFreeMemory (conn, freemems, start, max));
-  CHECK_ERROR (r == -1, conn, "virNodeGetCellsFreeMemory");
+  CHECK_ERROR (r == -1, "virNodeGetCellsFreeMemory");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -179,7 +179,7 @@ ocaml_libvirt_connect_set_keep_alive(value connv,
   int r;
 
   NONBLOCKING(r = virConnectSetKeepAlive(conn, interval, count));
-  CHECK_ERROR (r == -1, conn, "virConnectSetKeepAlive");
+  CHECK_ERROR (r == -1, "virConnectSetKeepAlive");
 
   CAMLreturn(Val_unit);
 }
@@ -190,7 +190,6 @@ ocaml_libvirt_domain_get_id (value domv)
 {
   CAMLparam1 (domv);
   virDomainPtr dom = Domain_val (domv);
-  /*virConnectPtr conn = Connect_domv (domv);*/
   unsigned int r;
 
   NONBLOCKING (r = virDomainGetID (dom));
@@ -208,11 +207,10 @@ ocaml_libvirt_domain_get_max_memory (value domv)
   CAMLparam1 (domv);
   CAMLlocal1 (rv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   unsigned long r;
 
   NONBLOCKING (r = virDomainGetMaxMemory (dom));
-  CHECK_ERROR (r == 0 /* [sic] */, conn, "virDomainGetMaxMemory");
+  CHECK_ERROR (r == 0 /* [sic] */, "virDomainGetMaxMemory");
 
   rv = caml_copy_int64 (r);
   CAMLreturn (rv);
@@ -223,12 +221,11 @@ ocaml_libvirt_domain_set_max_memory (value domv, value memv)
 {
   CAMLparam2 (domv, memv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   unsigned long mem = Int64_val (memv);
   int r;
 
   NONBLOCKING (r = virDomainSetMaxMemory (dom, mem));
-  CHECK_ERROR (r == -1, conn, "virDomainSetMaxMemory");
+  CHECK_ERROR (r == -1, "virDomainSetMaxMemory");
 
   CAMLreturn (Val_unit);
 }
@@ -238,12 +235,11 @@ ocaml_libvirt_domain_set_memory (value domv, value memv)
 {
   CAMLparam2 (domv, memv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   unsigned long mem = Int64_val (memv);
   int r;
 
   NONBLOCKING (r = virDomainSetMemory (dom, mem));
-  CHECK_ERROR (r == -1, conn, "virDomainSetMemory");
+  CHECK_ERROR (r == -1, "virDomainSetMemory");
 
   CAMLreturn (Val_unit);
 }
@@ -254,12 +250,11 @@ ocaml_libvirt_domain_get_info (value domv)
   CAMLparam1 (domv);
   CAMLlocal2 (rv, v);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   virDomainInfo info;
   int r;
 
   NONBLOCKING (r = virDomainGetInfo (dom, &info));
-  CHECK_ERROR (r == -1, conn, "virDomainGetInfo");
+  CHECK_ERROR (r == -1, "virDomainGetInfo");
 
   rv = caml_alloc (5, 0);
   Store_field (rv, 0, Val_int (info.state)); // These flags are compatible.
@@ -277,12 +272,11 @@ ocaml_libvirt_domain_get_scheduler_type (value domv)
   CAMLparam1 (domv);
   CAMLlocal2 (rv, strv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char *r;
   int nparams;
 
   NONBLOCKING (r = virDomainGetSchedulerType (dom, &nparams));
-  CHECK_ERROR (!r, conn, "virDomainGetSchedulerType");
+  CHECK_ERROR (!r, "virDomainGetSchedulerType");
 
   rv = caml_alloc_tuple (2);
   strv = caml_copy_string (r); Store_field (rv, 0, strv);
@@ -297,13 +291,12 @@ ocaml_libvirt_domain_get_scheduler_parameters (value domv, value nparamsv)
   CAMLparam2 (domv, nparamsv);
   CAMLlocal4 (rv, v, v2, v3);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int nparams = Int_val (nparamsv);
   virSchedParameter params[nparams];
   int r, i;
 
   NONBLOCKING (r = virDomainGetSchedulerParameters (dom, params, &nparams));
-  CHECK_ERROR (r == -1, conn, "virDomainGetSchedulerParameters");
+  CHECK_ERROR (r == -1, "virDomainGetSchedulerParameters");
 
   rv = caml_alloc (nparams, 0);
   for (i = 0; i < nparams; ++i) {
@@ -348,7 +341,6 @@ ocaml_libvirt_domain_set_scheduler_parameters (value domv, value paramsv)
   CAMLparam2 (domv, paramsv);
   CAMLlocal1 (v);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int nparams = Wosize_val (paramsv);
   virSchedParameter params[nparams];
   int r, i;
@@ -391,7 +383,7 @@ ocaml_libvirt_domain_set_scheduler_parameters (value domv, value paramsv)
   }
 
   NONBLOCKING (r = virDomainSetSchedulerParameters (dom, params, nparams));
-  CHECK_ERROR (r == -1, conn, "virDomainSetSchedulerParameters");
+  CHECK_ERROR (r == -1, "virDomainSetSchedulerParameters");
 
   CAMLreturn (Val_unit);
 }
@@ -401,11 +393,10 @@ ocaml_libvirt_domain_set_vcpus (value domv, value nvcpusv)
 {
   CAMLparam2 (domv, nvcpusv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r, nvcpus = Int_val (nvcpusv);
 
   NONBLOCKING (r = virDomainSetVcpus (dom, nvcpus));
-  CHECK_ERROR (r == -1, conn, "virDomainSetVcpus");
+  CHECK_ERROR (r == -1, "virDomainSetVcpus");
 
   CAMLreturn (Val_unit);
 }
@@ -415,14 +406,13 @@ ocaml_libvirt_domain_pin_vcpu (value domv, value vcpuv, value cpumapv)
 {
   CAMLparam3 (domv, vcpuv, cpumapv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int maplen = caml_string_length (cpumapv);
   unsigned char *cpumap = (unsigned char *) String_val (cpumapv);
   int vcpu = Int_val (vcpuv);
   int r;
 
   NONBLOCKING (r = virDomainPinVcpu (dom, vcpu, cpumap, maplen));
-  CHECK_ERROR (r == -1, conn, "virDomainPinVcpu");
+  CHECK_ERROR (r == -1, "virDomainPinVcpu");
 
   CAMLreturn (Val_unit);
 }
@@ -433,7 +423,6 @@ ocaml_libvirt_domain_get_vcpus (value domv, value maxinfov, value maplenv)
   CAMLparam3 (domv, maxinfov, maplenv);
   CAMLlocal5 (rv, infov, strv, v, v2);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int maxinfo = Int_val (maxinfov);
   int maplen = Int_val (maplenv);
   virVcpuInfo info[maxinfo];
@@ -444,7 +433,7 @@ ocaml_libvirt_domain_get_vcpus (value domv, value maxinfov, value maplenv)
   memset (cpumaps, 0, maxinfo * maplen);
 
   NONBLOCKING (r = virDomainGetVcpus (dom, info, maxinfo, cpumaps, maplen));
-  CHECK_ERROR (r == -1, conn, "virDomainPinVcpu");
+  CHECK_ERROR (r == -1, "virDomainPinVcpu");
 
   /* Copy the virVcpuInfo structures. */
   infov = caml_alloc (maxinfo, 0);
@@ -476,18 +465,17 @@ ocaml_libvirt_domain_get_cpu_stats (value domv)
   CAMLlocal5 (cpustats, param_head, param_node, typed_param, typed_param_value);
   CAMLlocal1 (v);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   virTypedParameterPtr params;
   int r, cpu, ncpus, nparams, i, j, pos;
   int nr_pcpus;
 
   /* get number of pcpus */
   NONBLOCKING (nr_pcpus = virDomainGetCPUStats(dom, NULL, 0, 0, 0, 0));
-  CHECK_ERROR (nr_pcpus < 0, conn, "virDomainGetCPUStats");
+  CHECK_ERROR (nr_pcpus < 0, "virDomainGetCPUStats");
 
   /* get percpu information */
   NONBLOCKING (nparams = virDomainGetCPUStats(dom, NULL, 0, 0, 1, 0));
-  CHECK_ERROR (nparams < 0, conn, "virDomainGetCPUStats");
+  CHECK_ERROR (nparams < 0, "virDomainGetCPUStats");
 
   if ((params = malloc(sizeof(*params) * nparams * 128)) == NULL)
     caml_failwith ("virDomainGetCPUStats: malloc");
@@ -498,7 +486,7 @@ ocaml_libvirt_domain_get_cpu_stats (value domv)
     ncpus = nr_pcpus - cpu > 128 ? 128 : nr_pcpus - cpu;
 
     NONBLOCKING (r = virDomainGetCPUStats(dom, params, nparams, cpu, ncpus, 0));
-    CHECK_ERROR (r < 0, conn, "virDomainGetCPUStats");
+    CHECK_ERROR (r < 0, "virDomainGetCPUStats");
 
     for (i = 0; i < ncpus; i++) {
       /* list of typed_param: single linked list of param_nodes */
@@ -579,7 +567,6 @@ ocaml_libvirt_domain_migrate_native (value domv, value dconnv, value flagsv, val
   CAMLxparam2 (optbandwidthv, unitv);
   CAMLlocal2 (flagv, rv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   virConnectPtr dconn = Connect_val (dconnv);
   int flags = 0;
   const char *dname = Optstring_val (optdnamev);
@@ -601,7 +588,7 @@ ocaml_libvirt_domain_migrate_native (value domv, value dconnv, value flagsv, val
     bandwidth = Int_val (Field (optbandwidthv, 0));
 
   NONBLOCKING (r = virDomainMigrate (dom, dconn, flags, dname, uri, bandwidth));
-  CHECK_ERROR (!r, conn, "virDomainMigrate");
+  CHECK_ERROR (!r, "virDomainMigrate");
 
   rv = Val_domain (r, dconnv);
 
@@ -622,13 +609,12 @@ ocaml_libvirt_domain_block_stats (value domv, value pathv)
   CAMLparam2 (domv, pathv);
   CAMLlocal2 (rv,v);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char *path = String_val (pathv);
   struct _virDomainBlockStats stats;
   int r;
 
   NONBLOCKING (r = virDomainBlockStats (dom, path, &stats, sizeof stats));
-  CHECK_ERROR (r == -1, conn, "virDomainBlockStats");
+  CHECK_ERROR (r == -1, "virDomainBlockStats");
 
   rv = caml_alloc (5, 0);
   v = caml_copy_int64 (stats.rd_req); Store_field (rv, 0, v);
@@ -646,13 +632,12 @@ ocaml_libvirt_domain_interface_stats (value domv, value pathv)
   CAMLparam2 (domv, pathv);
   CAMLlocal2 (rv,v);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char *path = String_val (pathv);
   struct _virDomainInterfaceStats stats;
   int r;
 
   NONBLOCKING (r = virDomainInterfaceStats (dom, path, &stats, sizeof stats));
-  CHECK_ERROR (r == -1, conn, "virDomainInterfaceStats");
+  CHECK_ERROR (r == -1, "virDomainInterfaceStats");
 
   rv = caml_alloc (8, 0);
   v = caml_copy_int64 (stats.rx_bytes); Store_field (rv, 0, v);
@@ -673,7 +658,6 @@ ocaml_libvirt_domain_block_peek_native (value domv, value pathv, value offsetv, 
   CAMLparam5 (domv, pathv, offsetv, sizev, bufferv);
   CAMLxparam1 (boffv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   const char *path = String_val (pathv);
   unsigned long long offset = Int64_val (offsetv);
   size_t size = Int_val (sizev);
@@ -687,7 +671,7 @@ ocaml_libvirt_domain_block_peek_native (value domv, value pathv, value offsetv, 
 
   /* NB. not NONBLOCKING because buffer might move (XXX) */
   r = virDomainBlockPeek (dom, path, offset, size, buffer+boff, 0);
-  CHECK_ERROR (r == -1, conn, "virDomainBlockPeek");
+  CHECK_ERROR (r == -1, "virDomainBlockPeek");
 
   CAMLreturn (Val_unit);
 }
@@ -706,7 +690,6 @@ ocaml_libvirt_domain_memory_peek_native (value domv, value flagsv, value offsetv
   CAMLxparam1 (boffv);
   CAMLlocal1 (flagv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int flags = 0;
   unsigned long long offset = Int64_val (offsetv);
   size_t size = Int_val (sizev);
@@ -728,7 +711,7 @@ ocaml_libvirt_domain_memory_peek_native (value domv, value flagsv, value offsetv
 
   /* NB. not NONBLOCKING because buffer might move (XXX) */
   r = virDomainMemoryPeek (dom, offset, size, buffer+boff, flags);
-  CHECK_ERROR (r == -1, conn, "virDomainMemoryPeek");
+  CHECK_ERROR (r == -1, "virDomainMemoryPeek");
 
   CAMLreturn (Val_unit);
 }
@@ -1042,7 +1025,6 @@ CAMLprim value
 ocaml_libvirt_event_add_timeout (value connv, value ms, value callback_id)
 {
   CAMLparam3 (connv, ms, callback_id);
-  virConnectPtr conn = Connect_val (connv);
   void *opaque;
   virFreeCallback freecb = free;
   virEventTimeoutCallback cb = timeout_callback;
@@ -1055,7 +1037,7 @@ ocaml_libvirt_event_add_timeout (value connv, value ms, value callback_id)
     caml_failwith ("virEventAddTimeout: malloc");
   *((long*)opaque) = Int64_val(callback_id);
   NONBLOCKING(r = virEventAddTimeout(Int_val(ms), cb, opaque, freecb));
-  CHECK_ERROR(r == -1, conn, "virEventAddTimeout");
+  CHECK_ERROR(r == -1, "virEventAddTimeout");
 
   CAMLreturn(Val_int(r));
 }
@@ -1064,11 +1046,10 @@ CAMLprim value
 ocaml_libvirt_event_remove_timeout (value connv, value timer_id)
 {
   CAMLparam2 (connv, timer_id);
-  virConnectPtr conn = Connect_val (connv);
   int r;
 
   NONBLOCKING(r = virEventRemoveTimeout(Int_val(timer_id)));
-  CHECK_ERROR(r == -1, conn, "virEventRemoveTimeout");
+  CHECK_ERROR(r == -1, "virEventRemoveTimeout");
 
   CAMLreturn(Val_int(r));
 }
@@ -1146,7 +1127,7 @@ ocaml_libvirt_connect_domain_event_register_any(value connv, value domv, value c
     caml_failwith ("virConnectDomainEventRegisterAny: malloc");
   *((long*)opaque) = Int64_val(callback_id);
   NONBLOCKING(r = virConnectDomainEventRegisterAny(conn, dom, eventID, cb, opaque, freecb));
-  CHECK_ERROR(r == -1, conn, "virConnectDomainEventRegisterAny");
+  CHECK_ERROR(r == -1, "virConnectDomainEventRegisterAny");
 
   CAMLreturn(Val_int(r));
 }
@@ -1157,12 +1138,11 @@ ocaml_libvirt_storage_pool_get_info (value poolv)
   CAMLparam1 (poolv);
   CAMLlocal2 (rv, v);
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   virStoragePoolInfo info;
   int r;
 
   NONBLOCKING (r = virStoragePoolGetInfo (pool, &info));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolGetInfo");
+  CHECK_ERROR (r == -1, "virStoragePoolGetInfo");
 
   rv = caml_alloc (4, 0);
   Store_field (rv, 0, Val_int (info.state));
@@ -1179,12 +1159,11 @@ ocaml_libvirt_storage_vol_get_info (value volv)
   CAMLparam1 (volv);
   CAMLlocal2 (rv, v);
   virStorageVolPtr vol = Volume_val (volv);
-  virConnectPtr conn = Connect_volv (volv);
   virStorageVolInfo info;
   int r;
 
   NONBLOCKING (r = virStorageVolGetInfo (vol, &info));
-  CHECK_ERROR (r == -1, conn, "virStorageVolGetInfo");
+  CHECK_ERROR (r == -1, "virStorageVolGetInfo");
 
   rv = caml_alloc (3, 0);
   Store_field (rv, 0, Val_int (info.type));
@@ -1239,6 +1218,12 @@ ocaml_libvirt_virterror_reset_last_conn_error (value connv)
 
 /*----------------------------------------------------------------------*/
 
+static void
+ignore_errors (void *user_data, virErrorPtr error)
+{
+  /* do nothing */
+}
+
 /* Initialise the library. */
 CAMLprim value
 ocaml_libvirt_init (value unit)
@@ -1247,8 +1232,9 @@ ocaml_libvirt_init (value unit)
   CAMLlocal1 (rv);
   int r;
 
+  virSetErrorFunc (NULL, ignore_errors);
   r = virInitialize ();
-  CHECK_ERROR (r == -1, NULL, "virInitialize");
+  CHECK_ERROR (r == -1, "virInitialize");
 
   CAMLreturn (Val_unit);
 }

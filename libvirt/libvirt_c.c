@@ -61,7 +61,7 @@ ocaml_libvirt_connect_close (value connv)
   int r;
 
   NONBLOCKING (r = virConnectClose (conn));
-  CHECK_ERROR (r == -1, conn, "virConnectClose");
+  CHECK_ERROR (r == -1, "virConnectClose");
 
   /* So that we don't double-free in the finalizer: */
   Connect_val (connv) = NULL;
@@ -83,7 +83,7 @@ ocaml_libvirt_connect_get_hostname (value connv)
   char *r;
 
   NONBLOCKING (r = virConnectGetHostname (conn));
-  CHECK_ERROR (!r, conn, "virConnectGetHostname");
+  CHECK_ERROR (!r, "virConnectGetHostname");
 
   rv = caml_copy_string (r);
   free (r);
@@ -104,7 +104,7 @@ ocaml_libvirt_connect_get_uri (value connv)
   char *r;
 
   NONBLOCKING (r = virConnectGetURI (conn));
-  CHECK_ERROR (!r, conn, "virConnectGetURI");
+  CHECK_ERROR (!r, "virConnectGetURI");
 
   rv = caml_copy_string (r);
   free (r);
@@ -125,7 +125,7 @@ ocaml_libvirt_connect_get_type (value connv)
   const char *r;
 
   NONBLOCKING (r = virConnectGetType (conn));
-  CHECK_ERROR (!r, conn, "virConnectGetType");
+  CHECK_ERROR (!r, "virConnectGetType");
 
   rv = caml_copy_string (r);
   CAMLreturn (rv);
@@ -144,7 +144,7 @@ ocaml_libvirt_connect_num_of_domains (value connv)
   int r;
 
   NONBLOCKING (r = virConnectNumOfDomains (conn));
-  CHECK_ERROR (r == -1, conn, "virConnectNumOfDomains");
+  CHECK_ERROR (r == -1, "virConnectNumOfDomains");
 
   CAMLreturn (Val_int (r));
 }
@@ -174,7 +174,7 @@ ocaml_libvirt_connect_list_domains (value connv, value iv)
   }
 
   NONBLOCKING (r = virConnectListDomains (conn, ids, i));
-  CHECK_ERROR (r == -1, conn, "virConnectListDomains");
+  CHECK_ERROR (r == -1, "virConnectListDomains");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i)
@@ -196,7 +196,7 @@ ocaml_libvirt_connect_num_of_defined_domains (value connv)
   int r;
 
   NONBLOCKING (r = virConnectNumOfDefinedDomains (conn));
-  CHECK_ERROR (r == -1, conn, "virConnectNumOfDefinedDomains");
+  CHECK_ERROR (r == -1, "virConnectNumOfDefinedDomains");
 
   CAMLreturn (Val_int (r));
 }
@@ -227,7 +227,7 @@ ocaml_libvirt_connect_list_defined_domains (value connv, value iv)
   }
 
   NONBLOCKING (r = virConnectListDefinedDomains (conn, names, i));
-  CHECK_ERROR (r == -1, conn, "virConnectListDefinedDomains");
+  CHECK_ERROR (r == -1, "virConnectListDefinedDomains");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -252,7 +252,7 @@ ocaml_libvirt_connect_num_of_networks (value connv)
   int r;
 
   NONBLOCKING (r = virConnectNumOfNetworks (conn));
-  CHECK_ERROR (r == -1, conn, "virConnectNumOfNetworks");
+  CHECK_ERROR (r == -1, "virConnectNumOfNetworks");
 
   CAMLreturn (Val_int (r));
 }
@@ -283,7 +283,7 @@ ocaml_libvirt_connect_list_networks (value connv, value iv)
   }
 
   NONBLOCKING (r = virConnectListNetworks (conn, names, i));
-  CHECK_ERROR (r == -1, conn, "virConnectListNetworks");
+  CHECK_ERROR (r == -1, "virConnectListNetworks");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -308,7 +308,7 @@ ocaml_libvirt_connect_num_of_defined_networks (value connv)
   int r;
 
   NONBLOCKING (r = virConnectNumOfDefinedNetworks (conn));
-  CHECK_ERROR (r == -1, conn, "virConnectNumOfDefinedNetworks");
+  CHECK_ERROR (r == -1, "virConnectNumOfDefinedNetworks");
 
   CAMLreturn (Val_int (r));
 }
@@ -339,7 +339,7 @@ ocaml_libvirt_connect_list_defined_networks (value connv, value iv)
   }
 
   NONBLOCKING (r = virConnectListDefinedNetworks (conn, names, i));
-  CHECK_ERROR (r == -1, conn, "virConnectListDefinedNetworks");
+  CHECK_ERROR (r == -1, "virConnectListDefinedNetworks");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -364,7 +364,7 @@ ocaml_libvirt_connect_num_of_storage_pools (value connv)
   int r;
 
   NONBLOCKING (r = virConnectNumOfStoragePools (conn));
-  CHECK_ERROR (r == -1, conn, "virConnectNumOfStoragePools");
+  CHECK_ERROR (r == -1, "virConnectNumOfStoragePools");
 
   CAMLreturn (Val_int (r));
 }
@@ -395,7 +395,7 @@ ocaml_libvirt_connect_list_storage_pools (value connv, value iv)
   }
 
   NONBLOCKING (r = virConnectListStoragePools (conn, names, i));
-  CHECK_ERROR (r == -1, conn, "virConnectListStoragePools");
+  CHECK_ERROR (r == -1, "virConnectListStoragePools");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -420,7 +420,7 @@ ocaml_libvirt_connect_num_of_defined_storage_pools (value connv)
   int r;
 
   NONBLOCKING (r = virConnectNumOfDefinedStoragePools (conn));
-  CHECK_ERROR (r == -1, conn, "virConnectNumOfDefinedStoragePools");
+  CHECK_ERROR (r == -1, "virConnectNumOfDefinedStoragePools");
 
   CAMLreturn (Val_int (r));
 }
@@ -451,7 +451,7 @@ ocaml_libvirt_connect_list_defined_storage_pools (value connv, value iv)
   }
 
   NONBLOCKING (r = virConnectListDefinedStoragePools (conn, names, i));
-  CHECK_ERROR (r == -1, conn, "virConnectListDefinedStoragePools");
+  CHECK_ERROR (r == -1, "virConnectListDefinedStoragePools");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -477,7 +477,7 @@ ocaml_libvirt_connect_get_capabilities (value connv)
   char *r;
 
   NONBLOCKING (r = virConnectGetCapabilities (conn));
-  CHECK_ERROR (!r, conn, "virConnectGetCapabilities");
+  CHECK_ERROR (!r, "virConnectGetCapabilities");
 
   rv = caml_copy_string (r);
   free (r);
@@ -498,7 +498,7 @@ ocaml_libvirt_connect_domain_event_deregister_any (value connv, value iv)
   int r;
 
   NONBLOCKING (r = virConnectDomainEventDeregisterAny (conn, i));
-  CHECK_ERROR (r == -1, conn, "virConnectDomainEventDeregisterAny");
+  CHECK_ERROR (r == -1, "virConnectDomainEventDeregisterAny");
 
   CAMLreturn (Val_unit);
 }
@@ -518,7 +518,7 @@ ocaml_libvirt_domain_create_linux (value connv, value strv)
   virDomainPtr r;
 
   NONBLOCKING (r = virDomainCreateLinux (conn, str, 0));
-  CHECK_ERROR (!r, conn, "virDomainCreateLinux");
+  CHECK_ERROR (!r, "virDomainCreateLinux");
 
   rv = Val_domain (r, connv);
 
@@ -541,7 +541,7 @@ ocaml_libvirt_domain_create_xml (value connv, value strv, value uv)
   virDomainPtr r;
 
   NONBLOCKING (r = virDomainCreateXML (conn, str, u));
-  CHECK_ERROR (!r, conn, "virDomainCreateXML");
+  CHECK_ERROR (!r, "virDomainCreateXML");
 
   rv = Val_domain (r, connv);
 
@@ -558,11 +558,10 @@ ocaml_libvirt_domain_free (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r;
 
   NONBLOCKING (r = virDomainFree (dom));
-  CHECK_ERROR (r == -1, conn, "virDomainFree");
+  CHECK_ERROR (r == -1, "virDomainFree");
 
   /* So that we don't double-free in the finalizer: */
   Domain_val (domv) = NULL;
@@ -580,11 +579,10 @@ ocaml_libvirt_domain_destroy (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r;
 
   NONBLOCKING (r = virDomainDestroy (dom));
-  CHECK_ERROR (r == -1, conn, "virDomainDestroy");
+  CHECK_ERROR (r == -1, "virDomainDestroy");
 
   /* So that we don't double-free in the finalizer: */
   Domain_val (domv) = NULL;
@@ -607,7 +605,7 @@ ocaml_libvirt_domain_lookup_by_name (value connv, value strv)
   virDomainPtr r;
 
   NONBLOCKING (r = virDomainLookupByName (conn, str));
-  CHECK_ERROR (!r, conn, "virDomainLookupByName");
+  CHECK_ERROR (!r, "virDomainLookupByName");
 
   rv = Val_domain (r, connv);
 
@@ -629,7 +627,7 @@ ocaml_libvirt_domain_lookup_by_id (value connv, value iv)
   virDomainPtr r;
 
   NONBLOCKING (r = virDomainLookupByID (conn, i));
-  CHECK_ERROR (!r, conn, "virDomainLookupByID");
+  CHECK_ERROR (!r, "virDomainLookupByID");
 
   rv = Val_domain (r, connv);
 
@@ -651,7 +649,7 @@ ocaml_libvirt_domain_lookup_by_uuid (value connv, value uuidv)
   virDomainPtr r;
 
   NONBLOCKING (r = virDomainLookupByUUID (conn, uuid));
-  CHECK_ERROR (!r, conn, "virDomainLookupByUUID");
+  CHECK_ERROR (!r, "virDomainLookupByUUID");
 
   rv = Val_domain (r, connv);
 
@@ -673,7 +671,7 @@ ocaml_libvirt_domain_lookup_by_uuid_string (value connv, value strv)
   virDomainPtr r;
 
   NONBLOCKING (r = virDomainLookupByUUIDString (conn, str));
-  CHECK_ERROR (!r, conn, "virDomainLookupByUUIDString");
+  CHECK_ERROR (!r, "virDomainLookupByUUIDString");
 
   rv = Val_domain (r, connv);
 
@@ -691,11 +689,10 @@ ocaml_libvirt_domain_get_name (value domv)
 
   CAMLlocal1 (rv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   const char *r;
 
   NONBLOCKING (r = virDomainGetName (dom));
-  CHECK_ERROR (!r, conn, "virDomainGetName");
+  CHECK_ERROR (!r, "virDomainGetName");
 
   rv = caml_copy_string (r);
   CAMLreturn (rv);
@@ -712,11 +709,10 @@ ocaml_libvirt_domain_get_os_type (value domv)
 
   CAMLlocal1 (rv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char *r;
 
   NONBLOCKING (r = virDomainGetOSType (dom));
-  CHECK_ERROR (!r, conn, "virDomainGetOSType");
+  CHECK_ERROR (!r, "virDomainGetOSType");
 
   rv = caml_copy_string (r);
   free (r);
@@ -734,11 +730,10 @@ ocaml_libvirt_domain_get_xml_desc (value domv)
 
   CAMLlocal1 (rv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char *r;
 
   NONBLOCKING (r = virDomainGetXMLDesc (dom, 0));
-  CHECK_ERROR (!r, conn, "virDomainGetXMLDesc");
+  CHECK_ERROR (!r, "virDomainGetXMLDesc");
 
   rv = caml_copy_string (r);
   free (r);
@@ -756,12 +751,11 @@ ocaml_libvirt_domain_get_uuid (value domv)
 
   CAMLlocal1 (rv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   unsigned char uuid[VIR_UUID_BUFLEN];
   int r;
 
   NONBLOCKING (r = virDomainGetUUID (dom, uuid));
-  CHECK_ERROR (r == -1, conn, "virDomainGetUUID");
+  CHECK_ERROR (r == -1, "virDomainGetUUID");
 
   /* UUIDs are byte arrays with a fixed length. */
   rv = caml_alloc_string (VIR_UUID_BUFLEN);
@@ -780,12 +774,11 @@ ocaml_libvirt_domain_get_uuid_string (value domv)
 
   CAMLlocal1 (rv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char uuid[VIR_UUID_STRING_BUFLEN];
   int r;
 
   NONBLOCKING (r = virDomainGetUUIDString (dom, uuid));
-  CHECK_ERROR (r == -1, conn, "virDomainGetUUIDString");
+  CHECK_ERROR (r == -1, "virDomainGetUUIDString");
 
   rv = caml_copy_string (uuid);
   CAMLreturn (rv);
@@ -801,11 +794,10 @@ ocaml_libvirt_domain_get_max_vcpus (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r;
 
   NONBLOCKING (r = virDomainGetMaxVcpus (dom));
-  CHECK_ERROR (r == -1, conn, "virDomainGetMaxVcpus");
+  CHECK_ERROR (r == -1, "virDomainGetMaxVcpus");
 
   CAMLreturn (Val_int (r));
 }
@@ -820,12 +812,11 @@ ocaml_libvirt_domain_save (value domv, value strv)
   CAMLparam2 (domv, strv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char *str = String_val (strv);
   int r;
 
   NONBLOCKING (r = virDomainSave (dom, str));
-  CHECK_ERROR (r == -1, conn, "virDomainSave");
+  CHECK_ERROR (r == -1, "virDomainSave");
 
   CAMLreturn (Val_unit);
 }
@@ -844,7 +835,7 @@ ocaml_libvirt_domain_restore (value connv, value strv)
   int r;
 
   NONBLOCKING (r = virDomainRestore (conn, str));
-  CHECK_ERROR (r == -1, conn, "virDomainRestore");
+  CHECK_ERROR (r == -1, "virDomainRestore");
 
   CAMLreturn (Val_unit);
 }
@@ -860,12 +851,11 @@ ocaml_libvirt_domain_core_dump (value domv, value strv)
 
   CAMLlocal1 (rv);
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char *str = String_val (strv);
   int r;
 
   NONBLOCKING (r = virDomainCoreDump (dom, str, 0));
-  CHECK_ERROR (!r, conn, "virDomainCoreDump");
+  CHECK_ERROR (!r, "virDomainCoreDump");
 
   CAMLreturn (Val_unit);
 }
@@ -880,11 +870,10 @@ ocaml_libvirt_domain_suspend (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r;
 
   NONBLOCKING (r = virDomainSuspend (dom));
-  CHECK_ERROR (r == -1, conn, "virDomainSuspend");
+  CHECK_ERROR (r == -1, "virDomainSuspend");
 
   CAMLreturn (Val_unit);
 }
@@ -899,11 +888,10 @@ ocaml_libvirt_domain_resume (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r;
 
   NONBLOCKING (r = virDomainResume (dom));
-  CHECK_ERROR (r == -1, conn, "virDomainResume");
+  CHECK_ERROR (r == -1, "virDomainResume");
 
   CAMLreturn (Val_unit);
 }
@@ -918,11 +906,10 @@ ocaml_libvirt_domain_shutdown (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r;
 
   NONBLOCKING (r = virDomainShutdown (dom));
-  CHECK_ERROR (r == -1, conn, "virDomainShutdown");
+  CHECK_ERROR (r == -1, "virDomainShutdown");
 
   CAMLreturn (Val_unit);
 }
@@ -937,11 +924,10 @@ ocaml_libvirt_domain_reboot (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r;
 
   NONBLOCKING (r = virDomainReboot (dom, 0));
-  CHECK_ERROR (r == -1, conn, "virDomainReboot");
+  CHECK_ERROR (r == -1, "virDomainReboot");
 
   CAMLreturn (Val_unit);
 }
@@ -961,7 +947,7 @@ ocaml_libvirt_domain_define_xml (value connv, value strv)
   virDomainPtr r;
 
   NONBLOCKING (r = virDomainDefineXML (conn, str));
-  CHECK_ERROR (!r, conn, "virDomainDefineXML");
+  CHECK_ERROR (!r, "virDomainDefineXML");
 
   rv = Val_domain (r, connv);
 
@@ -978,11 +964,10 @@ ocaml_libvirt_domain_undefine (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r;
 
   NONBLOCKING (r = virDomainUndefine (dom));
-  CHECK_ERROR (r == -1, conn, "virDomainUndefine");
+  CHECK_ERROR (r == -1, "virDomainUndefine");
 
   CAMLreturn (Val_unit);
 }
@@ -997,11 +982,10 @@ ocaml_libvirt_domain_create (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r;
 
   NONBLOCKING (r = virDomainCreate (dom));
-  CHECK_ERROR (r == -1, conn, "virDomainCreate");
+  CHECK_ERROR (r == -1, "virDomainCreate");
 
   CAMLreturn (Val_unit);
 }
@@ -1016,12 +1000,11 @@ ocaml_libvirt_domain_attach_device (value domv, value strv)
   CAMLparam2 (domv, strv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char *str = String_val (strv);
   int r;
 
   NONBLOCKING (r = virDomainAttachDevice (dom, str));
-  CHECK_ERROR (r == -1, conn, "virDomainAttachDevice");
+  CHECK_ERROR (r == -1, "virDomainAttachDevice");
 
   CAMLreturn (Val_unit);
 }
@@ -1036,12 +1019,11 @@ ocaml_libvirt_domain_detach_device (value domv, value strv)
   CAMLparam2 (domv, strv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   char *str = String_val (strv);
   int r;
 
   NONBLOCKING (r = virDomainDetachDevice (dom, str));
-  CHECK_ERROR (r == -1, conn, "virDomainDetachDevice");
+  CHECK_ERROR (r == -1, "virDomainDetachDevice");
 
   CAMLreturn (Val_unit);
 }
@@ -1056,11 +1038,10 @@ ocaml_libvirt_domain_get_autostart (value domv)
   CAMLparam1 (domv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r, b;
 
   NONBLOCKING (r = virDomainGetAutostart (dom, &b));
-  CHECK_ERROR (r == -1, conn, "virDomainGetAutostart");
+  CHECK_ERROR (r == -1, "virDomainGetAutostart");
 
   CAMLreturn (b ? Val_true : Val_false);
 }
@@ -1075,13 +1056,12 @@ ocaml_libvirt_domain_set_autostart (value domv, value bv)
   CAMLparam2 (domv, bv);
 
   virDomainPtr dom = Domain_val (domv);
-  virConnectPtr conn = Connect_domv (domv);
   int r, b;
 
   b = bv == Val_true ? 1 : 0;
 
   NONBLOCKING (r = virDomainSetAutostart (dom, b));
-  CHECK_ERROR (r == -1, conn, "virDomainSetAutostart");
+  CHECK_ERROR (r == -1, "virDomainSetAutostart");
 
   CAMLreturn (Val_unit);
 }
@@ -1096,11 +1076,10 @@ ocaml_libvirt_network_free (value netv)
   CAMLparam1 (netv);
 
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   int r;
 
   NONBLOCKING (r = virNetworkFree (net));
-  CHECK_ERROR (r == -1, conn, "virNetworkFree");
+  CHECK_ERROR (r == -1, "virNetworkFree");
 
   /* So that we don't double-free in the finalizer: */
   Network_val (netv) = NULL;
@@ -1118,11 +1097,10 @@ ocaml_libvirt_network_destroy (value netv)
   CAMLparam1 (netv);
 
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   int r;
 
   NONBLOCKING (r = virNetworkDestroy (net));
-  CHECK_ERROR (r == -1, conn, "virNetworkDestroy");
+  CHECK_ERROR (r == -1, "virNetworkDestroy");
 
   /* So that we don't double-free in the finalizer: */
   Network_val (netv) = NULL;
@@ -1145,7 +1123,7 @@ ocaml_libvirt_network_lookup_by_name (value connv, value strv)
   virNetworkPtr r;
 
   NONBLOCKING (r = virNetworkLookupByName (conn, str));
-  CHECK_ERROR (!r, conn, "virNetworkLookupByName");
+  CHECK_ERROR (!r, "virNetworkLookupByName");
 
   rv = Val_network (r, connv);
 
@@ -1167,7 +1145,7 @@ ocaml_libvirt_network_lookup_by_uuid (value connv, value uuidv)
   virNetworkPtr r;
 
   NONBLOCKING (r = virNetworkLookupByUUID (conn, uuid));
-  CHECK_ERROR (!r, conn, "virNetworkLookupByUUID");
+  CHECK_ERROR (!r, "virNetworkLookupByUUID");
 
   rv = Val_network (r, connv);
 
@@ -1189,7 +1167,7 @@ ocaml_libvirt_network_lookup_by_uuid_string (value connv, value strv)
   virNetworkPtr r;
 
   NONBLOCKING (r = virNetworkLookupByUUIDString (conn, str));
-  CHECK_ERROR (!r, conn, "virNetworkLookupByUUIDString");
+  CHECK_ERROR (!r, "virNetworkLookupByUUIDString");
 
   rv = Val_network (r, connv);
 
@@ -1207,11 +1185,10 @@ ocaml_libvirt_network_get_name (value netv)
 
   CAMLlocal1 (rv);
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   const char *r;
 
   NONBLOCKING (r = virNetworkGetName (net));
-  CHECK_ERROR (!r, conn, "virNetworkGetName");
+  CHECK_ERROR (!r, "virNetworkGetName");
 
   rv = caml_copy_string (r);
   CAMLreturn (rv);
@@ -1228,11 +1205,10 @@ ocaml_libvirt_network_get_xml_desc (value netv)
 
   CAMLlocal1 (rv);
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   char *r;
 
   NONBLOCKING (r = virNetworkGetXMLDesc (net, 0));
-  CHECK_ERROR (!r, conn, "virNetworkGetXMLDesc");
+  CHECK_ERROR (!r, "virNetworkGetXMLDesc");
 
   rv = caml_copy_string (r);
   free (r);
@@ -1250,11 +1226,10 @@ ocaml_libvirt_network_get_bridge_name (value netv)
 
   CAMLlocal1 (rv);
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   char *r;
 
   NONBLOCKING (r = virNetworkGetBridgeName (net));
-  CHECK_ERROR (!r, conn, "virNetworkGetBridgeName");
+  CHECK_ERROR (!r, "virNetworkGetBridgeName");
 
   rv = caml_copy_string (r);
   free (r);
@@ -1272,12 +1247,11 @@ ocaml_libvirt_network_get_uuid (value netv)
 
   CAMLlocal1 (rv);
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   unsigned char uuid[VIR_UUID_BUFLEN];
   int r;
 
   NONBLOCKING (r = virNetworkGetUUID (net, uuid));
-  CHECK_ERROR (r == -1, conn, "virNetworkGetUUID");
+  CHECK_ERROR (r == -1, "virNetworkGetUUID");
 
   /* UUIDs are byte arrays with a fixed length. */
   rv = caml_alloc_string (VIR_UUID_BUFLEN);
@@ -1296,12 +1270,11 @@ ocaml_libvirt_network_get_uuid_string (value netv)
 
   CAMLlocal1 (rv);
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   char uuid[VIR_UUID_STRING_BUFLEN];
   int r;
 
   NONBLOCKING (r = virNetworkGetUUIDString (net, uuid));
-  CHECK_ERROR (r == -1, conn, "virNetworkGetUUIDString");
+  CHECK_ERROR (r == -1, "virNetworkGetUUIDString");
 
   rv = caml_copy_string (uuid);
   CAMLreturn (rv);
@@ -1317,11 +1290,10 @@ ocaml_libvirt_network_undefine (value netv)
   CAMLparam1 (netv);
 
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   int r;
 
   NONBLOCKING (r = virNetworkUndefine (net));
-  CHECK_ERROR (r == -1, conn, "virNetworkUndefine");
+  CHECK_ERROR (r == -1, "virNetworkUndefine");
 
   CAMLreturn (Val_unit);
 }
@@ -1341,7 +1313,7 @@ ocaml_libvirt_network_create_xml (value connv, value strv)
   virNetworkPtr r;
 
   NONBLOCKING (r = virNetworkCreateXML (conn, str));
-  CHECK_ERROR (!r, conn, "virNetworkCreateXML");
+  CHECK_ERROR (!r, "virNetworkCreateXML");
 
   rv = Val_network (r, connv);
 
@@ -1363,7 +1335,7 @@ ocaml_libvirt_network_define_xml (value connv, value strv)
   virNetworkPtr r;
 
   NONBLOCKING (r = virNetworkDefineXML (conn, str));
-  CHECK_ERROR (!r, conn, "virNetworkDefineXML");
+  CHECK_ERROR (!r, "virNetworkDefineXML");
 
   rv = Val_network (r, connv);
 
@@ -1380,11 +1352,10 @@ ocaml_libvirt_network_create (value netv)
   CAMLparam1 (netv);
 
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   int r;
 
   NONBLOCKING (r = virNetworkCreate (net));
-  CHECK_ERROR (r == -1, conn, "virNetworkCreate");
+  CHECK_ERROR (r == -1, "virNetworkCreate");
 
   CAMLreturn (Val_unit);
 }
@@ -1399,11 +1370,10 @@ ocaml_libvirt_network_get_autostart (value netv)
   CAMLparam1 (netv);
 
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   int r, b;
 
   NONBLOCKING (r = virNetworkGetAutostart (net, &b));
-  CHECK_ERROR (r == -1, conn, "virNetworkGetAutostart");
+  CHECK_ERROR (r == -1, "virNetworkGetAutostart");
 
   CAMLreturn (b ? Val_true : Val_false);
 }
@@ -1418,13 +1388,12 @@ ocaml_libvirt_network_set_autostart (value netv, value bv)
   CAMLparam2 (netv, bv);
 
   virNetworkPtr net = Network_val (netv);
-  virConnectPtr conn = Connect_netv (netv);
   int r, b;
 
   b = bv == Val_true ? 1 : 0;
 
   NONBLOCKING (r = virNetworkSetAutostart (net, b));
-  CHECK_ERROR (r == -1, conn, "virNetworkSetAutostart");
+  CHECK_ERROR (r == -1, "virNetworkSetAutostart");
 
   CAMLreturn (Val_unit);
 }
@@ -1439,11 +1408,10 @@ ocaml_libvirt_storage_pool_free (value poolv)
   CAMLparam1 (poolv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   int r;
 
   NONBLOCKING (r = virStoragePoolFree (pool));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolFree");
+  CHECK_ERROR (r == -1, "virStoragePoolFree");
 
   /* So that we don't double-free in the finalizer: */
   Pool_val (poolv) = NULL;
@@ -1461,11 +1429,10 @@ ocaml_libvirt_storage_pool_destroy (value poolv)
   CAMLparam1 (poolv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   int r;
 
   NONBLOCKING (r = virStoragePoolDestroy (pool));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolDestroy");
+  CHECK_ERROR (r == -1, "virStoragePoolDestroy");
 
   /* So that we don't double-free in the finalizer: */
   Pool_val (poolv) = NULL;
@@ -1488,7 +1455,7 @@ ocaml_libvirt_storage_pool_lookup_by_name (value connv, value strv)
   virStoragePoolPtr r;
 
   NONBLOCKING (r = virStoragePoolLookupByName (conn, str));
-  CHECK_ERROR (!r, conn, "virStoragePoolLookupByName");
+  CHECK_ERROR (!r, "virStoragePoolLookupByName");
 
   rv = Val_pool (r, connv);
 
@@ -1510,7 +1477,7 @@ ocaml_libvirt_storage_pool_lookup_by_uuid (value connv, value uuidv)
   virStoragePoolPtr r;
 
   NONBLOCKING (r = virStoragePoolLookupByUUID (conn, uuid));
-  CHECK_ERROR (!r, conn, "virStoragePoolLookupByUUID");
+  CHECK_ERROR (!r, "virStoragePoolLookupByUUID");
 
   rv = Val_pool (r, connv);
 
@@ -1532,7 +1499,7 @@ ocaml_libvirt_storage_pool_lookup_by_uuid_string (value connv, value strv)
   virStoragePoolPtr r;
 
   NONBLOCKING (r = virStoragePoolLookupByUUIDString (conn, str));
-  CHECK_ERROR (!r, conn, "virStoragePoolLookupByUUIDString");
+  CHECK_ERROR (!r, "virStoragePoolLookupByUUIDString");
 
   rv = Val_pool (r, connv);
 
@@ -1550,11 +1517,10 @@ ocaml_libvirt_storage_pool_get_name (value poolv)
 
   CAMLlocal1 (rv);
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   const char *r;
 
   NONBLOCKING (r = virStoragePoolGetName (pool));
-  CHECK_ERROR (!r, conn, "virStoragePoolGetName");
+  CHECK_ERROR (!r, "virStoragePoolGetName");
 
   rv = caml_copy_string (r);
   CAMLreturn (rv);
@@ -1571,11 +1537,10 @@ ocaml_libvirt_storage_pool_get_xml_desc (value poolv)
 
   CAMLlocal1 (rv);
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   char *r;
 
   NONBLOCKING (r = virStoragePoolGetXMLDesc (pool, 0));
-  CHECK_ERROR (!r, conn, "virStoragePoolGetXMLDesc");
+  CHECK_ERROR (!r, "virStoragePoolGetXMLDesc");
 
   rv = caml_copy_string (r);
   free (r);
@@ -1593,12 +1558,11 @@ ocaml_libvirt_storage_pool_get_uuid (value poolv)
 
   CAMLlocal1 (rv);
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   unsigned char uuid[VIR_UUID_BUFLEN];
   int r;
 
   NONBLOCKING (r = virStoragePoolGetUUID (pool, uuid));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolGetUUID");
+  CHECK_ERROR (r == -1, "virStoragePoolGetUUID");
 
   /* UUIDs are byte arrays with a fixed length. */
   rv = caml_alloc_string (VIR_UUID_BUFLEN);
@@ -1617,12 +1581,11 @@ ocaml_libvirt_storage_pool_get_uuid_string (value poolv)
 
   CAMLlocal1 (rv);
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   char uuid[VIR_UUID_STRING_BUFLEN];
   int r;
 
   NONBLOCKING (r = virStoragePoolGetUUIDString (pool, uuid));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolGetUUIDString");
+  CHECK_ERROR (r == -1, "virStoragePoolGetUUIDString");
 
   rv = caml_copy_string (uuid);
   CAMLreturn (rv);
@@ -1643,7 +1606,7 @@ ocaml_libvirt_storage_pool_create_xml (value connv, value strv)
   virStoragePoolPtr r;
 
   NONBLOCKING (r = virStoragePoolCreateXML (conn, str, 0));
-  CHECK_ERROR (!r, conn, "virStoragePoolCreateXML");
+  CHECK_ERROR (!r, "virStoragePoolCreateXML");
 
   rv = Val_pool (r, connv);
 
@@ -1665,7 +1628,7 @@ ocaml_libvirt_storage_pool_define_xml (value connv, value strv)
   virStoragePoolPtr r;
 
   NONBLOCKING (r = virStoragePoolDefineXML (conn, str, 0));
-  CHECK_ERROR (!r, conn, "virStoragePoolDefineXML");
+  CHECK_ERROR (!r, "virStoragePoolDefineXML");
 
   rv = Val_pool (r, connv);
 
@@ -1682,12 +1645,11 @@ ocaml_libvirt_storage_pool_build (value poolv, value iv)
   CAMLparam2 (poolv, iv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   unsigned int i = Int_val (iv);
   int r;
 
   NONBLOCKING (r = virStoragePoolBuild (pool, i));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolBuild");
+  CHECK_ERROR (r == -1, "virStoragePoolBuild");
 
   CAMLreturn (Val_unit);
 }
@@ -1702,11 +1664,10 @@ ocaml_libvirt_storage_pool_undefine (value poolv)
   CAMLparam1 (poolv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   int r;
 
   NONBLOCKING (r = virStoragePoolUndefine (pool));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolUndefine");
+  CHECK_ERROR (r == -1, "virStoragePoolUndefine");
 
   CAMLreturn (Val_unit);
 }
@@ -1721,11 +1682,10 @@ ocaml_libvirt_storage_pool_create (value poolv)
   CAMLparam1 (poolv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   int r;
 
   NONBLOCKING (r = virStoragePoolCreate (pool, 0));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolCreate");
+  CHECK_ERROR (r == -1, "virStoragePoolCreate");
 
   CAMLreturn (Val_unit);
 }
@@ -1740,12 +1700,11 @@ ocaml_libvirt_storage_pool_delete (value poolv, value iv)
   CAMLparam2 (poolv, iv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   unsigned int i = Int_val (iv);
   int r;
 
   NONBLOCKING (r = virStoragePoolDelete (pool, i));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolDelete");
+  CHECK_ERROR (r == -1, "virStoragePoolDelete");
 
   CAMLreturn (Val_unit);
 }
@@ -1760,11 +1719,10 @@ ocaml_libvirt_storage_pool_refresh (value poolv)
   CAMLparam1 (poolv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   int r;
 
   NONBLOCKING (r = virStoragePoolRefresh (pool, 0));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolRefresh");
+  CHECK_ERROR (r == -1, "virStoragePoolRefresh");
 
   CAMLreturn (Val_unit);
 }
@@ -1779,11 +1737,10 @@ ocaml_libvirt_storage_pool_get_autostart (value poolv)
   CAMLparam1 (poolv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   int r, b;
 
   NONBLOCKING (r = virStoragePoolGetAutostart (pool, &b));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolGetAutostart");
+  CHECK_ERROR (r == -1, "virStoragePoolGetAutostart");
 
   CAMLreturn (b ? Val_true : Val_false);
 }
@@ -1798,13 +1755,12 @@ ocaml_libvirt_storage_pool_set_autostart (value poolv, value bv)
   CAMLparam2 (poolv, bv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   int r, b;
 
   b = bv == Val_true ? 1 : 0;
 
   NONBLOCKING (r = virStoragePoolSetAutostart (pool, b));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolSetAutostart");
+  CHECK_ERROR (r == -1, "virStoragePoolSetAutostart");
 
   CAMLreturn (Val_unit);
 }
@@ -1819,11 +1775,10 @@ ocaml_libvirt_storage_pool_num_of_volumes (value poolv)
   CAMLparam1 (poolv);
 
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   int r;
 
   NONBLOCKING (r = virStoragePoolNumOfVolumes (pool));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolNumOfVolumes");
+  CHECK_ERROR (r == -1, "virStoragePoolNumOfVolumes");
 
   CAMLreturn (Val_int (r));
 }
@@ -1839,7 +1794,6 @@ ocaml_libvirt_storage_pool_list_volumes (value poolv, value iv)
 
   CAMLlocal2 (rv, strv);
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   int i = Int_val (iv);
   char *names[i];
   int r;
@@ -1855,7 +1809,7 @@ ocaml_libvirt_storage_pool_list_volumes (value poolv, value iv)
   }
 
   NONBLOCKING (r = virStoragePoolListVolumes (pool, names, i));
-  CHECK_ERROR (r == -1, conn, "virStoragePoolListVolumes");
+  CHECK_ERROR (r == -1, "virStoragePoolListVolumes");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -1877,11 +1831,10 @@ ocaml_libvirt_storage_vol_free (value volv)
   CAMLparam1 (volv);
 
   virStorageVolPtr vol = Volume_val (volv);
-  virConnectPtr conn = Connect_volv (volv);
   int r;
 
   NONBLOCKING (r = virStorageVolFree (vol));
-  CHECK_ERROR (r == -1, conn, "virStorageVolFree");
+  CHECK_ERROR (r == -1, "virStorageVolFree");
 
   /* So that we don't double-free in the finalizer: */
   Volume_val (volv) = NULL;
@@ -1899,12 +1852,11 @@ ocaml_libvirt_storage_vol_delete (value volv, value iv)
   CAMLparam2 (volv, iv);
 
   virStorageVolPtr vol = Volume_val (volv);
-  virConnectPtr conn = Connect_volv (volv);
   unsigned int i = Int_val (iv);
   int r;
 
   NONBLOCKING (r = virStorageVolDelete (vol, i));
-  CHECK_ERROR (r == -1, conn, "virStorageVolDelete");
+  CHECK_ERROR (r == -1, "virStorageVolDelete");
 
   CAMLreturn (Val_unit);
 }
@@ -1920,12 +1872,11 @@ ocaml_libvirt_storage_vol_lookup_by_name (value poolv, value strv)
 
   CAMLlocal2 (rv, connv);
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   char *str = String_val (strv);
   virStorageVolPtr r;
 
   NONBLOCKING (r = virStorageVolLookupByName (pool, str));
-  CHECK_ERROR (!r, conn, "virStorageVolLookupByName");
+  CHECK_ERROR (!r, "virStorageVolLookupByName");
 
   connv = Field (poolv, 1);
   rv = Val_volume (r, connv);
@@ -1948,7 +1899,7 @@ ocaml_libvirt_storage_vol_lookup_by_key (value connv, value strv)
   virStorageVolPtr r;
 
   NONBLOCKING (r = virStorageVolLookupByKey (conn, str));
-  CHECK_ERROR (!r, conn, "virStorageVolLookupByKey");
+  CHECK_ERROR (!r, "virStorageVolLookupByKey");
 
   rv = Val_volume (r, connv);
 
@@ -1970,7 +1921,7 @@ ocaml_libvirt_storage_vol_lookup_by_path (value connv, value strv)
   virStorageVolPtr r;
 
   NONBLOCKING (r = virStorageVolLookupByPath (conn, str));
-  CHECK_ERROR (!r, conn, "virStorageVolLookupByPath");
+  CHECK_ERROR (!r, "virStorageVolLookupByPath");
 
   rv = Val_volume (r, connv);
 
@@ -1988,12 +1939,11 @@ ocaml_libvirt_storage_vol_create_xml (value poolv, value strv)
 
   CAMLlocal2 (rv, connv);
   virStoragePoolPtr pool = Pool_val (poolv);
-  virConnectPtr conn = Connect_polv (poolv);
   char *str = String_val (strv);
   virStorageVolPtr r;
 
   NONBLOCKING (r = virStorageVolCreateXML (pool, str, 0));
-  CHECK_ERROR (!r, conn, "virStorageVolCreateXML");
+  CHECK_ERROR (!r, "virStorageVolCreateXML");
 
   connv = Field (poolv, 1);
   rv = Val_volume (r, connv);
@@ -2012,11 +1962,10 @@ ocaml_libvirt_storage_vol_get_xml_desc (value volv)
 
   CAMLlocal1 (rv);
   virStorageVolPtr vol = Volume_val (volv);
-  virConnectPtr conn = Connect_volv (volv);
   char *r;
 
   NONBLOCKING (r = virStorageVolGetXMLDesc (vol, 0));
-  CHECK_ERROR (!r, conn, "virStorageVolGetXMLDesc");
+  CHECK_ERROR (!r, "virStorageVolGetXMLDesc");
 
   rv = caml_copy_string (r);
   free (r);
@@ -2034,11 +1983,10 @@ ocaml_libvirt_storage_vol_get_path (value volv)
 
   CAMLlocal1 (rv);
   virStorageVolPtr vol = Volume_val (volv);
-  virConnectPtr conn = Connect_volv (volv);
   char *r;
 
   NONBLOCKING (r = virStorageVolGetPath (vol));
-  CHECK_ERROR (!r, conn, "virStorageVolGetPath");
+  CHECK_ERROR (!r, "virStorageVolGetPath");
 
   rv = caml_copy_string (r);
   free (r);
@@ -2056,11 +2004,10 @@ ocaml_libvirt_storage_vol_get_key (value volv)
 
   CAMLlocal1 (rv);
   virStorageVolPtr vol = Volume_val (volv);
-  virConnectPtr conn = Connect_volv (volv);
   const char *r;
 
   NONBLOCKING (r = virStorageVolGetKey (vol));
-  CHECK_ERROR (!r, conn, "virStorageVolGetKey");
+  CHECK_ERROR (!r, "virStorageVolGetKey");
 
   rv = caml_copy_string (r);
   CAMLreturn (rv);
@@ -2077,11 +2024,10 @@ ocaml_libvirt_storage_vol_get_name (value volv)
 
   CAMLlocal1 (rv);
   virStorageVolPtr vol = Volume_val (volv);
-  virConnectPtr conn = Connect_volv (volv);
   const char *r;
 
   NONBLOCKING (r = virStorageVolGetName (vol));
-  CHECK_ERROR (!r, conn, "virStorageVolGetName");
+  CHECK_ERROR (!r, "virStorageVolGetName");
 
   rv = caml_copy_string (r);
   CAMLreturn (rv);
@@ -2098,11 +2044,10 @@ ocaml_libvirt_storage_pool_lookup_by_volume (value volv)
 
   CAMLlocal2 (rv, connv);
   virStorageVolPtr vol = Volume_val (volv);
-  virConnectPtr conn = Connect_volv (volv);
   virStoragePoolPtr r;
 
   NONBLOCKING (r = virStoragePoolLookupByVolume (vol));
-  CHECK_ERROR (!r, conn, "virStoragePoolLookupByVolume");
+  CHECK_ERROR (!r, "virStoragePoolLookupByVolume");
 
   connv = Field (volv, 1);
   rv = Val_pool (r, connv);

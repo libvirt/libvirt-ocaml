@@ -57,14 +57,14 @@ option_default (value option, value deflt)
 #endif
 
 static void
-_raise_virterror (virConnectPtr conn, const char *fn)
+_raise_virterror (const char *fn)
 {
   CAMLparam0 ();
   CAMLlocal1 (rv);
   virErrorPtr errp;
   struct _virError err;
 
-  errp = conn ? virConnGetLastError (conn) : virGetLastError ();
+  errp = virGetLastError ();
 
   if (!errp) {
     /* Fake a _virError structure. */
