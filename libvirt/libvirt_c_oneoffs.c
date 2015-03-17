@@ -1229,12 +1229,9 @@ CAMLprim value
 ocaml_libvirt_init (value unit)
 {
   CAMLparam1 (unit);
-  CAMLlocal1 (rv);
-  int r;
 
   virSetErrorFunc (NULL, ignore_errors);
-  r = virInitialize ();
-  CHECK_ERROR (r == -1, "virInitialize");
+  virInitialize ();
 
   CAMLreturn (Val_unit);
 }
