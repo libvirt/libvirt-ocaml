@@ -25,7 +25,6 @@ typedef value (*Val_ptr_t) (void *);
 static value Val_opt (void *ptr, Val_ptr_t Val_ptr);
 /*static value option_default (value option, value deflt);*/
 static void _raise_virterror (const char *fn) Noreturn;
-static void not_supported (const char *fn) Noreturn;
 static value Val_virterror (virErrorPtr err);
 
 /* Use this around synchronous libvirt API calls to release the OCaml

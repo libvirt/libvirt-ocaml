@@ -84,21 +84,6 @@ _raise_virterror (const char *fn)
   (void) caml__frame;
 }
 
-/* Raise an error if a function is not supported. */
-static void
-not_supported (const char *fn)
-{
-  CAMLparam0 ();
-  CAMLlocal1 (fnv);
-
-  fnv = caml_copy_string (fn);
-  caml_raise_with_arg (*caml_named_value ("ocaml_libvirt_not_supported"), fnv);
-
-  /*NOTREACHED*/
-  /* Suppresses a compiler warning. */
-  (void) caml__frame;
-}
-
 /* Convert the virErrorNumber, virErrorDomain and virErrorLevel enums
  * into values (longs because they are variants in OCaml).
  *
