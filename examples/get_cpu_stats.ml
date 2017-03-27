@@ -19,9 +19,11 @@ let () =
 
     let conn = C.connect_readonly () in
 
+    (*
     let nr_pcpus =
       let info = C.get_node_info conn in
       C.maxcpus_of_node_info info in
+     *)
 
     let stats =
       let dom = D.lookup_by_name conn domname in
