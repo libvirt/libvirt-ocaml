@@ -570,6 +570,7 @@ ocaml_libvirt_domain_get_all_domain_stats (value connv,
   virDomainStatsRecordPtr *rstats;
   unsigned int stats = 0, flags = 0;
   int i, j, r;
+  unsigned char uuid[VIR_UUID_BUFLEN];
 
   /* Get stats and flags. */
   for (; statsv != Val_int (0); statsv = Field (statsv, 1)) {
@@ -619,8 +620,16 @@ ocaml_libvirt_domain_get_all_domain_stats (value connv,
   rv = caml_alloc (r, 0);       /* domain_stats_record array. */
   for (i = 0; i < r; ++i) {
     dsv = caml_alloc (2, 0);    /* domain_stats_record */
-    virDomainRef (rstats[i]->dom);
-    Store_field (dsv, 0, Val_domain (rstats[i]->dom, connv));
+
+    /* Libvirt returns something superficially resembling a
+     * virDomainPtr, but it's not a real virDomainPtr object
+     * (eg. dom->id == -1, and its refcount is wrong).  The only thing
+     * we can safely get from it is the UUID.
+     */
+    v = caml_alloc_string (VIR_UUID_BUFLEN);
+    virDomainGetUUID (rstats[i]->dom, uuid);
+    memcpy (String_val (v), uuid, VIR_UUID_BUFLEN);
+    Store_field (dsv, 0, v);
 
     tpv = caml_alloc (rstats[i]->nparams, 0); /* typed_param array */
     for (j = 0; j < rstats[i]->nparams; ++j) {

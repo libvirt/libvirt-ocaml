@@ -494,8 +494,8 @@ sig
     | StatsState | StatsCpuTotal | StatsBalloon | StatsVcpu
     | StatsInterface | StatsBlock | StatsPerf
 
-  type 'a domain_stats_record = {
-    dom : 'a t;
+  type domain_stats_record = {
+    dom_uuid : uuid;
     params : typed_param array;
   }
 
@@ -636,7 +636,7 @@ sig
 
 	See also {!max_peek}. *)
 
-  external get_all_domain_stats : 'a Connect.t -> stats_type list -> get_all_domain_stats_flag list -> 'a domain_stats_record array = "ocaml_libvirt_domain_get_all_domain_stats"
+  external get_all_domain_stats : [>`R] Connect.t -> stats_type list -> get_all_domain_stats_flag list -> domain_stats_record array = "ocaml_libvirt_domain_get_all_domain_stats"
     (** [get_all_domain_stats conn stats flags] allows you to read
         all stats across multiple/all domains in a single call.
 

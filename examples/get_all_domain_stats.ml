@@ -8,10 +8,11 @@ open Printf
 module C = Libvirt.Connect
 module D = Libvirt.Domain
 
-let print_stats stats =
+let print_stats conn stats =
   try
     Array.iter (
-      fun { D.dom = dom; D.params = params } ->
+      fun { D.dom_uuid = uuid; D.params = params } ->
+        let dom = D.lookup_by_uuid conn uuid in
         printf "domain %s:\n" (D.get_name dom);
         Array.iteri (
           fun i (field, value) ->
@@ -55,7 +56,7 @@ let () =
   while not !quit do
     let stats = D.get_all_domain_stats conn what who in
 
-    if stats <> [||] then print_stats stats
+    if stats <> [||] then print_stats conn stats
     else (
       printf "no guests found\n";
       quit := true

@@ -408,8 +408,8 @@ struct
     | StatsState | StatsCpuTotal | StatsBalloon | StatsVcpu
     | StatsInterface | StatsBlock | StatsPerf
 
-  type 'a domain_stats_record = {
-    dom : 'a t;
+  type domain_stats_record = {
+    dom_uuid : uuid;
     params : typed_param array;
   }
 
@@ -467,7 +467,7 @@ struct
   external block_peek : [>`W] t -> string -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_block_peek_bytecode" "ocaml_libvirt_domain_block_peek_native"
   external memory_peek : [>`W] t -> memory_flag list -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_memory_peek_bytecode" "ocaml_libvirt_domain_memory_peek_native"
 
-  external get_all_domain_stats : 'a Connect.t -> stats_type list -> get_all_domain_stats_flag list -> 'a domain_stats_record array = "ocaml_libvirt_domain_get_all_domain_stats"
+  external get_all_domain_stats : [>`R] Connect.t -> stats_type list -> get_all_domain_stats_flag list -> domain_stats_record array = "ocaml_libvirt_domain_get_all_domain_stats"
 
   external const : [>`R] t -> ro t = "%identity"
 
