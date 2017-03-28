@@ -1,3 +1,4 @@
+.gdb_history
 META
 ocaml-libvirt-*.tar.gz
 ocaml-libvirt-*.exe
@@ -27,6 +28,7 @@ core.*
 *~
 libvirt/libvirt_version.ml
 examples/domain_events
+examples/get_all_domain_stats
 examples/get_cpu_stats
 examples/list_domains
 examples/node_info

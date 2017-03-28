@@ -1,0 +1,65 @@
+(* Example of using Domain.get_all_domain_stats (virConnectGetAllDomainStats).
+ * Usage: get_all_domain_stats
+ * http://libvirt.org/
+ *)
+
+open Printf
+
+module C = Libvirt.Connect
+module D = Libvirt.Domain
+
+let print_stats stats =
+  try
+    Array.iter (
+      fun { D.dom = dom; D.params = params } ->
+        printf "domain %s:\n" (D.get_name dom);
+        Array.iteri (
+          fun i (field, value) ->
+            printf "\t%-20s = " field;
+            (match value with
+             | D.TypedFieldInt32 i -> printf "%ld" i
+             | D.TypedFieldUInt32 i -> printf "%ld" i
+             | D.TypedFieldInt64 i -> printf "%Ld" i
+             | D.TypedFieldUInt64 i -> printf "%Ld" i
+             | D.TypedFieldFloat f -> printf "%g" f
+             | D.TypedFieldBool b -> printf "%b" b
+             | D.TypedFieldString s -> printf "%S" s);
+            printf "\n";
+        ) params;
+        printf "\n"
+    ) stats
+  with
+    Libvirt.Virterror err ->
+      eprintf "error: %s\n" (Libvirt.Virterror.to_string err)
+
+let () =
+  if Array.length Sys.argv <> 1 then (
+    eprintf "error: get_all_domain_stats\n";
+    exit 1
+  );
+
+  let conn = C.connect_readonly () in
+
+  let what_stats = [D.StatsCpuTotal; D.StatsInterface; D.StatsBlock] in
+  let flags = [D.GetAllDomainsStatsActive; D.GetAllDomainsStatsInactive] in
+
+  let quit = ref false in
+
+  while not !quit do
+    let stats = D.get_all_domain_stats conn what_stats flags in
+
+    if stats <> [||] then print_stats stats
+    else (
+      printf "no guests found\n";
+      quit := true
+    );
+    flush stdout;
+
+    (* Run the garbage collector which is a good way to check for
+     * memory corruption errors and reference counting issues in
+     * libvirt.  You shouldn't do this in ordinary programs.
+     *)
+    Gc.compact ();
+
+    if not !quit then Unix.sleep 3
+  done

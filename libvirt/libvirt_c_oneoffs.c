@@ -1,5 +1,5 @@
 /* OCaml bindings for libvirt.
- * (C) Copyright 2007 Richard W.M. Jones, Red Hat Inc.
+ * (C) Copyright 2007-2017 Richard W.M. Jones, Red Hat Inc.
  * http://libvirt.org/
  *
  * This library is free software; you can redistribute it and/or
@@ -183,7 +183,6 @@ ocaml_libvirt_connect_set_keep_alive(value connv,
 
   CAMLreturn(Val_unit);
 }
-
 
 CAMLprim value
 ocaml_libvirt_domain_get_id (value domv)
@@ -558,6 +557,122 @@ ocaml_libvirt_domain_get_cpu_stats (value domv)
   }
   free(params);
   CAMLreturn (cpustats);
+}
+
+value
+ocaml_libvirt_domain_get_all_domain_stats (value connv,
+                                           value statsv, value flagsv)
+{
+  CAMLparam3 (connv, statsv, flagsv);
+  CAMLlocal5 (rv, dsv, tpv, v, v1);
+  CAMLlocal1 (v2);
+  virConnectPtr conn = Connect_val (connv);
+  virDomainStatsRecordPtr *rstats;
+  unsigned int stats = 0, flags = 0;
+  int i, j, r;
+
+  /* Get stats and flags. */
+  for (; statsv != Val_int (0); statsv = Field (statsv, 1)) {
+    v = Field (statsv, 0);
+    if (v == Val_int (0))
+      stats |= VIR_DOMAIN_STATS_STATE;
+    else if (v == Val_int (1))
+      stats |= VIR_DOMAIN_STATS_CPU_TOTAL;
+    else if (v == Val_int (2))
+      stats |= VIR_DOMAIN_STATS_BALLOON;
+    else if (v == Val_int (3))
+      stats |= VIR_DOMAIN_STATS_VCPU;
+    else if (v == Val_int (4))
+      stats |= VIR_DOMAIN_STATS_INTERFACE;
+    else if (v == Val_int (5))
+      stats |= VIR_DOMAIN_STATS_BLOCK;
+    else if (v == Val_int (6))
+      stats |= VIR_DOMAIN_STATS_PERF;
+  }
+  for (; flagsv != Val_int (0); flagsv = Field (flagsv, 1)) {
+    v = Field (flagsv, 0);
+    if (v == Val_int (0))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_ACTIVE;
+    else if (v == Val_int (1))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_INACTIVE;
+    else if (v == Val_int (2))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_OTHER;
+    else if (v == Val_int (3))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_PAUSED;
+    else if (v == Val_int (4))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_PERSISTENT;
+    else if (v == Val_int (5))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_RUNNING;
+    else if (v == Val_int (6))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_SHUTOFF;
+    else if (v == Val_int (7))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_TRANSIENT;
+    else if (v == Val_int (8))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_BACKING;
+    else if (v == Val_int (9))
+      flags |= VIR_CONNECT_GET_ALL_DOMAINS_STATS_ENFORCE_STATS;
+  }
+
+  NONBLOCKING (r = virConnectGetAllDomainStats (conn, stats, &rstats, flags));
+  CHECK_ERROR (r == -1, "virConnectGetAllDomainStats");
+
+  rv = caml_alloc (r, 0);       /* domain_stats_record array. */
+  for (i = 0; i < r; ++i) {
+    dsv = caml_alloc (2, 0);    /* domain_stats_record */
+    virDomainRef (rstats[i]->dom);
+    Store_field (dsv, 0, Val_domain (rstats[i]->dom, connv));
+
+    tpv = caml_alloc (rstats[i]->nparams, 0); /* typed_param array */
+    for (j = 0; j < rstats[i]->nparams; ++j) {
+      v2 = caml_alloc (2, 0);   /* typed_param: field name, value */
+      Store_field (v2, 0, caml_copy_string (rstats[i]->params[j].field));
+
+      switch (rstats[i]->params[j].type) {
+      case VIR_TYPED_PARAM_INT:
+        v1 = caml_alloc (1, 0);
+        v = caml_copy_int32 (rstats[i]->params[j].value.i);
+        break;
+      case VIR_TYPED_PARAM_UINT:
+        v1 = caml_alloc (1, 1);
+        v = caml_copy_int32 (rstats[i]->params[j].value.ui);
+        break;
+      case VIR_TYPED_PARAM_LLONG:
+        v1 = caml_alloc (1, 2);
+        v = caml_copy_int64 (rstats[i]->params[j].value.l);
+        break;
+      case VIR_TYPED_PARAM_ULLONG:
+        v1 = caml_alloc (1, 3);
+        v = caml_copy_int64 (rstats[i]->params[j].value.ul);
+        break;
+      case VIR_TYPED_PARAM_DOUBLE:
+        v1 = caml_alloc (1, 4);
+        v = caml_copy_double (rstats[i]->params[j].value.d);
+        break;
+      case VIR_TYPED_PARAM_BOOLEAN:
+        v1 = caml_alloc (1, 5);
+        v = Val_bool (rstats[i]->params[j].value.b);
+        break;
+      case VIR_TYPED_PARAM_STRING:
+        v1 = caml_alloc (1, 6);
+        v = caml_copy_string (rstats[i]->params[j].value.s);
+        break;
+      default:
+        virDomainStatsRecordListFree (rstats);
+        caml_failwith ("virConnectGetAllDomainStats: "
+                       "unknown parameter type returned");
+      }
+      Store_field (v1, 0, v);
+
+      Store_field (v2, 1, v1);
+      Store_field (tpv, j, v2);
+    }
+
+    Store_field (dsv, 1, tpv);
+    Store_field (rv, i, dsv);
+  }
+
+  virDomainStatsRecordListFree (rstats);
+  CAMLreturn (rv);
 }
 
 CAMLprim value

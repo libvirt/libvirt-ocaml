@@ -27,7 +27,8 @@ OCAMLOPTLIBS	:= $(OCAMLCLIBS)
 export LIBRARY_PATH=../libvirt
 export LD_LIBRARY_PATH=../libvirt
 
-BYTE_TARGETS	:= list_domains node_info get_cpu_stats domain_events
+BYTE_TARGETS	:= list_domains node_info get_cpu_stats \
+		   get_all_domain_stats domain_events
 OPT_TARGETS	:= $(BYTE_TARGETS:%=%.opt)
 
 all: $(BYTE_TARGETS)
@@ -60,6 +61,16 @@ get_cpu_stats: get_cpu_stats.cmo
 	  ../libvirt/mllibvirt.cma -o $@ $<
 
 get_cpu_stats.opt: get_cpu_stats.cmx
+	$(OCAMLFIND) ocamlopt \
+	  $(OCAMLOPTPACKAGES) $(OCAMLOPTFLAGS) $(OCAMLOPTLIBS) \
+	  ../libvirt/mllibvirt.cmxa -o $@ $<
+
+get_all_domain_stats: get_all_domain_stats.cmo
+	$(OCAMLFIND) ocamlc \
+	  $(OCAMLCPACKAGES) $(OCAMLCFLAGS) $(OCAMLCLIBS) \
+	  ../libvirt/mllibvirt.cma -o $@ $<
+
+get_all_domain_stats.opt: get_all_domain_stats.cmx
 	$(OCAMLFIND) ocamlopt \
 	  $(OCAMLOPTPACKAGES) $(OCAMLOPTFLAGS) $(OCAMLOPTLIBS) \
 	  ../libvirt/mllibvirt.cmxa -o $@ $<

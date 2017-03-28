@@ -392,6 +392,27 @@ struct
     tx_drop : int64;
   }
 
+  type get_all_domain_stats_flag =
+    | GetAllDomainsStatsActive
+    | GetAllDomainsStatsInactive
+    | GetAllDomainsStatsOther
+    | GetAllDomainsStatsPaused
+    | GetAllDomainsStatsPersistent
+    | GetAllDomainsStatsRunning
+    | GetAllDomainsStatsShutoff
+    | GetAllDomainsStatsTransient
+    | GetAllDomainsStatsBacking
+    | GetAllDomainsStatsEnforceStats
+
+  type stats_type =
+    | StatsState | StatsCpuTotal | StatsBalloon | StatsVcpu
+    | StatsInterface | StatsBlock | StatsPerf
+
+  type 'a domain_stats_record = {
+    dom : 'a t;
+    params : typed_param array;
+  }
+
   (* The maximum size for Domain.memory_peek and Domain.block_peek
    * supported by libvirt.  This may change with different versions
    * of libvirt in the future, hence it's a function.
@@ -445,6 +466,8 @@ struct
   external interface_stats : [>`R] t -> string -> interface_stats = "ocaml_libvirt_domain_interface_stats"
   external block_peek : [>`W] t -> string -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_block_peek_bytecode" "ocaml_libvirt_domain_block_peek_native"
   external memory_peek : [>`W] t -> memory_flag list -> int64 -> int -> string -> int -> unit = "ocaml_libvirt_domain_memory_peek_bytecode" "ocaml_libvirt_domain_memory_peek_native"
+
+  external get_all_domain_stats : 'a Connect.t -> stats_type list -> get_all_domain_stats_flag list -> 'a domain_stats_record array = "ocaml_libvirt_domain_get_all_domain_stats"
 
   external const : [>`R] t -> ro t = "%identity"
 

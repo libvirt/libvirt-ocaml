@@ -41,6 +41,7 @@ clean:
 	rm -f examples/node_info
 	rm -f examples/get_cpu_stats
 	rm -f examples/domain_events
+	rm -f examples/get_all_domain_stats
 
 distclean: clean
 	rm -f config.h config.log config.status configure

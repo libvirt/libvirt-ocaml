@@ -478,6 +478,27 @@ sig
     tx_drop : int64;
   }
 
+  type get_all_domain_stats_flag =
+    | GetAllDomainsStatsActive
+    | GetAllDomainsStatsInactive
+    | GetAllDomainsStatsOther
+    | GetAllDomainsStatsPaused
+    | GetAllDomainsStatsPersistent
+    | GetAllDomainsStatsRunning
+    | GetAllDomainsStatsShutoff
+    | GetAllDomainsStatsTransient
+    | GetAllDomainsStatsBacking
+    | GetAllDomainsStatsEnforceStats
+
+  type stats_type =
+    | StatsState | StatsCpuTotal | StatsBalloon | StatsVcpu
+    | StatsInterface | StatsBlock | StatsPerf
+
+  type 'a domain_stats_record = {
+    dom : 'a t;
+    params : typed_param array;
+  }
+
   val max_peek : [>`R] t -> int
     (** Maximum size supported by the {!block_peek} and {!memory_peek}
 	functions.  If you want to peek more than this then you must
@@ -614,6 +635,13 @@ sig
 	at offset [boff], for [size] bytes.
 
 	See also {!max_peek}. *)
+
+  external get_all_domain_stats : 'a Connect.t -> stats_type list -> get_all_domain_stats_flag list -> 'a domain_stats_record array = "ocaml_libvirt_domain_get_all_domain_stats"
+    (** [get_all_domain_stats conn stats flags] allows you to read
+        all stats across multiple/all domains in a single call.
+
+        See the libvirt documentation for
+        [virConnectGetAllDomainStats]. *)
 
   external const : [>`R] t -> ro t = "%identity"
     (** [const dom] turns a read/write domain handle into a read-only
