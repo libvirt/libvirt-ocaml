@@ -40,13 +40,20 @@ let () =
 
   let conn = C.connect_readonly () in
 
-  let what_stats = [D.StatsCpuTotal; D.StatsInterface; D.StatsBlock] in
-  let flags = [D.GetAllDomainsStatsActive; D.GetAllDomainsStatsInactive] in
+  let what = [
+    D.StatsState;
+    D.StatsCpuTotal;
+    D.StatsBalloon;
+    D.StatsVcpu;
+    D.StatsInterface;
+    D.StatsBlock;
+  ] in
+  let who = [] in (* empty list means returns all domains *)
 
   let quit = ref false in
 
   while not !quit do
-    let stats = D.get_all_domain_stats conn what_stats flags in
+    let stats = D.get_all_domain_stats conn what who in
 
     if stats <> [||] then print_stats stats
     else (
