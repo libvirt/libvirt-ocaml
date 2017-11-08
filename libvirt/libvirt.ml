@@ -92,13 +92,13 @@ struct
 
   (* See VIR_USE_CPU, VIR_UNUSE_CPU, VIR_CPU_USABLE macros defined in <libvirt.h>. *)
   let use_cpu cpumap cpu =
-    cpumap.[cpu/8] <-
-      Char.chr (Char.code cpumap.[cpu/8] lor (1 lsl (cpu mod 8)))
+    Bytes.set cpumap (cpu/8)
+      (Char.chr (Char.code (Bytes.get cpumap (cpu/8)) lor (1 lsl (cpu mod 8))))
   let unuse_cpu cpumap cpu =
-    cpumap.[cpu/8] <-
-      Char.chr (Char.code cpumap.[cpu/8] land (lnot (1 lsl (cpu mod 8))))
+    Bytes.set cpumap (cpu/8)
+      (Char.chr (Char.code (Bytes.get cpumap (cpu/8)) land (lnot (1 lsl (cpu mod 8)))))
   let cpu_usable cpumaps maplen vcpu cpu =
-    Char.code cpumaps.[vcpu*maplen + cpu/8] land (1 lsl (cpu mod 8)) <> 0
+    Char.code (Bytes.get cpumaps (vcpu*maplen + cpu/8)) land (1 lsl (cpu mod 8)) <> 0
 
   external set_keep_alive : [>`R] t -> int -> int -> unit = "ocaml_libvirt_connect_set_keep_alive"
 

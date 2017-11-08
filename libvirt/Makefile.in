@@ -31,11 +31,11 @@ OCAMLMKLIB	= @OCAMLMKLIB@
 
 ifneq ($(OCAMLFIND),)
 OCAMLCPACKAGES	:= -package unix
-OCAMLCFLAGS	:= -g -warn-error CDEFLMPSUVYZX-3
+OCAMLCFLAGS	:= -g -warn-error CDEFLMPSUVYZX-3 -safe-string
 OCAMLCLIBS	:= -linkpkg
 else
 OCAMLCINCS	:=
-OCAMLCFLAGS	:= -g -warn-error CDEFLMPSUVYZX-3
+OCAMLCFLAGS	:= -g -warn-error CDEFLMPSUVYZX-3 -safe-string
 OCAMLCLIBS	:= unix.cma
 endif
 

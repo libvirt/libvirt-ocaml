@@ -376,11 +376,11 @@ sig
 	CPU map between a single virtual and all physical CPUs of a domain.
     *)
 
-  val use_cpu : string -> int -> unit
+  val use_cpu : bytes -> int -> unit
     (** [use_cpu cpumap cpu] marks [cpu] as usable in [cpumap]. *)
-  val unuse_cpu : string -> int -> unit
+  val unuse_cpu : bytes -> int -> unit
     (** [unuse_cpu cpumap cpu] marks [cpu] as not usable in [cpumap]. *)
-  val cpu_usable : string -> int -> int -> int -> bool
+  val cpu_usable : bytes -> int -> int -> int -> bool
     (** [cpu_usable cpumaps maplen vcpu cpu] checks returns true iff the
 	[cpu] is usable by [vcpu]. *)
 
