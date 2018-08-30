@@ -143,8 +143,8 @@ Val_virconnectcredential (const virConnectCredentialPtr cred)
  * to convert it into VIR_*_UNKNOWN (code).
  */
 
-#define MAX_VIR_CODE 50 /* VIR_ERR_NO_STORAGE_VOL */
-#define MAX_VIR_DOMAIN 17 /* VIR_FROM_STORAGE */
+#define MAX_VIR_CODE 101 /* VIR_ERR_NO_NWFILTER_BINDING */
+#define MAX_VIR_DOMAIN 67 /* VIR_FROM_RESCTRL */
 #define MAX_VIR_LEVEL VIR_ERR_ERROR
 
 static inline value
