@@ -23,6 +23,8 @@
 static char *Optstring_val (value strv);
 typedef value (*Val_ptr_t) (void *);
 static value Val_opt (void *ptr, Val_ptr_t Val_ptr);
+typedef value (*Val_const_ptr_t) (const void *);
+static value Val_opt_const (const void *ptr, Val_const_ptr_t Val_ptr);
 /*static value option_default (value option, value deflt);*/
 static void _raise_virterror (const char *fn) Noreturn;
 static value Val_virterror (virErrorPtr err);

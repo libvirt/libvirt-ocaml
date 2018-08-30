@@ -45,6 +45,22 @@ Val_opt (void *ptr, Val_ptr_t Val_ptr)
   CAMLreturn (optv);
 }
 
+static value
+Val_opt_const (const void *ptr, Val_const_ptr_t Val_ptr)
+{
+  CAMLparam0 ();
+  CAMLlocal2 (optv, ptrv);
+
+  if (ptr) {			/* Some ptr */
+    optv = caml_alloc (1, 0);
+    ptrv = Val_ptr (ptr);
+    Store_field (optv, 0, ptrv);
+  } else			/* None */
+    optv = Val_int (0);
+
+  CAMLreturn (optv);
+}
+
 #if 0
 static value
 option_default (value option, value deflt)
