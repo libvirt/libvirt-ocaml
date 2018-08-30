@@ -284,16 +284,21 @@ ocaml_libvirt_connect_node_get_cells_free_memory (value connv,
   int start = Int_val (startv);
   int max = Int_val (maxv);
   int r, i;
-  unsigned long long freemems[max];
+  unsigned long long *freemems;
+
+  freemems = malloc(sizeof (*freemems) * max);
+  if (freemems == NULL)
+    caml_raise_out_of_memory ();
 
   NONBLOCKING (r = virNodeGetCellsFreeMemory (conn, freemems, start, max));
-  CHECK_ERROR (r == -1, "virNodeGetCellsFreeMemory");
+  CHECK_ERROR_CLEANUP (r == -1, free (freemems), "virNodeGetCellsFreeMemory");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
     iv = caml_copy_int64 ((int64_t) freemems[i]);
     Store_field (rv, i, iv);
   }
+  free (freemems);
 
   CAMLreturn (rv);
 }
@@ -421,11 +426,15 @@ ocaml_libvirt_domain_get_scheduler_parameters (value domv, value nparamsv)
   CAMLlocal4 (rv, v, v2, v3);
   virDomainPtr dom = Domain_val (domv);
   int nparams = Int_val (nparamsv);
-  virSchedParameter params[nparams];
+  virSchedParameterPtr params;
   int r, i;
 
+  params = malloc (sizeof (*params) * nparams);
+  if (params == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = virDomainGetSchedulerParameters (dom, params, &nparams));
-  CHECK_ERROR (r == -1, "virDomainGetSchedulerParameters");
+  CHECK_ERROR_CLEANUP (r == -1, free (params), "virDomainGetSchedulerParameters");
 
   rv = caml_alloc (nparams, 0);
   for (i = 0; i < nparams; ++i) {
@@ -461,6 +470,7 @@ ocaml_libvirt_domain_get_scheduler_parameters (value domv, value nparamsv)
     }
     Store_field (v, 1, v2);
   }
+  free (params);
   CAMLreturn (rv);
 }
 
@@ -471,9 +481,13 @@ ocaml_libvirt_domain_set_scheduler_parameters (value domv, value paramsv)
   CAMLlocal1 (v);
   virDomainPtr dom = Domain_val (domv);
   int nparams = Wosize_val (paramsv);
-  virSchedParameter params[nparams];
+  virSchedParameterPtr params;
   int r, i;
   char *name;
+
+  params = malloc (sizeof (*params) * nparams);
+  if (params == NULL)
+    caml_raise_out_of_memory ();
 
   for (i = 0; i < nparams; ++i) {
     v = Field (paramsv, i);	/* Points to the two-element tuple. */
@@ -512,6 +526,7 @@ ocaml_libvirt_domain_set_scheduler_parameters (value domv, value paramsv)
   }
 
   NONBLOCKING (r = virDomainSetSchedulerParameters (dom, params, nparams));
+  free (params);
   CHECK_ERROR (r == -1, "virDomainSetSchedulerParameters");
 
   CAMLreturn (Val_unit);
@@ -554,15 +569,21 @@ ocaml_libvirt_domain_get_vcpus (value domv, value maxinfov, value maplenv)
   virDomainPtr dom = Domain_val (domv);
   int maxinfo = Int_val (maxinfov);
   int maplen = Int_val (maplenv);
-  virVcpuInfo info[maxinfo];
-  unsigned char cpumaps[maxinfo * maplen];
+  virVcpuInfoPtr info;
+  unsigned char *cpumaps;
   int r, i;
 
-  memset (info, 0, sizeof (virVcpuInfo) * maxinfo);
-  memset (cpumaps, 0, maxinfo * maplen);
+  info = calloc (maxinfo, sizeof (*info));
+  if (info == NULL)
+    caml_raise_out_of_memory ();
+  cpumaps = calloc (maxinfo * maplen, sizeof (*cpumaps));
+  if (cpumaps == NULL) {
+    free (info);
+    caml_raise_out_of_memory ();
+  }
 
   NONBLOCKING (r = virDomainGetVcpus (dom, info, maxinfo, cpumaps, maplen));
-  CHECK_ERROR (r == -1, "virDomainPinVcpu");
+  CHECK_ERROR_CLEANUP (r == -1, free (info); free (cpumaps), "virDomainPinVcpu");
 
   /* Copy the virVcpuInfo structures. */
   infov = caml_alloc (maxinfo, 0);
@@ -583,6 +604,9 @@ ocaml_libvirt_domain_get_vcpus (value domv, value maxinfov, value maplenv)
   Store_field (rv, 0, Val_int (r)); /* number of CPUs. */
   Store_field (rv, 1, infov);
   Store_field (rv, 2, strv);
+
+  free (info);
+  free (cpumaps);
 
   CAMLreturn (rv);
 }

@@ -161,7 +161,7 @@ ocaml_libvirt_connect_list_domains (value connv, value iv)
   CAMLlocal1 (rv);
   virConnectPtr conn = Connect_val (connv);
   int i = Int_val (iv);
-  int ids[i], r;
+  int *ids, r;
 
   /* Some libvirt List* functions still throw exceptions if i == 0,
    * so catch that and return an empty array directly.  This changes
@@ -173,12 +173,17 @@ ocaml_libvirt_connect_list_domains (value connv, value iv)
     CAMLreturn (rv);
   }
 
+  ids = malloc (sizeof (*ids) * i);
+  if (ids == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = virConnectListDomains (conn, ids, i));
-  CHECK_ERROR (r == -1, "virConnectListDomains");
+  CHECK_ERROR_CLEANUP (r == -1, free (ids), "virConnectListDomains");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i)
     Store_field (rv, i, Val_int (ids[i]));
+  free (ids);
 
   CAMLreturn (rv);
 }
@@ -213,7 +218,7 @@ ocaml_libvirt_connect_list_defined_domains (value connv, value iv)
   CAMLlocal2 (rv, strv);
   virConnectPtr conn = Connect_val (connv);
   int i = Int_val (iv);
-  char *names[i];
+  char **names;
   int r;
 
   /* Some libvirt List* functions still throw exceptions if i == 0,
@@ -226,8 +231,12 @@ ocaml_libvirt_connect_list_defined_domains (value connv, value iv)
     CAMLreturn (rv);
   }
 
+  names = malloc (sizeof (*names) * i);
+  if (names == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = virConnectListDefinedDomains (conn, names, i));
-  CHECK_ERROR (r == -1, "virConnectListDefinedDomains");
+  CHECK_ERROR_CLEANUP (r == -1, free (names), "virConnectListDefinedDomains");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -235,6 +244,7 @@ ocaml_libvirt_connect_list_defined_domains (value connv, value iv)
     Store_field (rv, i, strv);
     free (names[i]);
   }
+  free (names);
 
   CAMLreturn (rv);
 }
@@ -269,7 +279,7 @@ ocaml_libvirt_connect_list_networks (value connv, value iv)
   CAMLlocal2 (rv, strv);
   virConnectPtr conn = Connect_val (connv);
   int i = Int_val (iv);
-  char *names[i];
+  char **names;
   int r;
 
   /* Some libvirt List* functions still throw exceptions if i == 0,
@@ -282,8 +292,12 @@ ocaml_libvirt_connect_list_networks (value connv, value iv)
     CAMLreturn (rv);
   }
 
+  names = malloc (sizeof (*names) * i);
+  if (names == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = virConnectListNetworks (conn, names, i));
-  CHECK_ERROR (r == -1, "virConnectListNetworks");
+  CHECK_ERROR_CLEANUP (r == -1, free (names), "virConnectListNetworks");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -291,6 +305,7 @@ ocaml_libvirt_connect_list_networks (value connv, value iv)
     Store_field (rv, i, strv);
     free (names[i]);
   }
+  free (names);
 
   CAMLreturn (rv);
 }
@@ -325,7 +340,7 @@ ocaml_libvirt_connect_list_defined_networks (value connv, value iv)
   CAMLlocal2 (rv, strv);
   virConnectPtr conn = Connect_val (connv);
   int i = Int_val (iv);
-  char *names[i];
+  char **names;
   int r;
 
   /* Some libvirt List* functions still throw exceptions if i == 0,
@@ -338,8 +353,12 @@ ocaml_libvirt_connect_list_defined_networks (value connv, value iv)
     CAMLreturn (rv);
   }
 
+  names = malloc (sizeof (*names) * i);
+  if (names == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = virConnectListDefinedNetworks (conn, names, i));
-  CHECK_ERROR (r == -1, "virConnectListDefinedNetworks");
+  CHECK_ERROR_CLEANUP (r == -1, free (names), "virConnectListDefinedNetworks");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -347,6 +366,7 @@ ocaml_libvirt_connect_list_defined_networks (value connv, value iv)
     Store_field (rv, i, strv);
     free (names[i]);
   }
+  free (names);
 
   CAMLreturn (rv);
 }
@@ -381,7 +401,7 @@ ocaml_libvirt_connect_list_storage_pools (value connv, value iv)
   CAMLlocal2 (rv, strv);
   virConnectPtr conn = Connect_val (connv);
   int i = Int_val (iv);
-  char *names[i];
+  char **names;
   int r;
 
   /* Some libvirt List* functions still throw exceptions if i == 0,
@@ -394,8 +414,12 @@ ocaml_libvirt_connect_list_storage_pools (value connv, value iv)
     CAMLreturn (rv);
   }
 
+  names = malloc (sizeof (*names) * i);
+  if (names == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = virConnectListStoragePools (conn, names, i));
-  CHECK_ERROR (r == -1, "virConnectListStoragePools");
+  CHECK_ERROR_CLEANUP (r == -1, free (names), "virConnectListStoragePools");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -403,6 +427,7 @@ ocaml_libvirt_connect_list_storage_pools (value connv, value iv)
     Store_field (rv, i, strv);
     free (names[i]);
   }
+  free (names);
 
   CAMLreturn (rv);
 }
@@ -437,7 +462,7 @@ ocaml_libvirt_connect_list_defined_storage_pools (value connv, value iv)
   CAMLlocal2 (rv, strv);
   virConnectPtr conn = Connect_val (connv);
   int i = Int_val (iv);
-  char *names[i];
+  char **names;
   int r;
 
   /* Some libvirt List* functions still throw exceptions if i == 0,
@@ -450,8 +475,12 @@ ocaml_libvirt_connect_list_defined_storage_pools (value connv, value iv)
     CAMLreturn (rv);
   }
 
+  names = malloc (sizeof (*names) * i);
+  if (names == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = virConnectListDefinedStoragePools (conn, names, i));
-  CHECK_ERROR (r == -1, "virConnectListDefinedStoragePools");
+  CHECK_ERROR_CLEANUP (r == -1, free (names), "virConnectListDefinedStoragePools");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -459,6 +488,7 @@ ocaml_libvirt_connect_list_defined_storage_pools (value connv, value iv)
     Store_field (rv, i, strv);
     free (names[i]);
   }
+  free (names);
 
   CAMLreturn (rv);
 }
@@ -1795,7 +1825,7 @@ ocaml_libvirt_storage_pool_list_volumes (value poolv, value iv)
   CAMLlocal2 (rv, strv);
   virStoragePoolPtr pool = Pool_val (poolv);
   int i = Int_val (iv);
-  char *names[i];
+  char **names;
   int r;
 
   /* Some libvirt List* functions still throw exceptions if i == 0,
@@ -1808,8 +1838,12 @@ ocaml_libvirt_storage_pool_list_volumes (value poolv, value iv)
     CAMLreturn (rv);
   }
 
+  names = malloc (sizeof (*names) * i);
+  if (names == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = virStoragePoolListVolumes (pool, names, i));
-  CHECK_ERROR (r == -1, "virStoragePoolListVolumes");
+  CHECK_ERROR_CLEANUP (r == -1, free (names), "virStoragePoolListVolumes");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -1817,6 +1851,7 @@ ocaml_libvirt_storage_pool_list_volumes (value poolv, value iv)
     Store_field (rv, i, strv);
     free (names[i]);
   }
+  free (names);
 
   CAMLreturn (rv);
 }

@@ -481,7 +481,7 @@ sub gen_c_code
   CAMLlocal1 (rv);
   virConnectPtr conn = Connect_val (connv);
   int i = Int_val (iv);
-  int ids[i], r;
+  int *ids, r;
 
   /* Some libvirt List* functions still throw exceptions if i == 0,
    * so catch that and return an empty array directly.  This changes
@@ -493,12 +493,17 @@ sub gen_c_code
     CAMLreturn (rv);
   }
 
+  ids = malloc (sizeof (*ids) * i);
+  if (ids == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = $c_name (conn, ids, i));
-  CHECK_ERROR (r == -1, \"$c_name\");
+  CHECK_ERROR_CLEANUP (r == -1, free (ids), \"$c_name\");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i)
     Store_field (rv, i, Val_int (ids[i]));
+  free (ids);
 
   CAMLreturn (rv);
 "
@@ -507,7 +512,7 @@ sub gen_c_code
   CAMLlocal2 (rv, strv);
   " . gen_unpack_args ($1) . "
   int i = Int_val (iv);
-  char *names[i];
+  char **names;
   int r;
 
   /* Some libvirt List* functions still throw exceptions if i == 0,
@@ -520,8 +525,12 @@ sub gen_c_code
     CAMLreturn (rv);
   }
 
+  names = malloc (sizeof (*names) * i);
+  if (names == NULL)
+    caml_raise_out_of_memory ();
+
   NONBLOCKING (r = $c_name ($1, names, i));
-  CHECK_ERROR (r == -1, \"$c_name\");
+  CHECK_ERROR_CLEANUP (r == -1, free (names), \"$c_name\");
 
   rv = caml_alloc (r, 0);
   for (i = 0; i < r; ++i) {
@@ -529,6 +538,7 @@ sub gen_c_code
     Store_field (rv, i, strv);
     free (names[i]);
   }
+  free (names);
 
   CAMLreturn (rv);
 "
