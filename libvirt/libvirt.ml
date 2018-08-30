@@ -1616,4 +1616,9 @@ let () =
     "ocaml_libvirt_virterror" (Virterror (Virterror.no_error ()));
   Callback.register_exception
     "ocaml_libvirt_not_supported" (Not_supported "");
-  c_init ()
+  c_init ();
+  Printexc.register_printer (
+    function
+    | Virterror e -> Some (Virterror.to_string e)
+    | _ -> None
+  )
