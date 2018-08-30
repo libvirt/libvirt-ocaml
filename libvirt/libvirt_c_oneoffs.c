@@ -19,6 +19,10 @@
 
 /* Please read libvirt/README file. */
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wmissing-prototypes"
+#endif
+
 /*----------------------------------------------------------------------*/
 
 CAMLprim value
