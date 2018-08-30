@@ -28,6 +28,8 @@ static value Val_opt_const (const void *ptr, Val_const_ptr_t Val_ptr);
 /*static value option_default (value option, value deflt);*/
 static void _raise_virterror (const char *fn) Noreturn;
 static value Val_virterror (virErrorPtr err);
+static int _list_length (value listv);
+static value Val_virconnectcredential (const virConnectCredentialPtr cred);
 
 /* Use this around synchronous libvirt API calls to release the OCaml
  * lock, allowing other threads to run simultaneously.  'code' must not

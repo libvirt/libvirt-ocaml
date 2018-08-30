@@ -260,6 +260,38 @@ sig
     threads : int;			(** number of threads per core *)
   }
 
+  type credential_type =
+    | CredentialUsername		(** Identity to act as *)
+    | CredentialAuthname		(** Identify to authorize as *)
+    | CredentialLanguage		(** RFC 1766 languages, comma separated *)
+    | CredentialCnonce			(** client supplies a nonce *)
+    | CredentialPassphrase		(** Passphrase secret *)
+    | CredentialEchoprompt		(** Challenge response *)
+    | CredentialNoechoprompt		(** Challenge response *)
+    | CredentialRealm			(** Authentication realm *)
+    | CredentialExternal		(** Externally managed credential *)
+
+  type credential = {
+    typ : credential_type;		(** The type of credential *)
+    prompt : string;			(** Prompt to show to user *)
+    challenge : string option;		(** Additional challenge to show *)
+    defresult : string option;		(** Optional default result *)
+  }
+
+  type auth = {
+    credtype : credential_type list;	(** List of supported credential_type values *)
+    cb : (credential list -> string option list);
+    (** Callback used to collect credentials.
+
+	The input is a list of all the requested credentials.
+
+	The function returns a list of all the results from the
+	requested credentials, so the number of results {e must} match
+	the number of input credentials.  Each result is optional,
+	and in case it is [None] it means there was no result.
+     *)
+  }
+
   val connect : ?name:string -> unit -> rw t
   val connect_readonly : ?name:string -> unit -> ro t
     (** [connect ~name ()] connects to the hypervisor with URI [name].
@@ -268,6 +300,9 @@ sig
 
 	[connect_readonly] is the same but connects in read-only mode.
     *)
+
+  val connect_auth : ?name:string -> auth -> rw t
+  val connect_auth_readonly : ?name:string -> auth -> ro t
 
   val close : [>`R] t -> unit
     (** [close conn] closes and frees the connection object in memory.

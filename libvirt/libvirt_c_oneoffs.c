@@ -76,6 +76,136 @@ ocaml_libvirt_connect_open_readonly (value namev, value unit)
   CAMLreturn (rv);
 }
 
+/* Helper struct holding data needed for the helper C authentication
+ * callback (which will call the actual OCaml callback).
+ */
+struct ocaml_auth_callback_data {
+  value *fvp;                  /* The OCaml auth callback. */
+};
+
+static int
+_ocaml_auth_callback (virConnectCredentialPtr cred, unsigned int ncred, void *cbdata)
+{
+  CAMLparam0 ();
+  CAMLlocal4 (listv, elemv, rv, v);
+  struct ocaml_auth_callback_data *s = cbdata;
+  int i, len;
+
+  listv = Val_emptylist;
+  for (i = ncred - 1; i >= 0; --i) {
+    elemv = caml_alloc (2, 0);
+    Store_field (elemv, 0, Val_virconnectcredential (&cred[i]));
+    Store_field (elemv, 1, listv);
+    listv = elemv;
+  }
+
+  /* Call the auth callback. */
+  rv = caml_callback_exn (*s->fvp, listv);
+  if (Is_exception_result (rv)) {
+    /* The callback raised an exception, so return an error. */
+    CAMLreturnT (int, -1);
+  }
+
+  len = _list_length (rv);
+  if (len != (int) ncred) {
+    /* The callback did not return the same number of results as the
+     * credentials.
+     */
+    CAMLreturnT (int, -1);
+  }
+
+  for (i = 0; rv != Val_emptylist; rv = Field (rv, 1), ++i) {
+    virConnectCredentialPtr c = &cred[i];
+    elemv = Field (rv, 0);
+    if (elemv == Val_int (0)) {
+      c->result = NULL;
+      c->resultlen = 0;
+    } else {
+      v = Field (elemv, 0);
+      len = caml_string_length (v);
+      c->result = malloc (len + 1);
+      if (c->result == NULL)
+        CAMLreturnT (int, -1);
+      memcpy (c->result, String_val (v), len);
+      c->result[len] = '\0';
+      c->resultlen = len;
+    }
+  }
+
+  CAMLreturnT (int, 0);
+}
+
+static virConnectPtr
+_ocaml_libvirt_connect_open_auth_common (value namev, value authv, int flags)
+{
+  CAMLparam2 (namev, authv);
+  CAMLlocal2 (listv, fv);
+  virConnectPtr conn;
+  virConnectAuth auth;
+  struct ocaml_auth_callback_data data;
+  int i;
+  char *name = NULL;
+
+  /* Keep a copy of the 'namev' string, as its value could move around
+   * when calling other OCaml code that allocates memory.
+   */
+  if (namev != Val_int (0)) {  /* Some string */
+    name = strdup (String_val (Field (namev, 0)));
+    if (name == NULL)
+      caml_raise_out_of_memory ();
+  }
+
+  fv = Field (authv, 1);
+  data.fvp = &fv;
+
+  listv = Field (authv, 0);
+  auth.ncredtype = _list_length (listv);
+  auth.credtype = malloc (sizeof (int) * auth.ncredtype);
+  if (auth.credtype == NULL)
+    caml_raise_out_of_memory ();
+  for (i = 0; listv != Val_emptylist; listv = Field (listv, 1), ++i) {
+    auth.credtype[i] = Int_val (Field (listv, 0)) + 1;
+  }
+  auth.cb = &_ocaml_auth_callback;
+  auth.cbdata = &data;
+
+  /* Call virConnectOpenAuth directly, without using the NONBLOCKING
+   * macro, as this will indeed call ocaml_* APIs, and run OCaml code.
+   */
+  conn = virConnectOpenAuth (name, &auth, flags);
+  free (auth.credtype);
+  free (name);
+  CHECK_ERROR (!conn, "virConnectOpenAuth");
+
+  CAMLreturnT (virConnectPtr, conn);
+}
+
+CAMLprim value
+ocaml_libvirt_connect_open_auth (value namev, value authv)
+{
+  CAMLparam2 (namev, authv);
+  CAMLlocal1 (rv);
+  virConnectPtr conn;
+
+  conn = _ocaml_libvirt_connect_open_auth_common (namev, authv, 0);
+  rv = Val_connect (conn);
+
+  CAMLreturn (rv);
+}
+
+CAMLprim value
+ocaml_libvirt_connect_open_auth_readonly (value namev, value authv)
+{
+  CAMLparam2 (namev, authv);
+  CAMLlocal1 (rv);
+  virConnectPtr conn;
+
+  conn = _ocaml_libvirt_connect_open_auth_common (namev, authv, VIR_CONNECT_RO);
+  rv = Val_connect (conn);
+
+  CAMLreturn (rv);
+}
+
 CAMLprim value
 ocaml_libvirt_connect_get_version (value connv)
 {

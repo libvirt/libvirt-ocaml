@@ -100,6 +100,36 @@ _raise_virterror (const char *fn)
   (void) caml__frame;
 }
 
+static int
+_list_length (value listv)
+{
+  CAMLparam1 (listv);
+  int len = 0;
+
+  for (; listv != Val_emptylist; listv = Field (listv, 1), ++len) {}
+
+  CAMLreturnT (int, len);
+}
+
+static value
+Val_virconnectcredential (const virConnectCredentialPtr cred)
+{
+  CAMLparam0 ();
+  CAMLlocal1 (rv);
+
+  rv = caml_alloc (4, 0);
+  Store_field (rv, 0, Val_int (cred->type - 1));
+  Store_field (rv, 1, caml_copy_string (cred->prompt));
+  Store_field (rv, 2,
+               Val_opt_const (cred->challenge,
+                              (Val_const_ptr_t) caml_copy_string));
+  Store_field (rv, 3,
+               Val_opt_const (cred->defresult,
+                              (Val_const_ptr_t) caml_copy_string));
+
+  CAMLreturn (rv);
+}
+
 /* Convert the virErrorNumber, virErrorDomain and virErrorLevel enums
  * into values (longs because they are variants in OCaml).
  *

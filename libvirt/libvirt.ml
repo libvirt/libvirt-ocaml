@@ -48,6 +48,29 @@ struct
     threads : int;
   }
 
+  type credential_type =
+    | CredentialUsername
+    | CredentialAuthname
+    | CredentialLanguage
+    | CredentialCnonce
+    | CredentialPassphrase
+    | CredentialEchoprompt
+    | CredentialNoechoprompt
+    | CredentialRealm
+    | CredentialExternal
+
+  type credential = {
+    typ : credential_type;
+    prompt : string;
+    challenge : string option;
+    defresult : string option;
+  }
+
+  type auth = {
+    credtype : credential_type list;
+    cb : (credential list -> string option list);
+  }
+
   type list_flag =
     | ListNoState | ListRunning | ListBlocked
     | ListPaused | ListShutdown | ListShutoff | ListCrashed
@@ -57,6 +80,8 @@ struct
 
   external connect : ?name:string -> unit -> rw t = "ocaml_libvirt_connect_open"
   external connect_readonly : ?name:string -> unit -> ro t = "ocaml_libvirt_connect_open_readonly"
+  external connect_auth : ?name:string -> auth -> rw t = "ocaml_libvirt_connect_open_auth"
+  external connect_auth_readonly : ?name:string -> auth -> ro t = "ocaml_libvirt_connect_open_auth_readonly"
   external close : [>`R] t -> unit = "ocaml_libvirt_connect_close"
   external get_type : [>`R] t -> string = "ocaml_libvirt_connect_get_type"
   external get_version : [>`R] t -> int = "ocaml_libvirt_connect_get_version"
