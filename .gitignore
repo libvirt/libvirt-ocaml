@@ -26,6 +26,7 @@ core.*
 *.dll
 *.exe
 *~
+libvirt/libvirt_c.c
 libvirt/libvirt_version.ml
 examples/domain_events
 examples/get_all_domain_stats

@@ -47,6 +47,12 @@ AC_SUBST(WARNINGS)
 AC_SUBST(CFLAGS_FPIC)
 AC_SUBST(WIN32)
 
+dnl Check for perl (required).
+AC_CHECK_PROG([PERL],[perl],[perl],[no])
+if test "x$PERL" = "xno"; then
+    AC_MSG_ERROR([Perl must be installed to build])
+fi
+
 dnl Check for libvirt development environment.
 AC_ARG_WITH(libvirt,
 	AC_HELP_STRING([--with-libvirt=PATH],[Set path to installed libvirt]),

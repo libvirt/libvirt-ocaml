@@ -37,6 +37,7 @@ clean:
 	for d in . $(SUBDIRS); do \
 	  (cd $$d; rm -f *.cmi *.cmo *.cmx *.cma *.cmxa *.o *.a *.so *.opt *~ *.dll *.exe core); \
 	done
+	rm -f libvirt/libvirt_c.c
 	rm -f examples/list_domains
 	rm -f examples/node_info
 	rm -f examples/get_cpu_stats

@@ -28,6 +28,7 @@ OCAMLC		= @OCAMLC@
 OCAMLOPT	= @OCAMLOPT@
 OCAMLFIND	= @OCAMLFIND@
 OCAMLMKLIB	= @OCAMLMKLIB@
+PERL		= @PERL@
 
 ifneq ($(OCAMLFIND),)
 OCAMLCPACKAGES	:= -package unix
@@ -100,7 +101,7 @@ endif
 
 # Automatically generate the C code from a Perl script 'generator.pl'.
 libvirt_c.c: generator.pl
-	perl -w $<
+	$(PERL) -w $<
 
 # Extra dependencies.
 libvirt_c.c: libvirt_c_prologue.c
