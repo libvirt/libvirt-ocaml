@@ -10,6 +10,7 @@ COPYING.LIB
 contrib/0001-Add-Libvirt.Domain.get_cpu_stats_total.patch
 examples/.depend
 examples/domain_events.ml
+examples/get_all_domain_stats.ml
 examples/get_cpu_stats.ml
 examples/list_domains.ml
 examples/node_info.ml
@@ -17,7 +18,6 @@ examples/Makefile.in
 install-sh
 libvirt/.depend
 libvirt/generator.pl
-libvirt/libvirt_c.c
 libvirt/libvirt_c_epilogue.c
 libvirt/libvirt_c_oneoffs.c
 libvirt/libvirt_c_prologue.c
