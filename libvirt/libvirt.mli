@@ -534,6 +534,12 @@ sig
     params : typed_param array;
   }
 
+  type xml_desc_flag =
+    | XmlSecure			(* dump security sensitive information too *)
+    | XmlInactive		(* dump inactive domain information *)
+    | XmlUpdateCPU		(* update guest CPU requirements according to host CPU *)
+    | XmlMigratable		(* dump XML suitable for migration *)
+
   val max_peek : [>`R] t -> int
     (** Maximum size supported by the {!block_peek} and {!memory_peek}
 	functions.  If you want to peek more than this then you must
@@ -598,6 +604,9 @@ sig
     (** Get information about a domain. *)
   val get_xml_desc : [>`R] t -> xml
     (** Get the XML description of a domain. *)
+  val get_xml_desc_flags : [>`W] t -> xml_desc_flag list -> xml
+    (** Get the XML description of a domain, with the possibility
+	to specify flags. *)
   val get_scheduler_type : [>`R] t -> string * int
     (** Get the scheduler type. *)
   val get_scheduler_parameters : [>`R] t -> int -> sched_param array

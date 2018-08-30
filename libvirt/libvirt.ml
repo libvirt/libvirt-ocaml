@@ -640,6 +640,12 @@ struct
     params : typed_param array;
   }
 
+  type xml_desc_flag =
+    | XmlSecure
+    | XmlInactive
+    | XmlUpdateCPU
+    | XmlMigratable
+
   (* The maximum size for Domain.memory_peek and Domain.block_peek
    * supported by libvirt.  This may change with different versions
    * of libvirt in the future, hence it's a function.
@@ -673,6 +679,7 @@ struct
   external set_memory : [>`W] t -> int64 -> unit = "ocaml_libvirt_domain_set_memory"
   external get_info : [>`R] t -> info = "ocaml_libvirt_domain_get_info"
   external get_xml_desc : [>`R] t -> xml = "ocaml_libvirt_domain_get_xml_desc"
+  external get_xml_desc_flags : [>`W] t -> xml_desc_flag list -> xml = "ocaml_libvirt_domain_get_xml_desc_flags"
   external get_scheduler_type : [>`R] t -> string * int = "ocaml_libvirt_domain_get_scheduler_type"
   external get_scheduler_parameters : [>`R] t -> int -> sched_param array = "ocaml_libvirt_domain_get_scheduler_parameters"
   external set_scheduler_parameters : [>`W] t -> sched_param array -> unit = "ocaml_libvirt_domain_set_scheduler_parameters"

@@ -977,6 +977,37 @@ ocaml_libvirt_domain_memory_peek_bytecode (value *argv, int argn)
                                                   argv[3], argv[4], argv[5]);
 }
 
+CAMLprim value
+ocaml_libvirt_domain_get_xml_desc_flags (value domv, value flagsv)
+{
+  CAMLparam2 (domv, flagsv);
+  CAMLlocal2 (rv, flagv);
+  virDomainPtr dom = Domain_val (domv);
+  int flags = 0;
+  char *r;
+
+  /* Do flags. */
+  for (; flagsv != Val_int (0); flagsv = Field (flagsv, 1))
+    {
+      flagv = Field (flagsv, 0);
+      if (flagv == Val_int (0))
+        flags |= VIR_DOMAIN_XML_SECURE;
+      else if (flagv == Val_int (1))
+        flags |= VIR_DOMAIN_XML_INACTIVE;
+      else if (flagv == Val_int (2))
+        flags |= VIR_DOMAIN_XML_UPDATE_CPU;
+      else if (flagv == Val_int (3))
+        flags |= VIR_DOMAIN_XML_MIGRATABLE;
+    }
+
+  NONBLOCKING (r = virDomainGetXMLDesc (dom, flags));
+  CHECK_ERROR (!r, "virDomainGetXMLDesc");
+
+  rv = caml_copy_string (r);
+  free (r);
+  CAMLreturn (rv);
+}
+
 /*----------------------------------------------------------------------*/
 
 /* Domain events */
