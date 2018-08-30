@@ -43,11 +43,18 @@ static value Val_virconnectcredential (const virConnectCredentialPtr cred);
     caml_leave_blocking_section ();		\
   } while (0)
 
+/* Empty macro to use as empty parameter for other macros, since
+ * a null token as parameter when calling a macro is not allowed
+ * before C99.
+ */
+#define EMPTY
 /* Check error condition from a libvirt function, and automatically raise
  * an exception if one is found.
  */
+#define CHECK_ERROR_CLEANUP(cond, cleanup, fn) \
+  do { if (cond) { cleanup; _raise_virterror (fn); } } while (0)
 #define CHECK_ERROR(cond, fn) \
-  do { if (cond) _raise_virterror (fn); } while (0)
+  CHECK_ERROR_CLEANUP(cond, EMPTY, fn)
 
 /*----------------------------------------------------------------------*/
 
