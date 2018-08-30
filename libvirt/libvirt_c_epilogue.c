@@ -228,7 +228,7 @@ static void pol_finalize (value);
 static void vol_finalize (value);
 
 static struct custom_operations conn_custom_operations = {
-  "conn_custom_operations",
+  (char *) "conn_custom_operations",
   conn_finalize,
   custom_compare_default,
   custom_hash_default,
@@ -237,7 +237,7 @@ static struct custom_operations conn_custom_operations = {
 };
 
 static struct custom_operations dom_custom_operations = {
-  "dom_custom_operations",
+  (char *) "dom_custom_operations",
   dom_finalize,
   custom_compare_default,
   custom_hash_default,
@@ -247,7 +247,7 @@ static struct custom_operations dom_custom_operations = {
 };
 
 static struct custom_operations net_custom_operations = {
-  "net_custom_operations",
+  (char *) "net_custom_operations",
   net_finalize,
   custom_compare_default,
   custom_hash_default,
@@ -256,7 +256,7 @@ static struct custom_operations net_custom_operations = {
 };
 
 static struct custom_operations pol_custom_operations = {
-  "pol_custom_operations",
+  (char *) "pol_custom_operations",
   pol_finalize,
   custom_compare_default,
   custom_hash_default,
@@ -265,7 +265,7 @@ static struct custom_operations pol_custom_operations = {
 };
 
 static struct custom_operations vol_custom_operations = {
-  "vol_custom_operations",
+  (char *) "vol_custom_operations",
   vol_finalize,
   custom_compare_default,
   custom_hash_default,
