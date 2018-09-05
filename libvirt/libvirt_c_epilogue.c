@@ -20,7 +20,7 @@
 
 /* Please read libvirt/README file. */
 
-static char *
+static const char *
 Optstring_val (value strv)
 {
   if (strv == Val_int (0))	/* None */

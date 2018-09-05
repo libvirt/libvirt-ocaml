@@ -20,7 +20,7 @@
 
 /* Please read libvirt/README file. */
 
-static char *Optstring_val (value strv);
+static const char *Optstring_val (value strv);
 typedef value (*Val_ptr_t) (void *);
 static value Val_opt (void *ptr, Val_ptr_t Val_ptr);
 typedef value (*Val_const_ptr_t) (const void *);
