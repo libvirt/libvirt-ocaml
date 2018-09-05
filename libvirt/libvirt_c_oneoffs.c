@@ -324,6 +324,102 @@ ocaml_libvirt_connect_set_keep_alive(value connv,
 }
 
 CAMLprim value
+ocaml_libvirt_connect_credtypes_from_auth_default (value unitv)
+{
+  CAMLparam1 (unitv);
+  CAMLlocal2 (listv, itemv);
+  int i;
+
+  listv = Val_emptylist;
+
+  if (virConnectAuthPtrDefault) {
+    for (i = virConnectAuthPtrDefault->ncredtype; i >= 0; --i) {
+      const int type = virConnectAuthPtrDefault->credtype[i];
+      itemv = caml_alloc (2, 0);
+      Store_field (itemv, 0, Val_int (type - 1));
+      Store_field (itemv, 1, listv);
+      listv = itemv;
+    }
+  }
+
+  CAMLreturn (listv);
+}
+
+CAMLprim value
+ocaml_libvirt_connect_call_auth_default_callback (value listv)
+{
+  CAMLparam1 (listv);
+  CAMLlocal5 (credv, retv, elemv, optv, v);
+  int i, len, ret;
+  const char *str;
+  virConnectCredentialPtr creds;
+
+  if (virConnectAuthPtrDefault == NULL
+      || virConnectAuthPtrDefault->cb == NULL)
+    CAMLreturn (Val_unit);
+
+  len = _list_length (listv);
+  creds = calloc (len, sizeof (*creds));
+  if (creds == NULL)
+    caml_raise_out_of_memory ();
+  for (i = 0; listv != Val_emptylist; listv = Field (listv, 1), ++i) {
+    virConnectCredentialPtr cred = &creds[i];
+    credv = Field (listv, 0);
+    cred->type = Int_val (Field (credv, 0)) + 1;
+    cred->prompt = strdup (String_val (Field (credv, 1)));
+    if (cred->prompt == NULL)
+      caml_raise_out_of_memory ();
+    str = Optstring_val (Field (credv, 2));
+    if (str) {
+      cred->challenge = strdup (str);
+      if (cred->challenge == NULL)
+        caml_raise_out_of_memory ();
+    }
+    str = Optstring_val (Field (credv, 3));
+    if (str) {
+      cred->defresult = strdup (str);
+      if (cred->defresult == NULL)
+        caml_raise_out_of_memory ();
+    }
+  }
+
+  ret = virConnectAuthPtrDefault->cb (creds, len,
+                                      virConnectAuthPtrDefault->cbdata);
+  if (ret >= 0) {
+    retv = Val_emptylist;
+    for (i = len - 1; i >= 0; --i) {
+      virConnectCredentialPtr cred = &creds[i];
+      elemv = caml_alloc (2, 0);
+      if (cred->result != NULL && cred->resultlen > 0) {
+        v = caml_alloc_string (cred->resultlen);
+        memcpy (String_val (v), cred->result, cred->resultlen);
+        optv = caml_alloc (1, 0);
+        Store_field (optv, 0, v);
+      } else
+        optv = Val_int (0);
+      Store_field (elemv, 0, optv);
+      Store_field (elemv, 1, retv);
+      retv = elemv;
+    }
+  }
+  for (i = 0; i < len; ++i) {
+    virConnectCredentialPtr cred = &creds[i];
+    /* Cast to char *, as the virConnectCredential structs we fill have
+     * const char * qualifiers.
+     */
+    free ((char *) cred->prompt);
+    free ((char *) cred->challenge);
+    free ((char *) cred->defresult);
+  }
+  free (creds);
+
+  if (ret < 0)
+    caml_failwith ("virConnectAuthPtrDefault callback failed");
+
+  CAMLreturn (retv);
+}
+
+CAMLprim value
 ocaml_libvirt_domain_get_id (value domv)
 {
   CAMLparam1 (domv);

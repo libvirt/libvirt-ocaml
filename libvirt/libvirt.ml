@@ -127,6 +127,15 @@ struct
 
   external set_keep_alive : [>`R] t -> int -> int -> unit = "ocaml_libvirt_connect_set_keep_alive"
 
+  (* Internal API needed for get_auth_default. *)
+  external _credtypes_from_auth_default : unit -> credential_type list = "ocaml_libvirt_connect_credtypes_from_auth_default"
+  external _call_auth_default_callback : credential list -> string option list = "ocaml_libvirt_connect_call_auth_default_callback"
+  let get_auth_default () =
+    {
+      credtype = _credtypes_from_auth_default ();
+      cb = _call_auth_default_callback;
+    }
+
   external const : [>`R] t -> ro t = "%identity"
 end
 

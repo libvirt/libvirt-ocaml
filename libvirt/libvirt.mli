@@ -427,6 +427,11 @@ sig
         Note: the client has to implement and run an event loop to
         be able to use keep-alive messages. *)
 
+  val get_auth_default : unit -> auth
+    (** [get_auth_default ()] returns the default authentication handler
+	of libvirt.
+      *)
+
   external const : [>`R] t -> ro t = "%identity"
     (** [const conn] turns a read/write connection into a read-only
 	connection.  Note that the opposite operation is impossible.
