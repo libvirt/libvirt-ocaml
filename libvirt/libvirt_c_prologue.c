@@ -103,6 +103,7 @@ static value Val_virconnectcredential (const virConnectCredentialPtr cred);
 #define Net_val(rv) (*((virNetworkPtr *)Data_custom_val(rv)))
 #define Pol_val(rv) (*((virStoragePoolPtr *)Data_custom_val(rv)))
 #define Vol_val(rv) (*((virStorageVolPtr *)Data_custom_val(rv)))
+#define Sec_val(rv) (*((virSecretPtr *)Data_custom_val(rv)))
 
 /* Wrap up a pointer to something in a custom block. */
 static value Val_connect (virConnectPtr conn);
@@ -110,6 +111,7 @@ static value Val_dom (virDomainPtr dom);
 static value Val_net (virNetworkPtr net);
 static value Val_pol (virStoragePoolPtr pool);
 static value Val_vol (virStorageVolPtr vol);
+static value Val_sec (virSecretPtr sec);
 
 /* Domains and networks are stored as pairs (dom/net, conn), so have
  * some convenience functions for unwrapping and wrapping them.
@@ -118,12 +120,15 @@ static value Val_vol (virStorageVolPtr vol);
 #define Network_val(rv) (Net_val(Field((rv),0)))
 #define Pool_val(rv) (Pol_val(Field((rv),0)))
 #define Volume_val(rv) (Vol_val(Field((rv),0)))
+#define Secret_val(rv) (Sec_val(Field((rv),0)))
 #define Connect_domv(rv) (Connect_val(Field((rv),1)))
 #define Connect_netv(rv) (Connect_val(Field((rv),1)))
 #define Connect_polv(rv) (Connect_val(Field((rv),1)))
 #define Connect_volv(rv) (Connect_val(Field((rv),1)))
+#define Connect_secv(rv) (Connect_val(Field((rv),1)))
 
 static value Val_domain (virDomainPtr dom, value connv);
 static value Val_network (virNetworkPtr net, value connv);
 static value Val_pool (virStoragePoolPtr pol, value connv);
 static value Val_volume (virStorageVolPtr vol, value connv);
+static value Val_secret (virSecretPtr sec, value connv);

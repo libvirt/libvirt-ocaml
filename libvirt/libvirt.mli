@@ -382,6 +382,10 @@ sig
     (* The name of this function is inconsistent, but the inconsistency
      * is really in libvirt itself.
      *)
+  val num_of_secrets : [>`R] t -> int
+    (** Returns the number of secrets. *)
+  val list_secrets : [>`R] t -> int -> string array
+    (** Returns the list of secrets. *)
   val get_node_info : [>`R] t -> node_info
     (** Return information about the physical server. *)
 
@@ -1270,6 +1274,65 @@ sig
       *)
 end
   (** Module dealing with storage volumes. *)
+
+(** {3 Secrets} *)
+
+module Secret :
+sig
+  type 'rw t
+    (** Secret handle. *)
+
+  type secret_usage_type =
+    | NoType
+    | Volume
+    | Ceph
+    | ISCSI
+    | TLS
+    (** Usage type of a secret. *)
+
+  val lookup_by_uuid : 'a Connect.t -> uuid -> 'a t
+    (** Lookup a secret by UUID.  This uses the packed byte array UUID. *)
+  val lookup_by_uuid_string : 'a Connect.t -> string -> 'a t
+    (** Lookup a secret by (string) UUID. *)
+  val lookup_by_usage : 'a Connect.t -> secret_usage_type -> string -> 'a t
+    (** Lookup a secret by usage type, and usage ID. *)
+
+  val define_xml : [>`W] Connect.t -> xml -> rw t
+    (** Define a secret. *)
+
+  val get_uuid : [>`R] t -> uuid
+    (** Get the UUID (as a packed byte array) of the secret. *)
+  val get_uuid_string : [>`R] t -> string
+    (** Get the UUID (as a printable string) of the secret. *)
+  val get_usage_type : [>`R] t -> secret_usage_type
+    (** Get the usage type of the secret. *)
+  val get_usage_id : [>`R] t -> string
+    (** Get the usage ID of the secret. *)
+  val get_xml_desc : [>`R] t -> xml
+    (** Get the XML description. *)
+
+  val set_value : [>`W] t -> bytes -> unit
+    (** Set a new value for the secret. *)
+  val get_value : [>`R] t -> bytes
+    (** Get the value of the secret. *)
+
+  val undefine : [>`W] t -> unit
+    (** Undefine a secret. *)
+
+  val free : [>`R] t -> unit
+    (** Free a secret object in memory.
+
+	The secret object is automatically freed if it is garbage
+	collected.  This function just forces it to be freed right
+	away.
+    *)
+
+  external const : [>`R] t -> ro t = "%identity"
+    (** [const conn] turns a read/write secret into a read-only
+	secret.  Note that the opposite operation is impossible.
+      *)
+end
+  (** Module dealing with secrets. *)
 
 (** {3 Error handling and exceptions} *)
 

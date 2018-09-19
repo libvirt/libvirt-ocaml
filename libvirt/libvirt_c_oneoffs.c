@@ -1582,6 +1582,58 @@ ocaml_libvirt_storage_vol_get_info (value volv)
   CAMLreturn (rv);
 }
 
+CAMLprim value
+ocaml_libvirt_secret_lookup_by_usage (value connv, value usagetypev, value usageidv)
+{
+  CAMLparam3 (connv, usagetypev, usageidv);
+  CAMLlocal1 (rv);
+  virConnectPtr conn = Connect_val (connv);
+  int usageType = Int_val (usagetypev);
+  const char *usageID = String_val (usageidv);
+  virSecretPtr r;
+
+  NONBLOCKING (r = virSecretLookupByUsage (conn, usageType, usageID));
+  CHECK_ERROR (!r, "virSecretLookupByUsage");
+
+  rv = Val_secret (r, connv);
+
+  CAMLreturn (rv);
+}
+
+CAMLprim value
+ocaml_libvirt_secret_set_value (value secv, value vv)
+{
+  CAMLparam2 (secv, vv);
+  virSecretPtr sec = Secret_val (secv);
+  const unsigned char *secval = (unsigned char *) String_val (vv);
+  const size_t size = caml_string_length (vv);
+  int r;
+
+  NONBLOCKING (r = virSecretSetValue (sec, secval, size, 0));
+  CHECK_ERROR (r == -1, "virSecretSetValue");
+
+  CAMLreturn (Val_unit);
+}
+
+CAMLprim value
+ocaml_libvirt_secret_get_value (value secv)
+{
+  CAMLparam1 (secv);
+  CAMLlocal1 (rv);
+  virSecretPtr sec = Secret_val (secv);
+  unsigned char *secval;
+  size_t size = 0;
+
+  NONBLOCKING (secval = virSecretGetValue (sec, &size, 0));
+  CHECK_ERROR (secval == NULL, "virSecretGetValue");
+
+  rv = caml_alloc_string (size);
+  memcpy (String_val (rv), secval, size);
+  free (secval);
+
+  CAMLreturn (rv);
+}
+
 /*----------------------------------------------------------------------*/
 
 CAMLprim value

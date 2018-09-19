@@ -58,6 +58,8 @@ my @functions = (
       sig => "conn : int" },
     { name => "virConnectListDefinedStoragePools",
       sig => "conn, int : string array" },
+    { name => "virConnectNumOfSecrets", sig => "conn : int" },
+    { name => "virConnectListSecrets", sig => "conn, int : string array" },
     { name => "virConnectGetCapabilities", sig => "conn : string" },
     { name => "virConnectDomainEventDeregisterAny",
       sig => "conn, int : unit" },
@@ -169,6 +171,17 @@ my @functions = (
     { name => "virStoragePoolLookupByVolume",
       sig => "vol : pool from vol" },
 
+    { name => "virSecretFree", sig => "sec : free" },
+    { name => "virSecretUndefine", sig => "sec : unit" },
+    { name => "virSecretLookupByUUID", sig => "conn, uuid : sec" },
+    { name => "virSecretLookupByUUIDString", sig => "conn, string : sec" },
+    { name => "virSecretDefineXML", sig => "conn, string, 0 : sec" },
+    { name => "virSecretGetUUID", sig => "sec : uuid" },
+    { name => "virSecretGetUUIDString", sig => "sec : uuid string" },
+    { name => "virSecretGetUsageType", sig => "sec : int" },
+    { name => "virSecretGetUsageID", sig => "sec : static string" },
+    { name => "virSecretGetXMLDesc", sig => "sec, 0 : string" },
+
     );
 
 # Functions we haven't implemented anywhere yet but which are mentioned
@@ -266,6 +279,7 @@ sub short_name_to_c_type
     elsif ($_ eq "net") { "virNetworkPtr" }
     elsif ($_ eq "pool") { "virStoragePoolPtr" }
     elsif ($_ eq "vol") { "virStorageVolPtr" }
+    elsif ($_ eq "sec") { "virSecretPtr" }
     else {
 	die "unknown short name $_"
     }
@@ -350,6 +364,8 @@ sub gen_unpack_args
 	"virStoragePoolPtr pool = Pool_val (poolv);"
     } elsif ($_ eq "vol") {
 	"virStorageVolPtr vol = Volume_val (volv);"
+    } elsif ($_ eq "sec") {
+	"virSecretPtr sec = Secret_val (secv);"
     } else {
 	die "unknown short name $_"
     }
@@ -365,6 +381,7 @@ sub gen_pack_result
     elsif ($_ eq "net") {  "rv = Val_network (r, connv);" }
     elsif ($_ eq "pool") { "rv = Val_pool (r, connv);" }
     elsif ($_ eq "vol") {  "rv = Val_volume (r, connv);" }
+    elsif ($_ eq "sec") {  "rv = Val_secret (r, connv);" }
     else {
 	die "unknown short name $_"
     }
@@ -379,6 +396,7 @@ sub gen_free_arg
     elsif ($_ eq "net") {   "Network_val (netv) = NULL;" }
     elsif ($_ eq "pool") {  "Pool_val (poolv) = NULL;" }
     elsif ($_ eq "vol") {   "Volume_val (volv) = NULL;" }
+    elsif ($_ eq "sec") {   "Secret_val (secv) = NULL;" }
     else {
 	die "unknown short name $_"
     }

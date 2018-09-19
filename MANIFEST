@@ -13,6 +13,7 @@ examples/domain_events.ml
 examples/get_all_domain_stats.ml
 examples/get_cpu_stats.ml
 examples/list_domains.ml
+examples/list_secrets.ml
 examples/node_info.ml
 examples/Makefile.in
 install-sh

@@ -101,6 +101,8 @@ struct
   external list_pools : [>`R] t -> int -> string array = "ocaml_libvirt_connect_list_storage_pools"
   external num_of_defined_pools : [>`R] t -> int = "ocaml_libvirt_connect_num_of_defined_storage_pools"
   external list_defined_pools : [>`R] t -> int -> string array = "ocaml_libvirt_connect_list_defined_storage_pools"
+  external num_of_secrets : [>`R] t -> int = "ocaml_libvirt_connect_num_of_secrets"
+  external list_secrets : [>`R] t -> int -> string array = "ocaml_libvirt_connect_list_secrets"
 
   external get_node_info : [>`R] t -> node_info = "ocaml_libvirt_connect_get_node_info"
   external node_get_free_memory : [> `R] t -> int64 = "ocaml_libvirt_connect_node_get_free_memory"
@@ -1615,6 +1617,32 @@ struct
   external create_xml : [>`W] Pool.t -> xml -> unit = "ocaml_libvirt_storage_vol_create_xml"
   external delete : [>`W] t -> vol_delete_flags -> unit = "ocaml_libvirt_storage_vol_delete"
   external free : [>`R] t -> unit = "ocaml_libvirt_storage_vol_free"
+  external const : [>`R] t -> ro t = "%identity"
+end
+
+module Secret =
+struct
+  type 'rw t
+  type secret_usage_type =
+    | NoType
+    | Volume
+    | Ceph
+    | ISCSI
+    | TLS
+
+  external lookup_by_uuid : 'a Connect.t -> uuid -> 'a t = "ocaml_libvirt_secret_lookup_by_uuid"
+  external lookup_by_uuid_string : 'a Connect.t -> string -> 'a t = "ocaml_libvirt_secret_lookup_by_uuid_string"
+  external lookup_by_usage : 'a Connect.t -> secret_usage_type -> string -> 'a t = "ocaml_libvirt_secret_lookup_by_usage"
+  external define_xml : [>`W] Connect.t -> xml -> rw t = "ocaml_libvirt_secret_define_xml"
+  external get_uuid : [>`R] t -> uuid = "ocaml_libvirt_secret_get_uuid"
+  external get_uuid_string : [>`R] t -> string = "ocaml_libvirt_secret_get_uuid_string"
+  external get_usage_type : [>`R] t -> secret_usage_type = "ocaml_libvirt_secret_get_usage_type"
+  external get_usage_id : [>`R] t -> string = "ocaml_libvirt_secret_get_usage_id"
+  external get_xml_desc : [>`R] t -> xml = "ocaml_libvirt_secret_get_xml_desc"
+  external set_value : [>`W] t -> bytes -> unit = "ocaml_libvirt_secret_set_value"
+  external get_value : [>`R] t -> bytes = "ocaml_libvirt_secret_get_value"
+  external undefine : [>`W] t -> unit = "ocaml_libvirt_secret_undefine"
+  external free : [>`R] t -> unit = "ocaml_libvirt_secret_free"
   external const : [>`R] t -> ro t = "%identity"
 end
 

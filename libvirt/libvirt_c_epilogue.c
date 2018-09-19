@@ -226,6 +226,7 @@ static void dom_finalize (value);
 static void net_finalize (value);
 static void pol_finalize (value);
 static void vol_finalize (value);
+static void sec_finalize (value);
 
 static struct custom_operations conn_custom_operations = {
   (char *) "conn_custom_operations",
@@ -267,6 +268,15 @@ static struct custom_operations pol_custom_operations = {
 static struct custom_operations vol_custom_operations = {
   (char *) "vol_custom_operations",
   vol_finalize,
+  custom_compare_default,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default
+};
+
+static struct custom_operations sec_custom_operations = {
+  (char *) "sec_custom_operations",
+  sec_finalize,
   custom_compare_default,
   custom_hash_default,
   custom_serialize_default,
@@ -328,6 +338,17 @@ Val_vol (virStorageVolPtr vol)
   CAMLreturn (rv);
 }
 
+static value
+Val_sec (virSecretPtr sec)
+{
+  CAMLparam0 ();
+  CAMLlocal1 (rv);
+  rv = caml_alloc_custom (&sec_custom_operations,
+			  sizeof (virSecretPtr), 0, 1);
+  Sec_val (rv) = sec;
+  CAMLreturn (rv);
+}
+
 /* This wraps up the (dom, conn) pair (Domain.t). */
 static value
 Val_domain (virDomainPtr dom, value connv)
@@ -384,6 +405,20 @@ Val_volume (virStorageVolPtr vol, value connv)
   CAMLreturn (rv);
 }
 
+/* This wraps up the (sec, conn) pair (Secret.t). */
+static value
+Val_secret (virSecretPtr sec, value connv)
+{
+  CAMLparam1 (connv);
+  CAMLlocal2 (rv, v);
+
+  rv = caml_alloc_tuple (2);
+  v = Val_sec (sec);
+  Store_field (rv, 0, v);
+  Store_field (rv, 1, connv);
+  CAMLreturn (rv);
+}
+
 static void
 conn_finalize (value connv)
 {
@@ -417,4 +452,11 @@ vol_finalize (value volv)
 {
   virStorageVolPtr vol = Vol_val (volv);
   if (vol) (void) virStorageVolFree (vol);
+}
+
+static void
+sec_finalize (value secv)
+{
+  virSecretPtr sec = Sec_val (secv);
+  if (sec) (void) virSecretFree (sec);
 }
