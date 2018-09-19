@@ -17,7 +17,7 @@ let () =
     );
     let domname = Sys.argv.(1) in
 
-    let conn = C.connect_readonly () in
+    let conn = C.connect_auth_readonly (C.get_auth_default ()) in
 
     (*
     let nr_pcpus =

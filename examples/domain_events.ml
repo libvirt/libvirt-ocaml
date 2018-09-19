@@ -62,7 +62,7 @@ let () =
 	Some (Sys.argv.(1))
       else
 	None in
-    let conn = C.connect_readonly ?name () in
+    let conn = C.connect_auth_readonly ?name (C.get_auth_default ()) in
 
     let spinner = [| '|'; '/'; '-'; '\\' |] in
 

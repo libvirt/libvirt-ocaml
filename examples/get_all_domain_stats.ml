@@ -39,7 +39,7 @@ let () =
     exit 1
   );
 
-  let conn = C.connect_readonly () in
+  let conn = C.connect_auth_readonly (C.get_auth_default ()) in
 
   let what = [
     D.StatsState;
