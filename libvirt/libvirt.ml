@@ -1,6 +1,6 @@
 (* OCaml bindings for libvirt.
    (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
-   http://libvirt.org/
+   https://libvirt.org/
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,7 @@ external get_version : ?driver:string -> unit -> int * int = "ocaml_libvirt_get_
 let uuid_length = 16
 let uuid_string_length = 36
 
-(* http://caml.inria.fr/pub/ml-archives/caml-list/2004/07/80683af867cce6bf8fff273973f70c95.en.html *)
+(* https://caml.inria.fr/pub/ml-archives/caml-list/2004/07/80683af867cce6bf8fff273973f70c95.en.html *)
 type rw = [`R|`W]
 type ro = [`R]
 

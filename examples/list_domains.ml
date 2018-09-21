@@ -1,7 +1,7 @@
 (* Simple demo program showing how to list out domains.
    Usage: list_domains [URI]
    (C) Copyright 2007 Richard W.M. Jones, Red Hat Inc.
-   http://libvirt.org/
+   https://libvirt.org/
  *)
 
 open Printf

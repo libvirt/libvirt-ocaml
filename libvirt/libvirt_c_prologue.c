@@ -1,6 +1,6 @@
 /* OCaml bindings for libvirt.
  * (C) Copyright 2007 Richard W.M. Jones, Red Hat Inc.
- * http://libvirt.org/
+ * https://libvirt.org/
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,7 +34,7 @@ static value Val_virconnectcredential (const virConnectCredentialPtr cred);
 /* Use this around synchronous libvirt API calls to release the OCaml
  * lock, allowing other threads to run simultaneously.  'code' must not
  * perform any caml_* calls, run any OCaml code, or raise any exception.
- * http://web.archive.org/web/20030521020915/http://caml.inria.fr/archives/200106/msg00199.html
+ * https://web.archive.org/web/20030521020915/http://caml.inria.fr/archives/200106/msg00199.html
  */
 #define NONBLOCKING(code)			\
   do {						\

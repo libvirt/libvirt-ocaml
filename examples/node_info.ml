@@ -1,7 +1,7 @@
 (* Simple demo program showing node info.
    Usage: node_info [URI]
    (C) Copyright 2007 Richard W.M. Jones, Red Hat Inc.
-   http://libvirt.org/
+   https://libvirt.org/
  *)
 
 open Printf

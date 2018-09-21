@@ -2,7 +2,7 @@
 #
 # OCaml bindings for libvirt.
 # (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
-# http://libvirt.org/
+# https://libvirt.org/
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -213,7 +213,7 @@ print F <<'END';
 
 /* OCaml bindings for libvirt.
  * (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
- * http://libvirt.org/
+ * https://libvirt.org/
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

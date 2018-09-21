@@ -1,6 +1,6 @@
 (* List CPU stats for a domain.
  * Usage: get_cpu_stats domain
- * http://libvirt.org/
+ * https://libvirt.org/
  *)
 
 open Printf

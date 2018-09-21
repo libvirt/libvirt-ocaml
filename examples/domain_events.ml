@@ -2,7 +2,7 @@
    Usage: domain_events [URI]
    (C) Copyright 2007 Richard W.M. Jones, Red Hat Inc.
    (C) Copyright 2013 Citrix Inc
-   http://libvirt.org/
+   https://libvirt.org/
  *)
 
 open Printf

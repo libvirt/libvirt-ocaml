@@ -1,6 +1,6 @@
 (** OCaml bindings for libvirt. *)
 (* (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
-   http://libvirt.org/
+   https://libvirt.org/
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -22,7 +22,7 @@
    {2 Introduction and examples}
 
    This is a set of bindings for writing OCaml programs to
-   manage virtual machines through {{:http://libvirt.org/}libvirt}.
+   manage virtual machines through {{:https://libvirt.org/}libvirt}.
 
    {3 Using libvirt interactively}
 
@@ -58,7 +58,7 @@ v}
 
    The main modules are {!Libvirt.Connect}, {!Libvirt.Domain} and
    {!Libvirt.Network} corresponding respectively to the
-   {{:http://libvirt.org/html/libvirt-libvirt.html}virConnect*, virDomain* and virNetwork* functions from libvirt}.
+   {{:https://libvirt.org/html/libvirt-libvirt.html}virConnect*, virDomain* and virNetwork* functions from libvirt}.
    For brevity I usually rename these modules like this:
 
 {[
@@ -211,7 +211,7 @@ val uuid_string_length : int
 type rw = [`R|`W]
 type ro = [`R]
     (** These
-	{{:http://caml.inria.fr/pub/ml-archives/caml-list/2004/07/80683af867cce6bf8fff273973f70c95.en.html}phantom types}
+	{{:https://caml.inria.fr/pub/ml-archives/caml-list/2004/07/80683af867cce6bf8fff273973f70c95.en.html}phantom types}
 	are used to ensure the type-safety of read-only
 	versus read-write connections.
 
@@ -1587,7 +1587,7 @@ exception Not_supported of string
     not supported at either compile or run time.  This applies to
     any libvirt function added after version 0.2.1.
 
-    See also {{:http://libvirt.org/hvsupport.html}http://libvirt.org/hvsupport.html}
+    See also {{:https://libvirt.org/hvsupport.html}https://libvirt.org/hvsupport.html}
 *)
 
 (** {3 Utility functions} *)

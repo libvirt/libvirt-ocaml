@@ -1,7 +1,7 @@
 (* Simple demo program showing how to list out secrets.
    Usage: list_secrets [URI]
    (C) Copyright 2018 Pino Toscano, Red Hat Inc.
-   http://libvirt.org/
+   https://libvirt.org/
  *)
 
 open Printf

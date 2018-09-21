@@ -1,6 +1,6 @@
 (* Example of using Domain.get_all_domain_stats (virConnectGetAllDomainStats).
  * Usage: get_all_domain_stats
- * http://libvirt.org/
+ * https://libvirt.org/
  *)
 
 open Printf
