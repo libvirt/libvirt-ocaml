@@ -131,8 +131,8 @@ printf "uri = %s\n%!" uri
     or if your pure OCaml program ever segfaults, please contact the author.
 
     You can force a libvirt object to be freed early by calling
-    the [close] function on the object.  This shouldn't affect
-    the safety of garbage collection and should only be used when
+    the {!Libvirt.Connect.close} function on the object.  This shouldn't
+    affect the safety of garbage collection and should only be used when
     you want to explicitly free memory.  Note that explicitly
     closing a connection object does nothing if there are still
     unclosed domain or network objects referencing it.
@@ -202,7 +202,7 @@ val get_version : ?driver:string -> unit -> int * int
       in the second part.
 
       The version numbers are encoded as
-      1,000,000 * major + 1,000 * minor + release.
+      [major * 1_000_000 + minor * 1000 + release].
   *)
 
 val uuid_length : int
@@ -296,16 +296,33 @@ sig
   }
 
   val connect : ?name:string -> unit -> rw t
-  val connect_readonly : ?name:string -> unit -> ro t
     (** [connect ~name ()] connects to the hypervisor with URI [name].
 
 	[connect ()] connects to the default hypervisor.
+    *)
+  val connect_readonly : ?name:string -> unit -> ro t
+    (** [connect_readonly ~name ()] connects in read-only mode
+	to the hypervisor with URI [name].
 
-	[connect_readonly] is the same but connects in read-only mode.
+	[connect_readonly ()] connects in read-only mode to the
+	default hypervisor.
     *)
 
   val connect_auth : ?name:string -> auth -> rw t
+    (** [connect_auth ~name auth] connects to the hypervisor with URI
+	[name], using [auth] as authentication handler.
+
+	[connect_auth auth] connects to the default hypervisor, using
+	[auth] as authentication handler.
+    *)
   val connect_auth_readonly : ?name:string -> auth -> ro t
+    (** [connect_auth_readonly ~name auth] connects in read-only mode
+	to the hypervisor with URI [name], using [auth] as authentication
+	handler.
+
+	[connect_auth_readonly auth] connects in read-only mode to the
+	default hypervisor, using [auth] as authentication handler.
+    *)
 
   val close : [>`R] t -> unit
     (** [close conn] closes and frees the connection object in memory.
@@ -547,10 +564,10 @@ sig
   }
 
   type xml_desc_flag =
-    | XmlSecure			(* dump security sensitive information too *)
-    | XmlInactive		(* dump inactive domain information *)
-    | XmlUpdateCPU		(* update guest CPU requirements according to host CPU *)
-    | XmlMigratable		(* dump XML suitable for migration *)
+    | XmlSecure			(** dump security sensitive information too *)
+    | XmlInactive		(** dump inactive domain information *)
+    | XmlUpdateCPU		(** update guest CPU requirements according to host CPU *)
+    | XmlMigratable		(** dump XML suitable for migration *)
 
   val max_peek : [>`R] t -> int
     (** Maximum size supported by the {!block_peek} and {!memory_peek}
@@ -559,7 +576,8 @@ sig
 
   val create_linux : [>`W] Connect.t -> xml -> rw t
     (** Create a new guest domain (not necessarily a Linux one)
-	from the given XML.  Use {!create_xml} instead.
+	from the given XML.
+	@deprecated Use {!create_xml} instead.
     *)
   val create_xml : [>`W] Connect.t -> xml -> domain_create_flag list -> rw t
     (** Create a new guest domain from the given XML. *)
@@ -1063,7 +1081,7 @@ sig
         to receive notification of arbitrary domain events. Return
         a registration id which can be used in [deregister_any].
 
-        If [?dom] is None then register for this kind of event on
+        If [?dom] is [None] then register for this kind of event on
         all domains. If [dom] is [Some d] then register for this
         kind of event only on [d].
     *)
@@ -1446,7 +1464,7 @@ sig
     | VIR_ERR_NO_NWFILTER_BINDING
 	(* ^^ NB: If you add a variant you MUST edit
 	   libvirt_c_epilogue.c:MAX_VIR_* *)
-    | VIR_ERR_UNKNOWN of int
+    | VIR_ERR_UNKNOWN of int (** Other error, not handled with existing values. *)
 	(** See [<libvirt/virterror.h>] for meaning of these codes. *)
 
   val string_of_code : code -> string
@@ -1522,7 +1540,7 @@ sig
     | VIR_FROM_RESCTRL
 	(* ^^ NB: If you add a variant you MUST edit
 	   libvirt_c_epilogue.c: MAX_VIR_* *)
-    | VIR_FROM_UNKNOWN of int
+    | VIR_FROM_UNKNOWN of int (** Other domain, not handled with existing values. *)
 	(** Subsystem / driver which produced the error. *)
 
   val string_of_domain : domain -> string
@@ -1532,7 +1550,7 @@ sig
     | VIR_ERR_WARNING
     | VIR_ERR_ERROR
 	(* ^^ NB: If you add a variant you MUST edit libvirt_c.c: MAX_VIR_* *)
-    | VIR_ERR_UNKNOWN_LEVEL of int
+    | VIR_ERR_UNKNOWN_LEVEL of int (** Other level, not handled with existing values. *)
 	(** No error, a warning or an error. *)
 
   val string_of_level : level -> string

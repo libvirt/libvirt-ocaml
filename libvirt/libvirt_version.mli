@@ -18,9 +18,12 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 *)
 
+(** Information on OCaml-libvirt itself. *)
+
 val package : string
+(** The name of the OCaml libvirt bindings. *)
 val version : string
-(** The name and version of the OCaml libvirt bindings.
+(** The version of the OCaml libvirt bindings.
 
     (To get the version of libvirt C library itself
      use {!Libvirt.get_version}). *)
