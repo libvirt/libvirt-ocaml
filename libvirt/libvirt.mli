@@ -58,7 +58,10 @@ v}
 
    The main modules are {!Libvirt.Connect}, {!Libvirt.Domain} and
    {!Libvirt.Network} corresponding respectively to the
-   {{:https://libvirt.org/html/libvirt-libvirt.html}virConnect*, virDomain* and virNetwork* functions from libvirt}.
+   {{:https://libvirt.org/html/libvirt-libvirt-host.html}virConnect*},
+   {{:https://libvirt.org/html/libvirt-libvirt-domain.html}virDomain*}, and
+   {{:https://libvirt.org/html/libvirt-libvirt-network.html}virNetwork*}
+   functions from libvirt.
    For brevity I usually rename these modules like this:
 
 {[
