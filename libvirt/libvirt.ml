@@ -556,7 +556,7 @@ struct
 
   type state =
     | InfoNoState | InfoRunning | InfoBlocked | InfoPaused
-    | InfoShutdown | InfoShutoff | InfoCrashed
+    | InfoShutdown | InfoShutoff | InfoCrashed | InfoPMSuspended
 
   type info = {
     state : state;
@@ -1560,7 +1560,7 @@ end
 module Pool =
 struct
   type 'rw t
-  type pool_state = Inactive | Building | Running | Degraded
+  type pool_state = Inactive | Building | Running | Degraded | Inaccessible
   type pool_build_flags = New | Repair | Resize
   type pool_delete_flags = Normal | Zeroed
   type pool_info = {
@@ -1597,7 +1597,7 @@ end
 module Volume =
 struct
   type 'rw t
-  type vol_type = File | Block
+  type vol_type = File | Block | Dir | Network | NetDir | Ploop
   type vol_delete_flags = Normal | Zeroed
   type vol_info = {
     typ : vol_type;

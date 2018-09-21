@@ -20,6 +20,7 @@ let string_of_state = function
   | D.InfoShutdown -> "shutdown"
   | D.InfoShutoff -> "shutoff"
   | D.InfoCrashed -> "crashed"
+  | D.InfoPMSuspended -> "pm suspended"
 
 let printd dom fmt =
   let prefix dom =

@@ -458,7 +458,7 @@ sig
 
   type state =
     | InfoNoState | InfoRunning | InfoBlocked | InfoPaused
-    | InfoShutdown | InfoShutoff | InfoCrashed
+    | InfoShutdown | InfoShutoff | InfoCrashed | InfoPMSuspended
 
   type info = {
     state : state;		        (** running state *)
@@ -1149,7 +1149,7 @@ sig
   type 'rw t
     (** Storage pool handle. *)
 
-  type pool_state = Inactive | Building | Running | Degraded
+  type pool_state = Inactive | Building | Running | Degraded | Inaccessible
     (** State of the storage pool. *)
 
   type pool_build_flags = New | Repair | Resize
@@ -1228,7 +1228,7 @@ sig
   type 'rw t
     (** Storage volume handle. *)
 
-  type vol_type = File | Block
+  type vol_type = File | Block | Dir | Network | NetDir | Ploop
     (** Type of a storage volume. *)
 
   type vol_delete_flags = Normal | Zeroed
