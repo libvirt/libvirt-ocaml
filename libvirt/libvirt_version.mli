@@ -1,6 +1,6 @@
-(** OCaml bindings for libvirt.
-    (C) Copyright 2007 Richard W.M. Jones, Red Hat Inc.
-    http://libvirt.org/
+(* OCaml bindings for libvirt.
+   (C) Copyright 2007 Richard W.M. Jones, Red Hat Inc.
+   http://libvirt.org/
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
