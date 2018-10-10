@@ -24,9 +24,6 @@ OCAMLOPTPACKAGES := $(OCAMLCPACKAGES)
 OCAMLOPTFLAGS	:= -g -warn-error CDEFLMPSUVYZX-3
 OCAMLOPTLIBS	:= $(OCAMLCLIBS)
 
-export LIBRARY_PATH=../libvirt
-export LD_LIBRARY_PATH=../libvirt
-
 BYTE_TARGETS	:= list_domains list_secrets node_info get_cpu_stats \
 		   get_all_domain_stats domain_events
 OPT_TARGETS	:= $(BYTE_TARGETS:%=%.opt)

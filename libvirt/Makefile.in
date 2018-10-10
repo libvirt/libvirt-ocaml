@@ -49,9 +49,6 @@ OCAMLOPTINCS	:= $(OCAMLCINCS)
 OCAMLOPTLIBS	:= unix.cmxa
 endif
 
-export LIBRARY_PATH=.
-export LD_LIBRARY_PATH=.
-
 BYTE_TARGETS	:= mllibvirt.cma
 OPT_TARGETS	:= mllibvirt.cmxa
 
