@@ -82,11 +82,10 @@ if test "x$OCAMLFIND" = "x"; then
     AC_MSG_ERROR([OCaml findlib is required])
 fi
 
-dnl Use ocamlfind to find the required packages ...
-
 dnl Check for required OCaml packages.
+OCAML_PKG_unix=no
 AC_CHECK_OCAML_PKG(unix)
-if test "x$pkg_unix" != "xyes"; then
+if test "x$OCAML_PKG_unix" = "xno"; then
     AC_MSG_ERROR([Cannot find required OCaml package 'unix'])
 fi
 
