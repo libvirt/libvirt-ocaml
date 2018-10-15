@@ -18,6 +18,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(ocaml-libvirt,0.6.1.4)
+AC_CONFIG_MACRO_DIRS([m4])
 
 dnl Check for basic C environment.
 AC_PROG_CC
