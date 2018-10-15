@@ -23,7 +23,7 @@ INSTALL		= @INSTALL@
 MAKENSIS	= @MAKENSIS@
 
 OCAMLDOC        = @OCAMLDOC@
-OCAMLDOCFLAGS	:= -html -sort
+OCAMLDOCFLAGS	:= -html -sort -colorize-code
 
 SUBDIRS		= libvirt examples
 
