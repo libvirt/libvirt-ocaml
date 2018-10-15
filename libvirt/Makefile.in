@@ -18,10 +18,12 @@
 WIN32		= @WIN32@
 
 CFLAGS		= @CFLAGS@ \
+		   @LIBVIRT_CFLAGS@ \
 		   -I.. \
 		   -I"$(shell ocamlc -where)" \
 		   @DEBUG@ @WARNINGS@ @CFLAGS_FPIC@
-LDFLAGS		= @LDFLAGS@
+LDFLAGS		= @LDFLAGS@ \
+		   @LIBVIRT_LIBS@
 #		   -L"$(shell ocamlc -where)"
 
 OCAMLC		= @OCAMLC@
@@ -62,10 +64,10 @@ OPTOBJS := libvirt.cmx libvirt_version.cmx
 ifneq ($(OCAMLMKLIB),)
 # Good, we can just use ocamlmklib
 mllibvirt.cma: libvirt_c.o $(COBJS)
-	$(OCAMLMKLIB) -o mllibvirt $^ $(LDFLAGS) -lvirt
+	$(OCAMLMKLIB) -o mllibvirt $^ $(LDFLAGS)
 
 mllibvirt.cmxa: libvirt_c.o $(OPTOBJS)
-	$(OCAMLMKLIB) -o mllibvirt $^ $(LDFLAGS) -lvirt
+	$(OCAMLMKLIB) -o mllibvirt $^ $(LDFLAGS)
 
 else
 ifeq ($(WIN32),yes)
@@ -74,15 +76,15 @@ ifeq ($(WIN32),yes)
 
 mllibvirt.cma: dllmllibvirt.dll libmllibvirt.a $(COBJS)
 	$(OCAMLC) -a -linkall -o $@ $(COBJS) \
-	  -dllib -lmllibvirt -cclib -lmllibvirt -cclib "$(LDFLAGS) -lvirt"
+	  -dllib -lmllibvirt -cclib -lmllibvirt -cclib "$(LDFLAGS)"
 
 mllibvirt.cmxa: libmllibvirt.a $(OPTOBJS)
 	$(OCAMLOPT) -a -linkall -o $@ $(OPTOBJS) \
-	  -cclib -lmllibvirt -cclib "$(LDFLAGS) -lvirt"
+	  -cclib -lmllibvirt -cclib "$(LDFLAGS)"
 
 dllmllibvirt.dll: libvirt_c.o
 	$(CC) -shared -o $@ $^ \
-	  $(LDFLAGS) "$(shell ocamlc -where)"/ocamlrun.a -lvirt
+	  $(LDFLAGS) "$(shell ocamlc -where)"/ocamlrun.a
 
 libmllibvirt.a: libvirt_c.o
 	ar rc $@ $^

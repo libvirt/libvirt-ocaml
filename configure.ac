@@ -55,24 +55,8 @@ if test "x$PERL" = "xno"; then
 fi
 
 dnl Check for libvirt development environment.
-AC_ARG_WITH(libvirt,
-	AC_HELP_STRING([--with-libvirt=PATH],[Set path to installed libvirt]),
-	[if test "x$withval" != "x"; then
-	   CFLAGS="$CFLAGS -I$withval/include"
-	   LDFLAGS="$LDFLAGS -L$withval/lib"
-	 fi
-	])
-AC_CHECK_LIB(virt,virConnectOpen,
-	[],
-	AC_MSG_ERROR([You must install libvirt library]))
-AC_CHECK_HEADER([libvirt/libvirt.h],
-	[],
-	AC_MSG_ERROR([You must install libvirt development package]))
-
-dnl We also use <libvirt/virterror.h>
-AC_CHECK_HEADER([libvirt/virterror.h],
-	[],
-	AC_MSG_ERROR([You must install libvirt development package]))
+PKG_PROG_PKG_CONFIG
+PKG_CHECK_MODULES([LIBVIRT], [libvirt >= 1.0.2])
 
 dnl Check for basic OCaml environment & findlib.
 AC_PROG_OCAML
