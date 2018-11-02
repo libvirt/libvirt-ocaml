@@ -153,7 +153,7 @@ Val_err_number (virErrorNumber code)
   CAMLparam0 ();
   CAMLlocal1 (rv);
 
-  if (0 <= code && code <= MAX_VIR_CODE)
+  if (0 <= (int) code && code <= MAX_VIR_CODE)
     rv = Val_int (code);
   else {
     rv = caml_alloc (1, 0);	/* VIR_ERR_UNKNOWN (code) */
@@ -169,7 +169,7 @@ Val_err_domain (virErrorDomain code)
   CAMLparam0 ();
   CAMLlocal1 (rv);
 
-  if (0 <= code && code <= MAX_VIR_DOMAIN)
+  if (0 <= (int) code && code <= MAX_VIR_DOMAIN)
     rv = Val_int (code);
   else {
     rv = caml_alloc (1, 0);	/* VIR_FROM_UNKNOWN (code) */
@@ -185,7 +185,7 @@ Val_err_level (virErrorLevel code)
   CAMLparam0 ();
   CAMLlocal1 (rv);
 
-  if (0 <= code && code <= MAX_VIR_LEVEL)
+  if (0 <= (int) code && code <= MAX_VIR_LEVEL)
     rv = Val_int (code);
   else {
     rv = caml_alloc (1, 0);	/* VIR_ERR_UNKNOWN_LEVEL (code) */
