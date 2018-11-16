@@ -42,7 +42,7 @@ list_domains.opt: list_domains.cmx
 	  $(OCAMLOPTPACKAGES) $(OCAMLOPTFLAGS) $(OCAMLOPTLIBS) \
 	  ../libvirt/mllibvirt.cmxa -o $@ $<
 
-list_secrets: list_secrets
+list_secrets: list_secrets.cmo
 	$(OCAMLFIND) ocamlc \
 	  $(OCAMLCPACKAGES) $(OCAMLCFLAGS) $(OCAMLCLIBS) \
 	  ../libvirt/mllibvirt.cma -o $@ $<
