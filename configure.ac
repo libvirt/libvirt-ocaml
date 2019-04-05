@@ -56,7 +56,7 @@ fi
 
 dnl Check for libvirt development environment.
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES([LIBVIRT], [libvirt >= 1.0.2])
+PKG_CHECK_MODULES([LIBVIRT], [libvirt >= 1.2.8])
 
 dnl Check for basic OCaml environment & findlib.
 AC_PROG_OCAML

@@ -145,7 +145,7 @@ printf "uri = %s\n%!" uri
 
     {3 Backwards and forwards compatibility}
 
-    OCaml-libvirt requires libvirt version 1.0.2 or later. Future
+    OCaml-libvirt requires libvirt version 1.2.8 or later. Future
     releases of OCaml-libvirt will use newer features of libvirt
     and therefore will require later versions of libvirt. It is always
     possible to dynamically link your application against a newer
