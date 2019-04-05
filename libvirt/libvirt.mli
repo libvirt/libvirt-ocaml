@@ -1478,6 +1478,9 @@ sig
     | VIR_ERR_DEVICE_MISSING
     | VIR_ERR_INVALID_NWFILTER_BINDING
     | VIR_ERR_NO_NWFILTER_BINDING
+    | VIR_ERR_INVALID_DOMAIN_CHECKPOINT
+    | VIR_ERR_NO_DOMAIN_CHECKPOINT
+    | VIR_ERR_NO_DOMAIN_BACKUP
 	(* ^^ NB: If you add a variant you MUST edit
 	   libvirt_c_epilogue.c:MAX_VIR_* *)
     | VIR_ERR_UNKNOWN of int (** Other error, not handled with existing values. *)
@@ -1554,6 +1557,8 @@ sig
     | VIR_FROM_PERF
     | VIR_FROM_LIBSSH
     | VIR_FROM_RESCTRL
+    | VIR_FROM_FIREWALLD
+    | VIR_FROM_DOMAIN_CHECKPOINT
 	(* ^^ NB: If you add a variant you MUST edit
 	   libvirt_c_epilogue.c: MAX_VIR_* *)
     | VIR_FROM_UNKNOWN of int (** Other domain, not handled with existing values. *)
