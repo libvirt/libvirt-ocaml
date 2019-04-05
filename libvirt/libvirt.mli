@@ -456,6 +456,22 @@ sig
 	of libvirt.
       *)
 
+  val get_domain_capabilities : ?emulatorbin:string -> ?arch:string -> ?machine:string -> ?virttype:string -> [>`R] t -> string
+    (** [get_domain_capabilities ()] returns the XML with the
+	available capabilities of the emulator or libvirt for domains.
+
+	The optional flag [?emulatorbin] is used to specify a different
+	emulator.
+
+	The optional flag [?arch] is used to specify a different
+	architecture.
+
+	The optional flag [?machine] is used to specify a different
+	machine type.
+
+	The optional flag [?virttype] is used to specify a different
+	type of virtualization. *)
+
   external const : [>`R] t -> ro t = "%identity"
     (** [const conn] turns a read/write connection into a read-only
 	connection.  Note that the opposite operation is impossible.

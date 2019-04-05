@@ -138,6 +138,8 @@ struct
       cb = _call_auth_default_callback;
     }
 
+  external get_domain_capabilities : ?emulatorbin:string -> ?arch:string -> ?machine:string -> ?virttype:string -> [>`R] t -> string = "ocaml_libvirt_connect_get_domain_capabilities"
+
   external const : [>`R] t -> ro t = "%identity"
 end
 

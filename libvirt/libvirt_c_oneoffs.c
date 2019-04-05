@@ -420,6 +420,22 @@ ocaml_libvirt_connect_call_auth_default_callback (value listv)
 }
 
 CAMLprim value
+ocaml_libvirt_connect_get_domain_capabilities (value emulatorbinv, value archv, value machinev, value virttypev, value connv)
+{
+  CAMLparam5 (emulatorbinv, archv, machinev, virttypev, connv);
+  CAMLlocal1 (rv);
+  virConnectPtr conn = Connect_val (connv);
+  char *r;
+
+  NONBLOCKING (r = virConnectGetDomainCapabilities (conn, Optstring_val (emulatorbinv), Optstring_val (archv), Optstring_val (machinev), Optstring_val (virttypev), 0));
+  CHECK_ERROR (r == NULL, "virConnectGetDomainCapabilities");
+
+  rv = caml_copy_string (r);
+  free (r);
+  CAMLreturn (rv);
+}
+
+CAMLprim value
 ocaml_libvirt_domain_get_id (value domv)
 {
   CAMLparam1 (domv);
