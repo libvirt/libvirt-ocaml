@@ -19,6 +19,7 @@ WIN32		= @WIN32@
 
 CFLAGS		= @CFLAGS@ \
 		   @LIBVIRT_CFLAGS@ \
+		   -DCAML_NAME_SPACE \
 		   -I.. \
 		   -I"$(shell ocamlc -where)" \
 		   @DEBUG@ @WARNINGS@ @CFLAGS_FPIC@
