@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 # OCaml bindings for libvirt.
 # (C) Copyright 2007-2015 Richard W.M. Jones, Red Hat Inc.
@@ -26,6 +26,7 @@
 # Please read libvirt/README.
 
 use strict;
+use warnings;
 
 #----------------------------------------------------------------------
 
