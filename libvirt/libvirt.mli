@@ -1481,6 +1481,9 @@ sig
     | VIR_ERR_INVALID_DOMAIN_CHECKPOINT
     | VIR_ERR_NO_DOMAIN_CHECKPOINT
     | VIR_ERR_NO_DOMAIN_BACKUP
+    | VIR_ERR_INVALID_NETWORK_PORT
+    | VIR_ERR_NETWORK_PORT_EXIST
+    | VIR_ERR_NO_NETWORK_PORT
 	(* ^^ NB: If you add a variant you MUST edit
 	   libvirt_c_epilogue.c:MAX_VIR_* *)
     | VIR_ERR_UNKNOWN of int (** Other error, not handled with existing values. *)
@@ -1559,6 +1562,7 @@ sig
     | VIR_FROM_RESCTRL
     | VIR_FROM_FIREWALLD
     | VIR_FROM_DOMAIN_CHECKPOINT
+    | VIR_FROM_TPM
 	(* ^^ NB: If you add a variant you MUST edit
 	   libvirt_c_epilogue.c: MAX_VIR_* *)
     | VIR_FROM_UNKNOWN of int (** Other domain, not handled with existing values. *)
