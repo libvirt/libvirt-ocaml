@@ -119,12 +119,6 @@ autostatus: libvirt_c.c
 	@echo -n "LOC in automatic bindings: "
 	@wc -l < libvirt_c.c
 
-libvirt.cmo: libvirt.cmi
-libvirt.cmi: libvirt.mli
-
-libvirt_version.cmo: libvirt_version.cmi
-libvirt_version.cmi: libvirt_version.mli
-
 
 install-byte:
 	ocamlfind install $(OCAMLFIND_INSTFLAGS) -ldconf ignore libvirt \
