@@ -45,7 +45,7 @@ clean:
 	rm -f examples/get_all_domain_stats
 
 distclean: clean
-	rm -f config.h config.log config.status configure
+	rm -f config.log config.status configure
 	rm -rf autom4te.cache
 	rm -f META
 	rm -f libvirt/libvirt_version.ml
@@ -96,7 +96,6 @@ dist: ChangeLog
 	tar -cf - -T MANIFEST | tar -C $(PACKAGE)-$(VERSION) -xf -
 	$(INSTALL) -m 0755 configure $(PACKAGE)-$(VERSION)/
 	$(INSTALL) -m 0644 aclocal.m4 $(PACKAGE)-$(VERSION)/
-	$(INSTALL) -m 0644 config.h.in $(PACKAGE)-$(VERSION)/
 	tar zcf $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION)
 	rm -rf $(PACKAGE)-$(VERSION)
 	ls -l $(PACKAGE)-$(VERSION).tar.gz
@@ -104,7 +103,6 @@ dist: ChangeLog
 check-manifest:
 	git ls-files > .check-manifest; \
 	echo aclocal.m4 >> .check-manifest; \
-	echo config.h.in >> .check-manifest; \
 	sort -o .check-manifest .check-manifest; \
 	sort MANIFEST > .orig-manifest; \
 	diff -u .orig-manifest .check-manifest; rv=$$?; \

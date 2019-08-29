@@ -2,7 +2,6 @@
 aclocal.m4
 ChangeLog
 config.guess
-config.h.in
 config.sub
 configure.ac
 COPYING

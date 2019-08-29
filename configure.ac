@@ -79,7 +79,6 @@ echo "Thanks for downloading" $PACKAGE_STRING
 echo "------------------------------------------------------------"
 
 dnl Produce output files.
-AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([META
 	libvirt/libvirt_version.ml
 	Makefile
