@@ -64,10 +64,10 @@ OPTOBJS := libvirt.cmx libvirt_version.cmx
 
 ifneq ($(OCAMLMKLIB),)
 # Good, we can just use ocamlmklib
-mllibvirt.cma: libvirt_c.o libvirt_c_oneoffs.o libvirt_c_epilogue.o $(COBJS)
+mllibvirt.cma: libvirt_generated.o libvirt_c_oneoffs.o libvirt_c_epilogue.o $(COBJS)
 	$(OCAMLMKLIB) -o mllibvirt $^ $(LDFLAGS)
 
-mllibvirt.cmxa: libvirt_c.o libvirt_c_oneoffs.o libvirt_c_epilogue.o $(OPTOBJS)
+mllibvirt.cmxa: libvirt_generated.o libvirt_c_oneoffs.o libvirt_c_epilogue.o $(OPTOBJS)
 	$(OCAMLMKLIB) -o mllibvirt $^ $(LDFLAGS)
 
 else
@@ -83,11 +83,11 @@ mllibvirt.cmxa: libmllibvirt.a $(OPTOBJS)
 	$(OCAMLOPT) -a -linkall -o $@ $(OPTOBJS) \
 	  -cclib -lmllibvirt -cclib "$(LDFLAGS)"
 
-dllmllibvirt.dll: libvirt_c.o libvirt_c_oneoffs.o libvirt_c_epilogue.o
+dllmllibvirt.dll: libvirt_generated.o libvirt_c_oneoffs.o libvirt_c_epilogue.o
 	$(CC) -shared -o $@ $^ \
 	  $(LDFLAGS) "$(shell ocamlc -where)"/ocamlrun.a
 
-libmllibvirt.a: libvirt_c.o libvirt_c_oneoffs.o libvirt_c_epilogue.o
+libmllibvirt.a: libvirt_generated.o libvirt_c_oneoffs.o libvirt_c_epilogue.o
 	ar rc $@ $^
 	ranlib $@
 
@@ -100,24 +100,24 @@ endif
 endif
 
 # Automatically generate the C code from a Perl script 'generator.pl'.
-libvirt_c.c: generator.pl
+libvirt_generated.c: generator.pl
 	$(PERL) -w $<
 
 # Extra dependencies.
-libvirt_c.o: libvirt_c.h
+libvirt_generated.o: libvirt_c.h
 libvirt_c_oneoffs.o: libvirt_c.h
 libvirt_c_epilogue.o: libvirt_c.h
 
 # Status of automatically generated bindings.
-autostatus: libvirt_c.c
+autostatus: libvirt_generated.c
 	@echo -n "Functions which have manual bindings:    "
 	@grep ^ocaml_libvirt_ libvirt_c_oneoffs.c  | wc -l
 	@echo -n "Functions which have automatic bindings: "
-	@grep ^ocaml_libvirt_ libvirt_c.c  | wc -l
+	@grep ^ocaml_libvirt_ libvirt_generated.c  | wc -l
 	@echo -n "LOC in manual bindings:    "
 	@wc -l < libvirt_c_oneoffs.c
 	@echo -n "LOC in automatic bindings: "
-	@wc -l < libvirt_c.c
+	@wc -l < libvirt_generated.c
 
 
 install-byte:

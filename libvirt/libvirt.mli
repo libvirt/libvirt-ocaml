@@ -1574,7 +1574,7 @@ sig
     | VIR_ERR_NONE
     | VIR_ERR_WARNING
     | VIR_ERR_ERROR
-	(* ^^ NB: If you add a variant you MUST edit libvirt_c.c: MAX_VIR_* *)
+	(* ^^ NB: If you add a variant you MUST edit libvirt_generated.c: MAX_VIR_* *)
     | VIR_ERR_UNKNOWN_LEVEL of int (** Other level, not handled with existing values. *)
 	(** No error, a warning or an error. *)
 

@@ -19,7 +19,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
-# This generates libvirt_c.c (the core of the bindings).  You don't
+# This generates libvirt_generated.c (the core of the bindings).  You don't
 # need to run this program unless you are extending the bindings
 # themselves (eg. because libvirt has been extended).
 #
@@ -199,7 +199,7 @@ my @unimplemented = (
 
 # Open the output file.
 
-my $filename = "libvirt_c.c";
+my $filename = "libvirt_generated.c";
 open F, ">$filename" or die "$filename: $!";
 
 # Write the prologue.

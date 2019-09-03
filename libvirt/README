@@ -19,9 +19,9 @@ one-of-a-kind to be worth generating automatically.
 Generated code
 --------------
 
-The C bindings in 'libvirt_c.c' are now generated automatically by a
-Perl script called 'generator.pl'.  You do not normally need to run
-this script, but you may need to if you want to extend libvirt
+The C bindings in 'libvirt_generated.c' are now generated automatically
+by a Perl script called 'generator.pl'.  You do not normally need to
+run this script, but you may need to if you want to extend libvirt
 coverage.
 
 The majority of the functions are now generated automatically, but

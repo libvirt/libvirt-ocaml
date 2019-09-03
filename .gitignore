@@ -28,7 +28,7 @@ core.*
 /examples/list_secrets
 /examples/node_info
 /html/
-/libvirt/libvirt_c.c
+/libvirt/libvirt_generated.c
 /libvirt/libvirt_version.ml
 /ocaml-libvirt-*.exe
 /ocaml-libvirt-*.tar.gz
