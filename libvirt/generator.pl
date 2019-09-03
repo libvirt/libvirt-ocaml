@@ -232,23 +232,6 @@ print F <<'END';
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <libvirt/libvirt.h>
-#include <libvirt/virterror.h>
-
-#include <caml/config.h>
-#include <caml/alloc.h>
-#include <caml/callback.h>
-#include <caml/custom.h>
-#include <caml/fail.h>
-#include <caml/memory.h>
-#include <caml/misc.h>
-#include <caml/mlvalues.h>
-#include <caml/signals.h>
-
 #include "libvirt_c.h"
 
 #include "libvirt_c_oneoffs.c"

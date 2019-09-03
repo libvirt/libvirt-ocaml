@@ -18,18 +18,38 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#ifndef LIBVIRT_C_H
+#define LIBVIRT_C_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <libvirt/libvirt.h>
+#include <libvirt/virterror.h>
+
+#include <caml/config.h>
+#include <caml/alloc.h>
+#include <caml/callback.h>
+#include <caml/custom.h>
+#include <caml/fail.h>
+#include <caml/memory.h>
+#include <caml/misc.h>
+#include <caml/mlvalues.h>
+#include <caml/signals.h>
+
 /* Please read libvirt/README file. */
 
-static const char *Optstring_val (value strv);
+const char *Optstring_val (value strv);
 typedef value (*Val_ptr_t) (void *);
-static value Val_opt (void *ptr, Val_ptr_t Val_ptr);
+value Val_opt (void *ptr, Val_ptr_t Val_ptr);
 typedef value (*Val_const_ptr_t) (const void *);
-static value Val_opt_const (const void *ptr, Val_const_ptr_t Val_ptr);
-/*static value option_default (value option, value deflt);*/
-static void _raise_virterror (const char *fn) Noreturn;
-static value Val_virterror (virErrorPtr err);
-static int _list_length (value listv);
-static value Val_virconnectcredential (const virConnectCredentialPtr cred);
+value Val_opt_const (const void *ptr, Val_const_ptr_t Val_ptr);
+/*value option_default (value option, value deflt);*/
+void _raise_virterror (const char *fn) Noreturn;
+value Val_virterror (virErrorPtr err);
+int _list_length (value listv);
+value Val_virconnectcredential (const virConnectCredentialPtr cred);
 
 /* Use this around synchronous libvirt API calls to release the OCaml
  * lock, allowing other threads to run simultaneously.  'code' must not
@@ -106,12 +126,12 @@ static value Val_virconnectcredential (const virConnectCredentialPtr cred);
 #define Sec_val(rv) (*((virSecretPtr *)Data_custom_val(rv)))
 
 /* Wrap up a pointer to something in a custom block. */
-static value Val_connect (virConnectPtr conn);
-static value Val_dom (virDomainPtr dom);
-static value Val_net (virNetworkPtr net);
-static value Val_pol (virStoragePoolPtr pool);
-static value Val_vol (virStorageVolPtr vol);
-static value Val_sec (virSecretPtr sec);
+value Val_connect (virConnectPtr conn);
+value Val_dom (virDomainPtr dom);
+value Val_net (virNetworkPtr net);
+value Val_pol (virStoragePoolPtr pool);
+value Val_vol (virStorageVolPtr vol);
+value Val_sec (virSecretPtr sec);
 
 /* Domains and networks are stored as pairs (dom/net, conn), so have
  * some convenience functions for unwrapping and wrapping them.
@@ -127,8 +147,10 @@ static value Val_sec (virSecretPtr sec);
 #define Connect_volv(rv) (Connect_val(Field((rv),1)))
 #define Connect_secv(rv) (Connect_val(Field((rv),1)))
 
-static value Val_domain (virDomainPtr dom, value connv);
-static value Val_network (virNetworkPtr net, value connv);
-static value Val_pool (virStoragePoolPtr pol, value connv);
-static value Val_volume (virStorageVolPtr vol, value connv);
-static value Val_secret (virSecretPtr sec, value connv);
+value Val_domain (virDomainPtr dom, value connv);
+value Val_network (virNetworkPtr net, value connv);
+value Val_pool (virStoragePoolPtr pol, value connv);
+value Val_volume (virStorageVolPtr vol, value connv);
+value Val_secret (virSecretPtr sec, value connv);
+
+#endif

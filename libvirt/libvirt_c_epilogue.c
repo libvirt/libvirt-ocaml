@@ -20,7 +20,7 @@
 
 /* Please read libvirt/README file. */
 
-static const char *
+const char *
 Optstring_val (value strv)
 {
   if (strv == Val_int (0))	/* None */
@@ -29,7 +29,7 @@ Optstring_val (value strv)
     return String_val (Field (strv, 0));
 }
 
-static value
+value
 Val_opt (void *ptr, Val_ptr_t Val_ptr)
 {
   CAMLparam0 ();
@@ -45,7 +45,7 @@ Val_opt (void *ptr, Val_ptr_t Val_ptr)
   CAMLreturn (optv);
 }
 
-static value
+value
 Val_opt_const (const void *ptr, Val_const_ptr_t Val_ptr)
 {
   CAMLparam0 ();
@@ -62,7 +62,7 @@ Val_opt_const (const void *ptr, Val_const_ptr_t Val_ptr)
 }
 
 #if 0
-static value
+value
 option_default (value option, value deflt)
 {
   if (option == Val_int (0))    /* "None" */
@@ -72,7 +72,7 @@ option_default (value option, value deflt)
 }
 #endif
 
-static void
+void
 _raise_virterror (const char *fn)
 {
   CAMLparam0 ();
@@ -100,7 +100,7 @@ _raise_virterror (const char *fn)
   (void) caml__frame;
 }
 
-static int
+int
 _list_length (value listv)
 {
   CAMLparam1 (listv);
@@ -111,7 +111,7 @@ _list_length (value listv)
   CAMLreturnT (int, len);
 }
 
-static value
+value
 Val_virconnectcredential (const virConnectCredentialPtr cred)
 {
   CAMLparam0 ();
@@ -196,7 +196,7 @@ Val_err_level (virErrorLevel code)
 }
 
 /* Convert a virterror to a value. */
-static value
+value
 Val_virterror (virErrorPtr err)
 {
   CAMLparam0 ();
@@ -283,7 +283,7 @@ static struct custom_operations sec_custom_operations = {
   custom_deserialize_default
 };
 
-static value
+value
 Val_connect (virConnectPtr conn)
 {
   CAMLparam0 ();
@@ -294,7 +294,7 @@ Val_connect (virConnectPtr conn)
   CAMLreturn (rv);
 }
 
-static value
+value
 Val_dom (virDomainPtr dom)
 {
   CAMLparam0 ();
@@ -305,7 +305,7 @@ Val_dom (virDomainPtr dom)
   CAMLreturn (rv);
 }
 
-static value
+value
 Val_net (virNetworkPtr net)
 {
   CAMLparam0 ();
@@ -316,7 +316,7 @@ Val_net (virNetworkPtr net)
   CAMLreturn (rv);
 }
 
-static value
+value
 Val_pol (virStoragePoolPtr pol)
 {
   CAMLparam0 ();
@@ -327,7 +327,7 @@ Val_pol (virStoragePoolPtr pol)
   CAMLreturn (rv);
 }
 
-static value
+value
 Val_vol (virStorageVolPtr vol)
 {
   CAMLparam0 ();
@@ -338,7 +338,7 @@ Val_vol (virStorageVolPtr vol)
   CAMLreturn (rv);
 }
 
-static value
+value
 Val_sec (virSecretPtr sec)
 {
   CAMLparam0 ();
@@ -350,7 +350,7 @@ Val_sec (virSecretPtr sec)
 }
 
 /* This wraps up the (dom, conn) pair (Domain.t). */
-static value
+value
 Val_domain (virDomainPtr dom, value connv)
 {
   CAMLparam1 (connv);
@@ -364,7 +364,7 @@ Val_domain (virDomainPtr dom, value connv)
 }
 
 /* This wraps up the (net, conn) pair (Network.t). */
-static value
+value
 Val_network (virNetworkPtr net, value connv)
 {
   CAMLparam1 (connv);
@@ -378,7 +378,7 @@ Val_network (virNetworkPtr net, value connv)
 }
 
 /* This wraps up the (pol, conn) pair (Pool.t). */
-static value
+value
 Val_pool (virStoragePoolPtr pol, value connv)
 {
   CAMLparam1 (connv);
@@ -392,7 +392,7 @@ Val_pool (virStoragePoolPtr pol, value connv)
 }
 
 /* This wraps up the (vol, conn) pair (Volume.t). */
-static value
+value
 Val_volume (virStorageVolPtr vol, value connv)
 {
   CAMLparam1 (connv);
@@ -406,7 +406,7 @@ Val_volume (virStorageVolPtr vol, value connv)
 }
 
 /* This wraps up the (sec, conn) pair (Secret.t). */
-static value
+value
 Val_secret (virSecretPtr sec, value connv)
 {
   CAMLparam1 (connv);
