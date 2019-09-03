@@ -104,7 +104,7 @@ libvirt_c.c: generator.pl
 	$(PERL) -w $<
 
 # Extra dependencies.
-libvirt_c.c: libvirt_c_prologue.c
+libvirt_c.c: libvirt_c.h
 libvirt_c.c: libvirt_c_oneoffs.c
 libvirt_c.c: libvirt_c_epilogue.c
 

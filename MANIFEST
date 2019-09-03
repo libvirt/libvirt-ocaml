@@ -19,9 +19,9 @@ gitlog-to-changelog
 install-sh
 libvirt/.depend
 libvirt/generator.pl
+libvirt/libvirt_c.h
 libvirt/libvirt_c_epilogue.c
 libvirt/libvirt_c_oneoffs.c
-libvirt/libvirt_c_prologue.c
 libvirt/libvirt.ml
 libvirt/libvirt.mli
 libvirt/libvirt_version.ml.in

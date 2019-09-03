@@ -249,7 +249,7 @@ print F <<'END';
 #include <caml/mlvalues.h>
 #include <caml/signals.h>
 
-#include "libvirt_c_prologue.c"
+#include "libvirt_c.h"
 
 #include "libvirt_c_oneoffs.c"
 
