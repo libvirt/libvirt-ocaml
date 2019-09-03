@@ -1485,7 +1485,7 @@ sig
     | VIR_ERR_NETWORK_PORT_EXIST
     | VIR_ERR_NO_NETWORK_PORT
 	(* ^^ NB: If you add a variant you MUST edit
-	   libvirt_c_epilogue.c:MAX_VIR_* *)
+	   libvirt_c_common.c:MAX_VIR_* *)
     | VIR_ERR_UNKNOWN of int (** Other error, not handled with existing values. *)
 	(** See [<libvirt/virterror.h>] for meaning of these codes. *)
 
@@ -1564,7 +1564,7 @@ sig
     | VIR_FROM_DOMAIN_CHECKPOINT
     | VIR_FROM_TPM
 	(* ^^ NB: If you add a variant you MUST edit
-	   libvirt_c_epilogue.c: MAX_VIR_* *)
+	   libvirt_c_common.c: MAX_VIR_* *)
     | VIR_FROM_UNKNOWN of int (** Other domain, not handled with existing values. *)
 	(** Subsystem / driver which produced the error. *)
 

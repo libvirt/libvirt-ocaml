@@ -10,7 +10,7 @@ documentation starting at html/index.html.
 'libvirt_c.h' contains prototypes of common functions defined
 in the epilogue (see below), and provides some general macros.
 
-'libvirt_c_epilogue.c' contains some standard functions (eg.) for
+'libvirt_c_common.c' contains some standard functions (eg.) for
 wrapping and unwrapping libvirt objects.
 
 'libvirt_c_oneoffs.c' contains bindings which are too specialised or
