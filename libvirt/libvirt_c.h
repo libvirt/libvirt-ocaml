@@ -40,6 +40,13 @@
 
 /* Please read libvirt/README file. */
 
+/* Make sure to not expose our internal helpers as public symbols.
+ * https://gcc.gnu.org/wiki/Visibility
+ */
+#ifdef __GNUC__
+#pragma GCC visibility push(hidden)
+#endif
+
 const char *Optstring_val (value strv);
 typedef value (*Val_ptr_t) (void *);
 value Val_opt (void *ptr, Val_ptr_t Val_ptr);
@@ -152,5 +159,9 @@ value Val_network (virNetworkPtr net, value connv);
 value Val_pool (virStoragePoolPtr pol, value connv);
 value Val_volume (virStorageVolPtr vol, value connv);
 value Val_secret (virSecretPtr sec, value connv);
+
+#ifdef __GNUC__
+#pragma GCC visibility pop
+#endif
 
 #endif
