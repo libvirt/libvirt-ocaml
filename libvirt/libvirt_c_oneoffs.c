@@ -19,6 +19,8 @@
 
 /* Please read libvirt/README file. */
 
+#include "libvirt_c.h"
+
 #ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wmissing-prototypes"
 #endif

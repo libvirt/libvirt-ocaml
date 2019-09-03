@@ -234,8 +234,6 @@ print F <<'END';
 
 #include "libvirt_c.h"
 
-#include "libvirt_c_oneoffs.c"
-
 END
 
 #----------------------------------------------------------------------
@@ -880,8 +878,6 @@ END
 # Write the epilogue.
 
 print F <<'END';
-#include "libvirt_c_epilogue.c"
-
 /* EOF */
 END
 

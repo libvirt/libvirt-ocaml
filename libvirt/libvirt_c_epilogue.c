@@ -20,6 +20,8 @@
 
 /* Please read libvirt/README file. */
 
+#include "libvirt_c.h"
+
 const char *
 Optstring_val (value strv)
 {
