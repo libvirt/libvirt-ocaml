@@ -749,7 +749,7 @@ ocaml_libvirt_domain_get_cpu_stats (value domv)
   CHECK_ERROR (nparams < 0, "virDomainGetCPUStats");
 
   if ((params = malloc(sizeof(*params) * nparams * 128)) == NULL)
-    caml_failwith ("virDomainGetCPUStats: malloc");
+    caml_raise_out_of_memory ();
 
   cpustats = caml_alloc (nr_pcpus, 0); /* cpustats: array of params(list of typed_param) */
   cpu = 0;
@@ -1461,7 +1461,7 @@ ocaml_libvirt_event_add_timeout (value connv, value ms, value callback_id)
   /* Store the int64 callback_id as the opaque data so the OCaml
      callback can demultiplex to the correct OCaml handler. */
   if ((opaque = malloc(sizeof(long))) == NULL)
-    caml_failwith ("virEventAddTimeout: malloc");
+    caml_raise_out_of_memory ();
   *((long*)opaque) = Int64_val(callback_id);
   NONBLOCKING(r = virEventAddTimeout(Int_val(ms), cb, opaque, freecb));
   CHECK_ERROR(r == -1, "virEventAddTimeout");
@@ -1551,7 +1551,7 @@ ocaml_libvirt_connect_domain_event_register_any(value connv, value domv, value c
   /* Store the int64 callback_id as the opaque data so the OCaml
      callback can demultiplex to the correct OCaml handler. */
   if ((opaque = malloc(sizeof(long))) == NULL)
-    caml_failwith ("virConnectDomainEventRegisterAny: malloc");
+    caml_raise_out_of_memory ();
   *((long*)opaque) = Int64_val(callback_id);
   NONBLOCKING(r = virConnectDomainEventRegisterAny(conn, dom, eventID, cb, opaque, freecb));
   CHECK_ERROR(r == -1, "virConnectDomainEventRegisterAny");
