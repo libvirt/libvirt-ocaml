@@ -1207,7 +1207,7 @@ ocaml_libvirt_event_run_default_impl (value unitv)
 #define DOMAIN_CALLBACK_BEGIN(NAME)                              \
   value connv, domv, callback_id, result;                        \
   connv = domv = callback_id = result = Val_int(0);              \
-  static value *callback = NULL;                                 \
+  static const value *callback = NULL;                           \
   caml_leave_blocking_section();                                 \
   if (callback == NULL)                                          \
     callback = caml_named_value(NAME);                           \
@@ -1433,7 +1433,7 @@ timeout_callback(int timer, void *opaque)
 {
   value callback_id, result;
   callback_id = result = Val_int(0);
-  static value *callback = NULL;
+  static const value *callback = NULL;
   caml_leave_blocking_section();
   if (callback == NULL)
     callback = caml_named_value("Libvirt.timeout_callback");
