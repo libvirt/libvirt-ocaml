@@ -439,6 +439,7 @@ struct
     | VIR_FROM_FIREWALLD
     | VIR_FROM_DOMAIN_CHECKPOINT
     | VIR_FROM_TPM
+    | VIR_FROM_BPF
     | VIR_FROM_UNKNOWN of int
 
   let string_of_domain = function
@@ -513,6 +514,7 @@ struct
     | VIR_FROM_FIREWALLD -> "VIR_FROM_FIREWALLD"
     | VIR_FROM_DOMAIN_CHECKPOINT -> "VIR_FROM_DOMAIN_CHECKPOINT"
     | VIR_FROM_TPM -> "VIR_FROM_TPM"
+    | VIR_FROM_BPF -> "VIR_FROM_BPF"
     | VIR_FROM_UNKNOWN i -> "VIR_FROM_" ^ string_of_int i
 
   type level =

@@ -146,7 +146,7 @@ Val_virconnectcredential (const virConnectCredentialPtr cred)
  */
 
 #define MAX_VIR_CODE 107 /* VIR_ERR_NO_NETWORK_PORT */
-#define MAX_VIR_DOMAIN 70 /* VIR_FROM_TPM */
+#define MAX_VIR_DOMAIN 71 /* VIR_FROM_BPF */
 #define MAX_VIR_LEVEL VIR_ERR_ERROR
 
 static inline value

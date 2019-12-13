@@ -1563,6 +1563,7 @@ sig
     | VIR_FROM_FIREWALLD
     | VIR_FROM_DOMAIN_CHECKPOINT
     | VIR_FROM_TPM
+    | VIR_FROM_BPF
 	(* ^^ NB: If you add a variant you MUST edit
 	   libvirt_c_common.c: MAX_VIR_* *)
     | VIR_FROM_UNKNOWN of int (** Other domain, not handled with existing values. *)
