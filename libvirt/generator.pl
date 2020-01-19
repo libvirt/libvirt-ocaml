@@ -440,7 +440,7 @@ sub gen_c_code
 
   /* UUIDs are byte arrays with a fixed length. */
   rv = caml_alloc_string (VIR_UUID_BUFLEN);
-  memcpy (String_val (rv), uuid, VIR_UUID_BUFLEN);
+  memcpy (Bytes_val (rv), uuid, VIR_UUID_BUFLEN);
   CAMLreturn (rv);
 "
     } elsif ($sig =~ /^(\w+) : uuid string$/) {

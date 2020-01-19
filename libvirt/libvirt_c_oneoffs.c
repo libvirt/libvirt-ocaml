@@ -394,7 +394,7 @@ ocaml_libvirt_connect_call_auth_default_callback (value listv)
       elemv = caml_alloc (2, 0);
       if (cred->result != NULL && cred->resultlen > 0) {
         v = caml_alloc_string (cred->resultlen);
-        memcpy (String_val (v), cred->result, cred->resultlen);
+        memcpy (Bytes_val (v), cred->result, cred->resultlen);
         optv = caml_alloc (1, 0);
         Store_field (optv, 0, v);
       } else
@@ -715,7 +715,7 @@ ocaml_libvirt_domain_get_vcpus (value domv, value maxinfov, value maplenv)
 
   /* Copy the bitmap. */
   strv = caml_alloc_string (maxinfo * maplen);
-  memcpy (String_val (strv), cpumaps, maxinfo * maplen);
+  memcpy (Bytes_val (strv), cpumaps, maxinfo * maplen);
 
   /* Allocate the tuple and return it. */
   rv = caml_alloc_tuple (3);
@@ -900,7 +900,7 @@ ocaml_libvirt_domain_get_all_domain_stats (value connv,
      */
     v = caml_alloc_string (VIR_UUID_BUFLEN);
     virDomainGetUUID (rstats[i]->dom, uuid);
-    memcpy (String_val (v), uuid, VIR_UUID_BUFLEN);
+    memcpy (Bytes_val (v), uuid, VIR_UUID_BUFLEN);
     Store_field (dsv, 0, v);
 
     tpv = caml_alloc (rstats[i]->nparams, 0); /* typed_param array */
@@ -1646,7 +1646,7 @@ ocaml_libvirt_secret_get_value (value secv)
   CHECK_ERROR (secval == NULL, "virSecretGetValue");
 
   rv = caml_alloc_string (size);
-  memcpy (String_val (rv), secval, size);
+  memcpy (Bytes_val (rv), secval, size);
   free (secval);
 
   CAMLreturn (rv);
