@@ -601,7 +601,7 @@ ocaml_libvirt_domain_set_scheduler_parameters (value domv, value paramsv)
   int nparams = Wosize_val (paramsv);
   virSchedParameterPtr params;
   int r, i;
-  char *name;
+  const char *name;
 
   params = malloc (sizeof (*params) * nparams);
   if (params == NULL)
@@ -1005,7 +1005,7 @@ ocaml_libvirt_domain_block_stats (value domv, value pathv)
   CAMLparam2 (domv, pathv);
   CAMLlocal2 (rv,v);
   virDomainPtr dom = Domain_val (domv);
-  char *path = String_val (pathv);
+  const char *path = String_val (pathv);
   struct _virDomainBlockStats stats;
   int r;
 
@@ -1028,7 +1028,7 @@ ocaml_libvirt_domain_interface_stats (value domv, value pathv)
   CAMLparam2 (domv, pathv);
   CAMLlocal2 (rv,v);
   virDomainPtr dom = Domain_val (domv);
-  char *path = String_val (pathv);
+  const char *path = String_val (pathv);
   struct _virDomainInterfaceStats stats;
   int r;
 
