@@ -1057,7 +1057,7 @@ ocaml_libvirt_domain_block_peek_native (value domv, value pathv, value offsetv, 
   const char *path = String_val (pathv);
   unsigned long long offset = Int64_val (offsetv);
   size_t size = Int_val (sizev);
-  char *buffer = String_val (bufferv);
+  unsigned char *buffer = Bytes_val (bufferv);
   int boff = Int_val (boffv);
   int r;
 
@@ -1089,7 +1089,7 @@ ocaml_libvirt_domain_memory_peek_native (value domv, value flagsv, value offsetv
   int flags = 0;
   unsigned long long offset = Int64_val (offsetv);
   size_t size = Int_val (sizev);
-  char *buffer = String_val (bufferv);
+  unsigned char *buffer = Bytes_val (bufferv);
   int boff = Int_val (boffv);
   int r;
 
