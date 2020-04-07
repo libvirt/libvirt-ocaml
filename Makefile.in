@@ -86,7 +86,7 @@ dist: ChangeLog
 	ls -l $(PACKAGE)-$(VERSION).tar.gz
 
 check-manifest:
-	git ls-files > .check-manifest; \
+	git ls-files | grep -v .github/lockdown.yml > .check-manifest; \
 	echo aclocal.m4 >> .check-manifest; \
 	sort -o .check-manifest .check-manifest; \
 	sort MANIFEST > .orig-manifest; \
