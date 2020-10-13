@@ -1484,6 +1484,7 @@ sig
     | VIR_ERR_INVALID_NETWORK_PORT
     | VIR_ERR_NETWORK_PORT_EXIST
     | VIR_ERR_NO_NETWORK_PORT
+    | VIR_ERR_NO_HOSTNAME
 	(* ^^ NB: If you add a variant you MUST edit
 	   libvirt_c_common.c:MAX_VIR_* *)
     | VIR_ERR_UNKNOWN of int (** Other error, not handled with existing values. *)
