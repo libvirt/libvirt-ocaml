@@ -2,7 +2,8 @@
 #
 #  $ lcitool dockerfile centos-7 libvirt+dist,libvirt-ocaml
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/740f5254f607de914a92d664196d045149edb45a
+# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+
 FROM docker.io/library/centos:7
 
 RUN yum update -y && \
@@ -30,7 +31,7 @@ RUN yum update -y && \
     rpm -qa | sort > /packages.txt && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
-    ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/$(basename /usr/bin/gcc)
+    ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc
 
 ENV LANG "en_US.UTF-8"
 ENV MAKE "/usr/bin/make"
