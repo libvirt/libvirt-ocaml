@@ -1,8 +1,8 @@
 # THIS FILE WAS AUTO-GENERATED
 #
-#  $ lcitool dockerfile debian-sid libvirt+dist,libvirt-ocaml
+#  $ lcitool manifest ci/manifest.yml
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+# https://gitlab.com/libvirt/libvirt-ci
 
 FROM docker.io/library/debian:sid-slim
 
@@ -26,7 +26,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
             make \
             ocaml \
             ocaml-findlib \
-            perl \
+            perl-base \
             pkgconf && \
     eatmydata apt-get autoremove -y && \
     eatmydata apt-get autoclean -y && \

@@ -1,12 +1,13 @@
 # THIS FILE WAS AUTO-GENERATED
 #
-#  $ lcitool dockerfile fedora-32 libvirt+dist,libvirt-ocaml
+#  $ lcitool manifest ci/manifest.yml
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+# https://gitlab.com/libvirt/libvirt-ci
 
-FROM registry.fedoraproject.org/fedora:32
+FROM registry.fedoraproject.org/fedora:rawhide
 
-RUN dnf install -y nosync && \
+RUN dnf update -y --nogpgcheck fedora-gpg-keys && \
+    dnf install -y nosync && \
     echo -e '#!/bin/sh\n\
 if test -d /usr/lib64\n\
 then\n\
@@ -32,7 +33,7 @@ exec "$@"' > /usr/bin/nosync && \
         make \
         ocaml \
         ocaml-findlib \
-        perl \
+        perl-base \
         pkgconfig && \
     nosync dnf autoremove -y && \
     nosync dnf clean all -y && \

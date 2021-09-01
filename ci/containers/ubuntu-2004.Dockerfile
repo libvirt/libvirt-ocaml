@@ -1,10 +1,10 @@
 # THIS FILE WAS AUTO-GENERATED
 #
-#  $ lcitool dockerfile debian-10 libvirt+dist,libvirt-ocaml
+#  $ lcitool manifest ci/manifest.yml
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+# https://gitlab.com/libvirt/libvirt-ci
 
-FROM docker.io/library/debian:10-slim
+FROM docker.io/library/ubuntu:20.04
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -26,7 +26,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
             make \
             ocaml \
             ocaml-findlib \
-            perl \
+            perl-base \
             pkgconf && \
     eatmydata apt-get autoremove -y && \
     eatmydata apt-get autoclean -y && \

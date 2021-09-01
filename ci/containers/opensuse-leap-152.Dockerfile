@@ -1,8 +1,8 @@
 # THIS FILE WAS AUTO-GENERATED
 #
-#  $ lcitool dockerfile opensuse-152 libvirt+dist,libvirt-ocaml
+#  $ lcitool manifest ci/manifest.yml
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+# https://gitlab.com/libvirt/libvirt-ci
 
 FROM registry.opensuse.org/opensuse/leap:15.2
 
@@ -22,7 +22,7 @@ RUN zypper update -y && \
            make \
            ocaml \
            ocaml-findlib \
-           perl \
+           perl-base \
            pkgconfig && \
     zypper clean --all && \
     rpm -qa | sort > /packages.txt && \
