@@ -517,6 +517,11 @@ sig
   | START_FORCE_BOOT                    (** Discard any managed save *)
   | START_VALIDATE                      (** Validate XML against schema *)
 
+  type domain_device_modify_flag =
+  | DEVICE_MODIFY_LIVE                  (** Affect running domain state *)
+  | DEVICE_MODIFY_CONFIG                (** Affect persistent domain state *)
+  | DEVICE_MODIFY_FORCE                 (** Affect running domain state forcedly *)
+
   type sched_param = string * sched_param_value
   and sched_param_value =
     | SchedFieldInt32 of int32 | SchedFieldUInt32 of int32
@@ -690,6 +695,9 @@ sig
     (** Attach a device (described by the device XML) to a domain. *)
   val detach_device : [>`W] t -> xml -> unit
     (** Detach a device (described by the device XML) from a domain. *)
+  val detach_device_flags : [>`W] t -> xml -> domain_device_modify_flag list -> unit
+    (** Detach a device (described by the device XML) from a domain, with the
+  possibility	to specify flags. *)
 
   val migrate : [>`W] t -> [>`W] Connect.t -> migrate_flag list ->
     ?dname:string -> ?uri:string -> ?bandwidth:int -> unit -> rw t

@@ -91,6 +91,7 @@ my @functions = (
     { name => "virDomainCreate", sig => "dom : unit" },
     { name => "virDomainAttachDevice", sig => "dom, string : unit" },
     { name => "virDomainDetachDevice", sig => "dom, string : unit" },
+    { name => "virDomainDetachDeviceFlags", sig => "dom, string, unsigned : unit" },
     { name => "virDomainGetAutostart", sig => "dom : bool" },
     { name => "virDomainSetAutostart", sig => "dom, bool : unit" },
 
@@ -642,6 +643,18 @@ sub gen_c_code
   " . gen_pack_result ($2) . "
 
   CAMLreturn (rv);
+"
+    } elsif ($sig =~ /^(\w+), string, unsigned : unit$/) {
+	"\
+  " . gen_unpack_args ($1) . "
+  const char *str = String_val (strv);
+  unsigned int u = Int_val (uv);
+  int r;
+
+  NONBLOCKING (r = $c_name ($1, str, u));
+  CHECK_ERROR (r == -1, \"$c_name\");
+
+  CAMLreturn (Val_unit);
 "
     } elsif ($sig =~ /^(\w+), string, unsigned : (\w+)$/) {
 	my $c_ret_type = short_name_to_c_type ($2);

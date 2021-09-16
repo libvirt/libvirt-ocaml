@@ -613,6 +613,16 @@ struct
     | START_FORCE_BOOT :: flags ->   8 lor int_of_domain_create_flags flags
     | START_VALIDATE :: flags ->    16 lor int_of_domain_create_flags flags
 
+  type domain_device_modify_flag =
+  | DEVICE_MODIFY_LIVE
+  | DEVICE_MODIFY_CONFIG
+  | DEVICE_MODIFY_FORCE
+  let rec int_of_domain_device_modify_flags = function
+    | [] -> 0
+    | DEVICE_MODIFY_LIVE :: flags ->   1 lor int_of_domain_device_modify_flags flags
+    | DEVICE_MODIFY_CONFIG :: flags -> 2 lor int_of_domain_device_modify_flags flags
+    | DEVICE_MODIFY_FORCE :: flags ->  4 lor int_of_domain_device_modify_flags flags
+
   type sched_param = string * sched_param_value
   and sched_param_value =
     | SchedFieldInt32 of int32 | SchedFieldUInt32 of int32
@@ -730,6 +740,9 @@ struct
   external get_max_vcpus : [>`R] t -> int = "ocaml_libvirt_domain_get_max_vcpus"
   external attach_device : [>`W] t -> xml -> unit = "ocaml_libvirt_domain_attach_device"
   external detach_device : [>`W] t -> xml -> unit = "ocaml_libvirt_domain_detach_device"
+  external _detach_device_flags : [>`W] t -> xml -> int -> unit = "ocaml_libvirt_domain_detach_device_flags"
+  let detach_device_flags dom xml flags =
+    _detach_device_flags dom xml (int_of_domain_device_modify_flags flags)
   external migrate : [>`W] t -> [>`W] Connect.t -> migrate_flag list -> ?dname:string -> ?uri:string -> ?bandwidth:int -> unit -> rw t = "ocaml_libvirt_domain_migrate_bytecode" "ocaml_libvirt_domain_migrate_native"
   external block_stats : [>`R] t -> string -> block_stats = "ocaml_libvirt_domain_block_stats"
   external interface_stats : [>`R] t -> string -> interface_stats = "ocaml_libvirt_domain_interface_stats"
