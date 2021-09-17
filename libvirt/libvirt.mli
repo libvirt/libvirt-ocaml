@@ -1066,6 +1066,11 @@ sig
     val to_string: t -> string
   end
 
+  module Device_removed : sig
+    type t = string
+
+    val to_string: t -> string
+  end
 
   type callback =
     | Lifecycle     of ([`R] Domain.t -> Lifecycle.t -> unit)
@@ -1083,6 +1088,7 @@ sig
     | PMSuspend     of ([`R] Domain.t -> PM_suspend.t -> unit)
     | BalloonChange of ([`R] Domain.t -> Balloon_change.t -> unit)
     | PMSuspendDisk of ([`R] Domain.t -> PM_suspend_disk.t -> unit)
+    | DeviceRemoved of ([`R] Domain.t -> Device_removed.t -> unit)
 
     (** type of a registered call back function *)
 

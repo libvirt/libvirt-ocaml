@@ -1275,6 +1275,17 @@ i_callback(virConnectPtr conn,
 }
 
 static void
+s_callback(virConnectPtr conn,
+	   virDomainPtr dom,
+	   char *x,
+	   void *opaque)
+{
+  DOMAIN_CALLBACK_BEGIN("Libvirt.s_callback")
+  result = caml_copy_string(x);
+  DOMAIN_CALLBACK_END
+}
+
+static void
 s_i_callback(virConnectPtr conn,
 	     virDomainPtr dom,
 	     char *x,
@@ -1543,6 +1554,9 @@ ocaml_libvirt_connect_domain_event_register_any(value connv, value domv, value c
     break;
   case VIR_DOMAIN_EVENT_ID_PMSUSPEND_DISK:
     cb = VIR_DOMAIN_EVENT_CALLBACK(i_callback);
+    break;
+  case VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED:
+    cb = VIR_DOMAIN_EVENT_CALLBACK(s_callback);
     break;
   default:
     caml_failwith("vifConnectDomainEventRegisterAny: unimplemented eventID");

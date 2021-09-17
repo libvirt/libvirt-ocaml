@@ -1400,6 +1400,14 @@ struct
     let make x = `Unknown x
   end
 
+  module Device_removed = struct
+    type t = string
+
+    let to_string x = x
+
+    let make x = x
+  end
+
   type callback =
     | Lifecycle     of ([`R] Domain.t -> Lifecycle.t -> unit)
     | Reboot        of ([`R] Domain.t -> Reboot.t -> unit)
@@ -1416,6 +1424,7 @@ struct
     | PMSuspend     of ([`R] Domain.t -> PM_suspend.t -> unit)
     | BalloonChange of ([`R] Domain.t -> Balloon_change.t -> unit)
     | PMSuspendDisk of ([`R] Domain.t -> PM_suspend_disk.t -> unit)
+    | DeviceRemoved of ([`R] Domain.t -> Device_removed.t -> unit)
 
   type callback_id = int64
 
@@ -1437,6 +1446,7 @@ struct
   let u_table = make_table "Libvirt.u_callback"
   let i_table = make_table "Libvirt.i_callback"
   let i64_table = make_table "Libvirt.i64_callback"
+  let s_table = make_table "Libvirt.s_callback"
   let i_i_table = make_table "Libvirt.i_i_callback"
   let s_i_table = make_table "Libvirt.s_i_callback"
   let s_i_i_table = make_table "Libvirt.s_i_i_callback"
@@ -1517,6 +1527,10 @@ struct
     | PMSuspendDisk f ->
         Hashtbl.add i_table id (fun dom x ->
             f dom (PM_suspend_disk.make x)
+        )
+    | DeviceRemoved f ->
+        Hashtbl.add s_table id (fun dom x ->
+            f dom (Device_removed.make x)
         )
     end;
     let libvirt_id = register_any' conn dom callback id in

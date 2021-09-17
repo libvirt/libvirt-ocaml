@@ -131,6 +131,9 @@ let () =
     let (_: E.callback_id) = E.register_any conn (E.PMSuspendDisk (fun dom x ->
         printd dom "PMSuspendDisk %s" (E.PM_suspend_disk.to_string x)
     )) in
+    let (_: E.callback_id) = E.register_any conn (E.DeviceRemoved (fun dom x ->
+        printd dom "DeviceRemoved %s" (E.Device_removed.to_string x)
+    )) in
     C.set_keep_alive conn 5 3;
     while true do
 	E.run_default_impl ()
