@@ -779,7 +779,7 @@ ocaml_libvirt_domain_get_cpu_stats (value domv)
 
         typed_param = caml_alloc(2, 0); /* typed_param: field name(string), typed_param_value */
         Store_field(param_node, 0, typed_param);
-        Store_field(typed_param, 0, caml_copy_string(params[pos].field));
+        v = caml_copy_string(params[pos].field); Store_field(typed_param, 0, v);
 
         /* typed_param_value: value with the corresponding type tag */
         switch(params[pos].type) {
@@ -906,7 +906,7 @@ ocaml_libvirt_domain_get_all_domain_stats (value connv,
     tpv = caml_alloc (rstats[i]->nparams, 0); /* typed_param array */
     for (j = 0; j < rstats[i]->nparams; ++j) {
       v2 = caml_alloc (2, 0);   /* typed_param: field name, value */
-      Store_field (v2, 0, caml_copy_string (rstats[i]->params[j].field));
+      v = caml_copy_string (rstats[i]->params[j].field); Store_field (v2, 0, v);
 
       switch (rstats[i]->params[j].type) {
       case VIR_TYPED_PARAM_INT:

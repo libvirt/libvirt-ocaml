@@ -117,11 +117,11 @@ value
 Val_virconnectcredential (const virConnectCredentialPtr cred)
 {
   CAMLparam0 ();
-  CAMLlocal1 (rv);
+  CAMLlocal2 (rv, v);
 
   rv = caml_alloc (4, 0);
   Store_field (rv, 0, Val_int (cred->type - 1));
-  Store_field (rv, 1, caml_copy_string (cred->prompt));
+  v = caml_copy_string (cred->prompt); Store_field (rv, 1, v);
   Store_field (rv, 2,
                Val_opt_const (cred->challenge,
                               (Val_const_ptr_t) caml_copy_string));
@@ -202,7 +202,7 @@ value
 Val_virterror (virErrorPtr err)
 {
   CAMLparam0 ();
-  CAMLlocal3 (rv, connv, optv);
+  CAMLlocal2 (rv, v);
 
   rv = caml_alloc (9, 0);
   Store_field (rv, 0, Val_err_number (err->code));
@@ -217,8 +217,8 @@ Val_virterror (virErrorPtr err)
 	       Val_opt (err->str2, (Val_ptr_t) caml_copy_string));
   Store_field (rv, 6,
 	       Val_opt (err->str3, (Val_ptr_t) caml_copy_string));
-  Store_field (rv, 7, caml_copy_int32 (err->int1));
-  Store_field (rv, 8, caml_copy_int32 (err->int2));
+  v = caml_copy_int32 (err->int1); Store_field (rv, 7, v);
+  v = caml_copy_int32 (err->int2); Store_field (rv, 8, v);
 
   CAMLreturn (rv);
 }
