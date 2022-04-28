@@ -51,6 +51,8 @@ endif
 
 depend: .depend
 
+OCAMLDEPFLAGS = -one-line
+
 ifneq ($(OCAMLFIND),)
 .depend: $(wildcard *.mli) $(wildcard *.ml)
 	rm -f .depend
