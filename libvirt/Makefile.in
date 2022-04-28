@@ -35,11 +35,11 @@ PERL		= @PERL@
 
 ifneq ($(OCAMLFIND),)
 OCAMLCPACKAGES	:= -package unix
-OCAMLCFLAGS	:= -g -warn-error CDEFLMPSUVYZX-3 -safe-string
+OCAMLCFLAGS	:= -g -warn-error +C+D+E+F+L+M+P+S+U+V+Y+Z+X-3 -safe-string
 OCAMLCLIBS	:= -linkpkg
 else
 OCAMLCINCS	:=
-OCAMLCFLAGS	:= -g -warn-error CDEFLMPSUVYZX-3 -safe-string
+OCAMLCFLAGS	:= -g -warn-error +C+D+E+F+L+M+P+S+U+V+Y+Z+X-3 -safe-string
 OCAMLCLIBS	:= unix.cma
 endif
 

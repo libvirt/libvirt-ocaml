@@ -18,10 +18,10 @@
 OCAMLFIND	= @OCAMLFIND@
 
 OCAMLCPACKAGES	:= -package unix -I ../libvirt
-OCAMLCFLAGS	:= -g -warn-error CDEFLMPSUVYZX-3
+OCAMLCFLAGS	:= -g -warn-error +C+D+E+F+L+M+P+S+U+V+Y+Z+X-3
 OCAMLCLIBS	:= -linkpkg
 OCAMLOPTPACKAGES := $(OCAMLCPACKAGES)
-OCAMLOPTFLAGS	:= -g -warn-error CDEFLMPSUVYZX-3
+OCAMLOPTFLAGS	:= -g -warn-error +C+D+E+F+L+M+P+S+U+V+Y+Z+X-3
 OCAMLOPTLIBS	:= $(OCAMLCLIBS)
 
 BYTE_TARGETS	:= list_domains list_secrets node_info get_cpu_stats \
