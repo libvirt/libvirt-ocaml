@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# libnbd 'run' programs locally script
+# Copyright (C) 2011-2022 Red Hat Inc.
+#
+# @configure_input@
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+#----------------------------------------------------------------------
+
+# With this script you can compile and run OCaml libvirt programs
+# without needing to install the bindings first.
+#
+#   ../libvirt-ocaml/run ./configure     # configure another project
+#   ../libvirt-ocaml/run make            # build another project
+#
+#   ../libvirt-ocaml/run rlwrap ocaml    # run toplevel
+#   #use "topfind";;
+#   #require "libvirt";;
+
+#----------------------------------------------------------------------
+
+# Function to intelligently prepend a path to an environment variable.
+# See http://stackoverflow.com/a/9631350
+prepend()
+{
+    eval $1="$2\${$1:+:\$$1}"
+}
+
+# Source and build directories (absolute paths so this works from any
+# directory).
+s="$(cd @abs_srcdir@ && pwd)"
+b="$(cd @abs_builddir@ && pwd)"
+
+# For OCaml.
+prepend CAML_LD_LIBRARY_PATH "$b/libvirt"
+export CAML_LD_LIBRARY_PATH
+
+# For findlib.  This has to point to the "local" META file.
+prepend OCAMLPATH "$b/libvirt"
+export OCAMLPATH
+
+# Run the program.
+exec "$@"

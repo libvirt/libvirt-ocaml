@@ -1,0 +1,9 @@
+# NB This is the local META file used by the ./run script.
+# DO NOT INSTALL THIS!  "make install" copies the global META
+# in the parent directory.
+name="libvirt"
+version="@PACKAGE_VERSION@"
+description="libvirt bindings for OCaml"
+directory="@abs_builddir@"
+archive(byte)="mllibvirt.cma"
+archive(native)="mllibvirt.cmxa"

@@ -119,7 +119,8 @@ autostatus: libvirt_generated.c
 	@echo -n "LOC in automatic bindings: "
 	@wc -l < libvirt_generated.c
 
-
+# NB: We must install the "global" META in the directory above.
+# The META under libvirt/ is the "local" META used by ./run
 install-byte:
 	ocamlfind install $(OCAMLFIND_INSTFLAGS) -ldconf ignore libvirt \
 	  ../META *.so *.a *.cma *.cmi *.mli

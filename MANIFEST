@@ -27,6 +27,7 @@ libvirt/libvirt.mli
 libvirt/libvirt_version.ml.in
 libvirt/libvirt_version.mli
 libvirt/Makefile.in
+libvirt/META_libvirt_in
 libvirt/README
 m4/ocaml.m4
 Makefile.in
@@ -34,4 +35,5 @@ Make.rules.in
 MANIFEST
 META.in
 README
+run.in
 TODO.libvirt

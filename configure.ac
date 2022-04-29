@@ -79,11 +79,20 @@ echo "Thanks for downloading" $PACKAGE_STRING
 echo "------------------------------------------------------------"
 
 dnl Produce output files.
-AC_CONFIG_FILES([META
+AC_CONFIG_FILES([run],
+                [chmod +x,-w run])
+AC_CONFIG_FILES([\
+        META
 	libvirt/libvirt_version.ml
 	Makefile
 	Make.rules
 	libvirt/Makefile
 	examples/Makefile
 	])
+
+dnl This is the local META file used by the ./run script.  We cannot
+dnl call the template *.in because ocamlfind thinks that refers
+dnl to a module called "in".
+AC_CONFIG_FILES([libvirt/META.libvirt:libvirt/META_libvirt_in])
+
 AC_OUTPUT
