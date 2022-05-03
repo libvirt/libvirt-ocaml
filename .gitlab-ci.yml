@@ -26,7 +26,8 @@ stages:
     - autoreconf -i -f
     - ./configure
     - $MAKE
-    - $MAKE check-manifest
+    - $MAKE dist
+    - $MAKE maintainer-check-extra-dist
 
 .native_build_job:
   extends: .gitlab_native_build_job
@@ -36,6 +37,7 @@ stages:
     - autoreconf -i -f
     - ./configure
     - $MAKE
-    - $MAKE check-manifest
+    - $MAKE dist
+    - $MAKE maintainer-check-extra-dist
 
 include: '/ci/gitlab.yml'

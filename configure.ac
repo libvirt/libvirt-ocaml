@@ -15,15 +15,18 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
-dnl Process this file with autoconf to produce a configure script.
+dnl Process this file with "autoreconf -i" to generate the
+dnl ./configure script.
 
 AC_INIT(ocaml-libvirt,0.6.1.6)
 AC_CONFIG_MACRO_DIRS([m4])
+AM_INIT_AUTOMAKE(foreign)
 
 dnl Check for basic C environment.
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_CPP
+AC_PROG_RANLIB
 
 AC_C_PROTOTYPES
 test "x$U" != "x" && AC_MSG_ERROR(Compiler not ANSI compliant)
@@ -32,21 +35,6 @@ AC_PROG_CC_C_O
 
 dnl Select some C flags based on the host type.
 AC_CANONICAL_HOST
-
-DEBUG="-g"
-WARNINGS="-Wall -Werror"
-CFLAGS_FPIC="-fPIC"
-WIN32=no
-case "$host" in
-  *-*-mingw*)
-    WARNINGS="$WARNINGS -Wno-unused"
-    CFLAGS_FPIC=""
-    WIN32=yes
-esac
-AC_SUBST(DEBUG)
-AC_SUBST(WARNINGS)
-AC_SUBST(CFLAGS_FPIC)
-AC_SUBST(WIN32)
 
 dnl Check for perl (required).
 AC_CHECK_PROG([PERL],[perl],[perl],[no])
@@ -66,6 +54,10 @@ if test "x$OCAMLFIND" = "x"; then
     AC_MSG_ERROR([OCaml findlib is required])
 fi
 
+if test "x$OCAMLMKLIB" = "x"; then
+    AC_MSG_ERROR([OCaml ocamlmklib is required])
+fi
+
 dnl Check for required OCaml packages.
 OCAML_PKG_unix=no
 AC_CHECK_OCAML_PKG(unix)
@@ -73,20 +65,24 @@ if test "x$OCAML_PKG_unix" = "xno"; then
     AC_MSG_ERROR([Cannot find required OCaml package 'unix'])
 fi
 
+dnl Optional programs.
+AM_CONDITIONAL([HAVE_OCAMLOPT], [test "x$OCAMLOPT" != "x"])
+AM_CONDITIONAL([HAVE_OCAMLDOC], [test "x$OCAMLDOC" != "x"])
+
 dnl Summary.
 echo "------------------------------------------------------------"
 echo "Thanks for downloading" $PACKAGE_STRING
 echo "------------------------------------------------------------"
 
 dnl Produce output files.
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([run],
                 [chmod +x,-w run])
 AC_CONFIG_FILES([\
         META
-	libvirt/libvirt_version.ml
 	Makefile
-	Make.rules
 	libvirt/Makefile
+	libvirt/libvirt_version.ml
 	examples/Makefile
 	])
 

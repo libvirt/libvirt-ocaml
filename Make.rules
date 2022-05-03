@@ -17,35 +17,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
-# This file is included by Makefiles in subdirectories.
-
-OCAMLFIND	= @OCAMLFIND@
-OCAMLDEP	= @OCAMLDEP@
-OCAMLC		= @OCAMLC@
-OCAMLOPT	= @OCAMLOPT@
-
 # Common rules for building OCaml objects.
 
-ifneq ($(OCAMLFIND),)
 .mli.cmi:
 	$(OCAMLFIND) ocamlc $(OCAMLCFLAGS) $(OCAMLCPACKAGES) -c $<
 .ml.cmo:
 	$(OCAMLFIND) ocamlc $(OCAMLCFLAGS) $(OCAMLCPACKAGES) -c $<
 .ml.cmx:
 	$(OCAMLFIND) ocamlopt $(OCAMLOPTFLAGS) $(OCAMLOPTPACKAGES) -c $<
-else
-.mli.cmi:
-	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLCINCS) -c $<
-.ml.cmo:
-	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLCINCS) -c $<
-.ml.cmx:
-	$(OCAMLOPT) $(OCAMLOPTFLAGS) $(OCAMLOPTINCS) -c $<
-endif
-
-%.ml %.mli: %.mly
-	ocamlyacc $<
-.mll.ml:
-	ocamllex $<
 
 # Dependencies.
 
@@ -53,20 +32,13 @@ depend: .depend
 
 OCAMLDEPFLAGS = -one-line
 
-ifneq ($(OCAMLFIND),)
 .depend: $(wildcard *.mli) $(wildcard *.ml)
 	rm -f .depend
 	$(OCAMLFIND) ocamldep $(OCAMLCPACKAGES) $(OCAMLDEPFLAGS) $^ > $@
-else
-.depend: $(wildcard *.mli) $(wildcard *.ml)
-	rm -f .depend
-	$(OCAMLDEP) $(OCAMLCINCS) $(OCAMLDEPFLAGS) $^ > $@
-endif
 
-ifeq ($(wildcard .depend),.depend)
-include .depend
-endif
+-include .depend
 
-.PHONY: depend dist check-manifest dpkg doc
+SUFFIXES = .cmo .cmi .cmx .ml .mli .mll .mly
 
-.SUFFIXES:      .cmo .cmi .cmx .ml .mli .mll .mly
+CLEANFILES = *.cmi *.cmo *.cmx *.cma *.cmxa
+CLEANFILES += *.o *.a *.so *.opt *~ *.dll *.exe core

@@ -21,6 +21,8 @@
 #ifndef LIBVIRT_C_H
 #define LIBVIRT_C_H
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
