@@ -17,6 +17,7 @@ RUN zypper dist-upgrade -y && \
            gettext-devel \
            git \
            glibc-locale \
+           gzip \
            libtool \
            libvirt-devel \
            make \

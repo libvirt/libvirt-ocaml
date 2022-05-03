@@ -26,6 +26,7 @@ RUN dnf distro-sync -y && \
         glibc-devel \
         glibc-langpack-en \
         gnutls-devel \
+        gzip \
         libnl3-devel \
         libtirpc-devel \
         libtool \

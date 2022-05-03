@@ -19,6 +19,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
             diffutils \
             gcc \
             git \
+            gzip \
             libtool \
             libtool-bin \
             libvirt-dev \

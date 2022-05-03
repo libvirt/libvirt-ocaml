@@ -27,6 +27,7 @@ exec "$@"' > /usr/bin/nosync && \
         gettext-devel \
         git \
         glibc-langpack-en \
+        gzip \
         libtool \
         libvirt-devel \
         make \
