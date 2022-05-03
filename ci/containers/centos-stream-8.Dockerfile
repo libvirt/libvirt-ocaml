@@ -6,7 +6,7 @@
 
 FROM quay.io/centos/centos:stream8
 
-RUN dnf update -y && \
+RUN dnf distro-sync -y && \
     dnf install 'dnf-command(config-manager)' -y && \
     dnf config-manager --set-enabled -y powertools && \
     dnf install -y centos-release-advanced-virtualization && \
@@ -16,18 +16,32 @@ RUN dnf update -y && \
         automake \
         ca-certificates \
         ccache \
+        cpp \
         diffutils \
         gcc \
+        gettext \
         gettext-devel \
         git \
+        glib2-devel \
+        glibc-devel \
         glibc-langpack-en \
+        gnutls-devel \
+        libnl3-devel \
+        libtirpc-devel \
         libtool \
-        libvirt-devel \
+        libxml2 \
+        libxml2-devel \
+        libxslt \
         make \
+        meson \
+        ninja-build \
         ocaml \
         ocaml-findlib \
         perl \
-        pkgconfig && \
+        pkgconfig \
+        python3 \
+        python3-docutils \
+        rpcgen && \
     dnf autoremove -y && \
     dnf clean all -y && \
     rpm -qa | sort > /packages.txt && \
@@ -37,4 +51,6 @@ RUN dnf update -y && \
 
 ENV LANG "en_US.UTF-8"
 ENV MAKE "/usr/bin/make"
+ENV NINJA "/usr/bin/ninja"
+ENV PYTHON "/usr/bin/python3"
 ENV CCACHE_WRAPPERSDIR "/usr/libexec/ccache-wrappers"

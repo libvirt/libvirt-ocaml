@@ -7,7 +7,7 @@ gitlab:
   project: libvirt-ocaml
 
 targets:
-  centos-8:
+  centos-stream-8:
     projects:
       - libvirt-ocaml
       - libvirt+minimal
@@ -17,22 +17,20 @@ targets:
         template: .native_git_build_job
         suffix: -git
 
-  centos-stream-8: x86_64
-
   debian-10: x86_64
 
   debian-sid: x86_64
 
-  fedora-33: x86_64
-
   fedora-34: x86_64
+
+  fedora-35: x86_64
 
   fedora-rawhide: x86_64
 
-  opensuse-leap-152: x86_64
+  opensuse-leap-153: x86_64
 
   opensuse-tumbleweed: x86_64
 
-  ubuntu-1804: x86_64
-
   ubuntu-2004: x86_64
+
+  ubuntu-2204: x86_64
