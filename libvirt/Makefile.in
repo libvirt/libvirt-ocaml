@@ -55,9 +55,11 @@ endif
 BYTE_TARGETS	:= mllibvirt.cma
 OPT_TARGETS	:= mllibvirt.cmxa
 
-all: $(BYTE_TARGETS)
+all: opt
 
-opt: $(OPT_TARGETS)
+opt: byte $(OPT_TARGETS)
+
+byte: $(BYTE_TARGETS)
 
 COBJS := libvirt.cmo libvirt_version.cmo
 OPTOBJS := libvirt.cmx libvirt_version.cmx

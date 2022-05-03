@@ -28,9 +28,11 @@ BYTE_TARGETS	:= list_domains list_secrets node_info get_cpu_stats \
 		   get_all_domain_stats domain_events
 OPT_TARGETS	:= $(BYTE_TARGETS:%=%.opt)
 
-all: $(BYTE_TARGETS)
+all: opt
 
-opt: $(OPT_TARGETS)
+opt: byte $(OPT_TARGETS)
+
+byte: $(BYTE_TARGETS)
 
 list_domains: list_domains.cmo
 	$(OCAMLFIND) ocamlc \

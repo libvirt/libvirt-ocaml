@@ -25,7 +25,7 @@ OCAMLDOCFLAGS	:= -html -sort -colorize-code
 
 SUBDIRS		= libvirt examples
 
-all opt depend install-opt install-byte:
+all byte depend install-opt install-byte:
 	for d in $(SUBDIRS); do \
 	  $(MAKE) -C $$d $@; \
 	  if [ $$? -ne 0 ]; then exit 1; fi; \
@@ -103,7 +103,7 @@ ChangeLog:
 release: configure
 	$(MAKE) release_stage_2
 
-release_stage_2: clean all opt doc dist
+release_stage_2: clean all doc dist
 	$(MAKE) release_stage_3
 
 WEBSITE	= ../redhat/websites
@@ -128,5 +128,5 @@ upload:
 
 force:
 
-.PHONY: all opt depend install clean distclean configure dist check-manifest \
+.PHONY: all byte depend install clean distclean configure dist check-manifest \
 	release release_stage_2 release_stage_3 force
