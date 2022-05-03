@@ -65,7 +65,7 @@ x86_64-debian-10-container:
 
 x86_64-debian-sid-container:
   extends: .container_job
-  allow_failure: false
+  allow_failure: true
   variables:
     NAME: debian-sid
 
@@ -86,7 +86,7 @@ x86_64-fedora-35-container:
 
 x86_64-fedora-rawhide-container:
   extends: .container_job
-  allow_failure: false
+  allow_failure: true
   variables:
     NAME: fedora-rawhide
 
@@ -100,7 +100,7 @@ x86_64-opensuse-leap-153-container:
 
 x86_64-opensuse-tumbleweed-container:
   extends: .container_job
-  allow_failure: false
+  allow_failure: true
   variables:
     NAME: opensuse-tumbleweed
 
@@ -143,7 +143,7 @@ x86_64-debian-sid:
   extends: .native_build_job
   needs:
     - x86_64-debian-sid-container
-  allow_failure: false
+  allow_failure: true
   variables:
     NAME: debian-sid
 
@@ -170,7 +170,7 @@ x86_64-fedora-rawhide:
   extends: .native_build_job
   needs:
     - x86_64-fedora-rawhide-container
-  allow_failure: false
+  allow_failure: true
   variables:
     NAME: fedora-rawhide
 
@@ -188,7 +188,7 @@ x86_64-opensuse-tumbleweed:
   extends: .native_build_job
   needs:
     - x86_64-opensuse-tumbleweed-container
-  allow_failure: false
+  allow_failure: true
   variables:
     NAME: opensuse-tumbleweed
 
