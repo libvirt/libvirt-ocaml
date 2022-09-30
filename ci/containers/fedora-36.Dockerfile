@@ -4,7 +4,7 @@
 #
 # https://gitlab.com/libvirt/libvirt-ci
 
-FROM registry.fedoraproject.org/fedora:34
+FROM registry.fedoraproject.org/fedora:36
 
 RUN dnf install -y nosync && \
     echo -e '#!/bin/sh\n\
@@ -18,23 +18,23 @@ exec "$@"' > /usr/bin/nosync && \
     chmod +x /usr/bin/nosync && \
     nosync dnf update -y && \
     nosync dnf install -y \
-        autoconf \
-        automake \
-        ca-certificates \
-        ccache \
-        diffutils \
-        gcc \
-        gettext-devel \
-        git \
-        glibc-langpack-en \
-        gzip \
-        libtool \
-        libvirt-devel \
-        make \
-        ocaml \
-        ocaml-findlib \
-        perl-base \
-        pkgconfig && \
+               autoconf \
+               automake \
+               ca-certificates \
+               ccache \
+               diffutils \
+               gcc \
+               gettext-devel \
+               git \
+               glibc-langpack-en \
+               gzip \
+               libtool \
+               libvirt-devel \
+               make \
+               ocaml \
+               ocaml-findlib \
+               perl-base \
+               pkgconfig && \
     nosync dnf autoremove -y && \
     nosync dnf clean all -y && \
     rpm -qa | sort > /packages.txt && \
@@ -42,6 +42,6 @@ exec "$@"' > /usr/bin/nosync && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc
 
+ENV CCACHE_WRAPPERSDIR "/usr/libexec/ccache-wrappers"
 ENV LANG "en_US.UTF-8"
 ENV MAKE "/usr/bin/make"
-ENV CCACHE_WRAPPERSDIR "/usr/libexec/ccache-wrappers"
