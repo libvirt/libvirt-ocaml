@@ -79,16 +79,19 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([run],
                 [chmod +x,-w run])
 AC_CONFIG_FILES([\
-        META
 	Makefile
 	libvirt/Makefile
 	libvirt/libvirt_version.ml
 	examples/Makefile
 	])
 
+dnl This is the real META file.  We cannot call the template *.in
+dnl because ocamlfind thinks that refers to a module called "in".
+AC_CONFIG_FILES([libvirt/META:libvirt/META_in])
+
 dnl This is the local META file used by the ./run script.  We cannot
 dnl call the template *.in because ocamlfind thinks that refers
 dnl to a module called "in".
-AC_CONFIG_FILES([libvirt/META.libvirt:libvirt/META_libvirt_in])
+AC_CONFIG_FILES([libvirt/local/META.libvirt:libvirt/local/META_libvirt_in])
 
 AC_OUTPUT

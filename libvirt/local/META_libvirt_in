@@ -4,6 +4,6 @@
 name="libvirt"
 version="@PACKAGE_VERSION@"
 description="libvirt bindings for OCaml"
-directory="@abs_builddir@"
+directory="@abs_top_builddir@/libvirt"
 archive(byte)="mllibvirt.cma"
 archive(native)="mllibvirt.cmxa"

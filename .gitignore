@@ -17,7 +17,6 @@ core
 core.*
 .deps
 
-/META
 /aclocal.m4
 /autom4te.cache
 /compile
@@ -35,9 +34,10 @@ core.*
 /examples/list_secrets
 /examples/node_info
 /html/
-/libvirt/META.libvirt
+/libvirt/META
 /libvirt/libvirt_generated.c
 /libvirt/libvirt_version.ml
+/libvirt/local/META.libvirt
 /missing
 /ocaml-libvirt-*.exe
 /ocaml-libvirt-*.tar.gz

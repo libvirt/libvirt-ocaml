@@ -78,9 +78,7 @@ mllibvirt.cmxa: $(OPTOBJS)
 endif
 
 # Run ocamlfind to perform the install.
-# NB: We must install the "global" META in the directory above.
-# The META under libvirt/ is the "local" META used by ./run
-data_hook_files = ../META *.so *.a *.cma *.cmi $(srcdir)/*.mli
+data_hook_files = META *.so *.a *.cma *.cmi $(srcdir)/*.mli
 if HAVE_OCAMLOPT
 data_hook_files += *.cmx *.cmxa
 endif
