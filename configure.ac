@@ -1,5 +1,5 @@
 # ocaml-libvirt
-# Copyright (C) 2007-2022 Red Hat Inc., Richard W.M. Jones
+# Copyright (C) 2007-2023 Red Hat Inc., Richard W.M. Jones
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
 dnl Process this file with "autoreconf -i" to generate the
 dnl ./configure script.
 
-AC_INIT(ocaml-libvirt,0.6.1.6)
+AC_INIT(ocaml-libvirt,0.6.1.7)
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE(foreign)
 
