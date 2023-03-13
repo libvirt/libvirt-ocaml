@@ -1,0 +1,27 @@
+/* Numbered headings - see http://developer.mozilla.org/en/docs/CSS_Counters
+ * and http://www.w3.org/TR/REC-CSS2/generate.html#counters
+ * $Id: numbering.css,v 1.1 2007/11/14 14:32:17 rjones Exp $
+ */
+
+body {
+    counter-reset: chapter;
+}
+
+h2 {
+    counter-increment: chapter;
+    counter-reset: section;
+}
+
+h2:before {
+    font-size: 80%;
+    content: counter(chapter) ". ";
+}
+
+h3 {
+    counter-increment: section;
+}
+
+h3:before {
+    font-size: 80%;
+    content: counter(chapter) "." counter(section) ". ";
+}

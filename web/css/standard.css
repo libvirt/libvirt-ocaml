@@ -1,0 +1,157 @@
+/* CSS for et.redhat.com/~rjones/
+ * $Id: standard.css,v 1.1 2007/11/14 14:32:17 rjones Exp $
+ */
+
+body {
+  margin-left: 1em;
+}
+
+body p, body ul {
+  margin-left: 2em;
+  width: 35em;
+}
+
+/* Headings. */
+
+h1 {
+  font-size: 140%;
+  border-bottom: 1px solid #000;
+}
+
+h2 {
+  border-bottom: 1px solid #eee;
+}
+
+h1, h2, h3, h4 {
+  color: #333;
+}
+
+/* Code sections. */
+
+code {
+  font-size: 120%;
+}
+
+pre {
+  background-color: #fcfcfc;
+  /*border: 1px dotted #888;*/
+  border-left: 6px solid #f0f0f0;
+  padding: 5px;
+  margin-left: 1em;
+  font-size: 120%;
+}
+
+/* Notes. */
+
+p.note {
+  margin-left: 2em;
+  margin-right: 1em;
+  /*border: 1px dotted #888;*/
+  padding-left: 36px;
+  background: url(../images/note.png) no-repeat;
+}
+
+p.warning {
+  margin-left: 2em;
+  margin-right: 1em;
+  border: 1px dotted #800;
+  padding-left: 36px;
+  background: url(../images/warning.png) no-repeat #fee;
+}
+
+/* Highlighted text. */
+
+span.highlight {
+  color: red;
+}
+
+/* Images. */
+
+img.frame_img {
+  border: 1px solid #888;
+  padding: 6px;
+}
+
+/* Nice-looking tables. */
+
+table.top_table {
+  border-collapse: collapse;
+}
+
+table.top_table th {
+  vertical-align: top;
+  padding: 3px;
+  border-bottom: 1px solid #ddd;
+}
+
+table.top_table td {
+  vertical-align: top;
+  padding: 3px;
+}
+
+table.top_table td.number {
+  text-align: right;
+}
+
+table.top_table th.divider {
+  text-align: center;
+  padding: 6px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+table.left_table {
+  border-collapse: collapse;
+}
+
+table.left_table th {
+  text-align: right;
+  vertical-align: top;
+  padding: 3px;
+  padding-right: 1em;
+}
+
+table.left_table td {
+  vertical-align: top;
+  padding: 3px;
+}
+
+table.left_table td.number {
+  text-align: right;
+}
+
+table.left_table th.divider {
+  text-align: center;
+  padding: 6px;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+/* Float-left images with text around. */
+
+img.leftpara {
+  float: left;
+  clear: left;
+  margin-right: 1em;
+  margin-bottom: 1em;
+}
+
+/* <ul> styled as menus. */
+
+ul.menu {
+  width: 60em;
+  padding: 0px;
+  margin-left: 1em;
+  list-style: none;
+}
+
+ul.menu li {
+  display: inline;
+  border-left: 1px solid #666;
+  padding-left: 5px;
+}
+
+ul.menu li.first {
+  border-left: none;
+  padding-left: 0px;
+}

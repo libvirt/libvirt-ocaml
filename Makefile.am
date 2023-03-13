@@ -78,6 +78,7 @@ maintainer-check-extra-dist:
 	  grep -v \
 	    -e '^\.cirrus.yml' \
 	    -e '^\.gitlab-ci.yml' \
+	    -e '^web/' \
 	    -e '^ci/' | \
 	    sort > gitfiles
 	@comm -13 tarfiles gitfiles > comm-out
