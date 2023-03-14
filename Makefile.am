@@ -49,7 +49,7 @@ release_stage_2: clean all doc dist
 # Upload to main website.
 
 upload:
-	scp $(PACKAGE)-$(VERSION).tar.gz libvirt.org:/data/ftp/libvirt/ocaml/
+	scp $(PACKAGE)-$(VERSION).tar.gz download.libvirt.org:/data/ftp/libvirt/ocaml/
 
 #----------------------------------------------------------------------
 # Maintainers only!
