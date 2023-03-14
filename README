@@ -2,7 +2,7 @@ ocaml-libvirt
 ----------------------------------------------------------------------
 
 Copyright (C) 2007-2022 Red Hat Inc. and various authors
-https://libvirt.org/ocaml/
+https://ocaml.libvirt.org/
 https://libvirt.org/
 
 This is a complete set of OCaml bindings around libvirt, exposing all
