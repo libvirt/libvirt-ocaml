@@ -39,31 +39,16 @@ doc:
 	  libvirt.{ml,mli} libvirt_version.{ml,mli}
 endif
 
-# Do a release (update the website).
+# Do a release
 
 release: configure
 	$(MAKE) release_stage_2
 
 release_stage_2: clean all doc dist
-	$(MAKE) release_stage_3
-
-WEBSITE	= ../redhat/websites
-
-release_stage_3:
-	rm -f $(WEBSITE)/ocaml-libvirt/html/*.{html,css}
-	cp html/*.{html,css} $(WEBSITE)/ocaml-libvirt/html/
-	cp README $(WEBSITE)/ocaml-libvirt/README.txt
 
 # Upload to main website.
 
 upload:
-	cd $(WEBSITE)/ocaml-libvirt && \
-	scp index.html README.txt Screenshot*.png \
-	  libvirt.org:/data/www/libvirt.org/ocaml && \
-	scp css/*.css \
-	  libvirt.org:/data/www/libvirt.org/ocaml/css/ && \
-	scp html/*.html html/*.css \
-	  libvirt.org:/data/www/libvirt.org/ocaml/html/
 	scp $(PACKAGE)-$(VERSION).tar.gz libvirt.org:/data/ftp/libvirt/ocaml/
 
 #----------------------------------------------------------------------
