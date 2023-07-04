@@ -66,8 +66,8 @@ if test "x$OCAML_PKG_unix" = "xno"; then
 fi
 
 dnl Optional programs.
-AM_CONDITIONAL([HAVE_OCAMLOPT], [test "x$OCAMLOPT" != "x"])
-AM_CONDITIONAL([HAVE_OCAMLDOC], [test "x$OCAMLDOC" != "x"])
+AM_CONDITIONAL([HAVE_OCAMLOPT], [test "x$OCAMLOPT" != "xno"])
+AM_CONDITIONAL([HAVE_OCAMLDOC], [test "x$OCAMLDOC" != "xno"])
 
 dnl Summary.
 echo "------------------------------------------------------------"
