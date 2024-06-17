@@ -5,26 +5,28 @@
 # https://gitlab.com/libvirt/libvirt-ci
 
 function install_buildenv() {
-    dnf update -y
-    dnf install -y \
+    apk update
+    apk upgrade
+    apk add \
         autoconf \
         automake \
+        busybox \
         ca-certificates \
         ccache \
         diffutils \
         gcc \
-        gettext-devel \
+        gettext \
         git \
-        glibc-langpack-en \
         gzip \
         libtool \
-        libvirt-devel \
+        libvirt-dev \
         make \
+        musl-dev \
         ocaml \
-        ocaml-findlib \
-        perl-base \
-        pkgconfig
-    rpm -qa | sort > /packages.txt
+        ocaml-findlib-dev \
+        perl \
+        pkgconf
+    apk list --installed | sort > /packages.txt
     mkdir -p /usr/libexec/ccache-wrappers
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc

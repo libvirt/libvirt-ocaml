@@ -3,9 +3,11 @@ packages:
   - autoconf
   - automake
   - autopoint
+  - awk
   - ccache
   - diffutils
   - gcc
+  - libc
   - gzip
   - libtool
   - libtoolize

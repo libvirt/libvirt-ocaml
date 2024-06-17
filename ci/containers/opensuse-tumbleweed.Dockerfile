@@ -10,12 +10,14 @@ RUN zypper dist-upgrade -y && \
     zypper install -y \
            autoconf \
            automake \
+           awk \
            ca-certificates \
            ccache \
            diffutils \
            gcc \
            gettext-devel \
            git \
+           glibc-devel \
            glibc-locale \
            gzip \
            libtool \

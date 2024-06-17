@@ -5,25 +5,27 @@
 # https://gitlab.com/libvirt/libvirt-ci
 
 function install_buildenv() {
-    zypper update -y
-    zypper install -y \
-           autoconf \
-           automake \
-           ca-certificates \
-           ccache \
-           diffutils \
-           gcc \
-           gettext-devel \
-           git \
-           glibc-locale \
-           gzip \
-           libtool \
-           libvirt-devel \
-           make \
-           ocaml \
-           ocaml-findlib \
-           perl-base \
-           pkgconfig
+    dnf update -y
+    dnf install -y \
+        autoconf \
+        automake \
+        ca-certificates \
+        ccache \
+        diffutils \
+        gawk \
+        gcc \
+        gettext-devel \
+        git \
+        glibc-devel \
+        glibc-langpack-en \
+        gzip \
+        libtool \
+        libvirt-devel \
+        make \
+        ocaml \
+        ocaml-findlib \
+        perl-base \
+        pkgconfig
     rpm -qa | sort > /packages.txt
     mkdir -p /usr/libexec/ccache-wrappers
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc

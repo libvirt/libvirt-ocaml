@@ -18,6 +18,7 @@ function install_buildenv() {
             gcc \
             git \
             gzip \
+            libc6-dev \
             libtool \
             libtool-bin \
             libvirt-dev \
@@ -25,6 +26,7 @@ function install_buildenv() {
             make \
             ocaml \
             ocaml-findlib \
+            original-awk \
             perl-base \
             pkgconf
     sed -Ei 's,^# (en_US\.UTF-8 .*)$,\1,' /etc/locale.gen

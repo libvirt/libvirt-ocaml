@@ -3,8 +3,11 @@ stages:
   - containers
   - builds
   - sanity_checks
+  - pages
 
 .native_git_build_job:
+  extends:
+    - .gitlab_native_build_job
   script:
     - export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"
     - export SCRATCH_DIR="/tmp/scratch"
@@ -27,17 +30,9 @@ stages:
     - $MAKE dist
     - $MAKE maintainer-check-extra-dist
 
-.native_git_build_job_prebuilt_env:
-  extends:
-    - .native_git_build_job
-    - .gitlab_native_build_job_prebuilt_env
-
-.native_git_build_job_local_env:
-  extends:
-    - .native_git_build_job
-    - .gitlab_native_build_job_local_env
-
 .native_build_job:
+  extends:
+    - .gitlab_native_build_job
   script:
     - export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"
     - autoreconf -i -f
@@ -46,45 +41,34 @@ stages:
     - $MAKE dist
     - $MAKE maintainer-check-extra-dist
 
-.native_build_job_prebuilt_env:
+website:
   extends:
-    - .native_build_job
-    - .gitlab_native_build_job_prebuilt_env
-
-.native_build_job_local_env:
-  extends:
-    - .native_build_job
-    - .gitlab_native_build_job_local_env
-
-.website:
+    - .gitlab_native_build_job
   script:
     - export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"
     - autoreconf -i -f
     - ./configure
     - $MAKE doc
-    - mkdir public
-    - mv html public
-    - cp -R web/* public
+    - mv html web/
   artifacts:
     paths:
       - public
+  variables:
+    NAME: ubuntu-2204
+    TARGET_BASE_IMAGE: docker.io/library/ubuntu:22.04
 
 pages:
-  extends:
-    - .website
-    - .gitlab_native_build_job_prebuilt_env
-  needs:
-    - job: x86_64-ubuntu-2204-container
-      optional: true
-  variables:
-    NAME: ubuntu-2204
-
-website_local_env:
-  extends:
-    - .website
-    - .gitlab_native_build_job_local_env
-  variables:
-    IMAGE: docker.io/library/ubuntu:22.04
-    NAME: ubuntu-2204
+  stage: pages
+  dependencies:
+    - website
+  script:
+    - mv web public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_PROJECT_NAMESPACE == $RUN_UPSTREAM_NAMESPACE && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: on_success
+    - when: never
 
 include: '/ci/gitlab.yml'

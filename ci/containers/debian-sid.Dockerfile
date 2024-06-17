@@ -20,6 +20,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
                       gcc \
                       git \
                       gzip \
+                      libc6-dev \
                       libtool \
                       libtool-bin \
                       libvirt-dev \
@@ -27,6 +28,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
                       make \
                       ocaml \
                       ocaml-findlib \
+                      original-awk \
                       perl-base \
                       pkgconf && \
     eatmydata apt-get autoremove -y && \
