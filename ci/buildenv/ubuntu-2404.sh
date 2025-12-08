@@ -28,7 +28,8 @@ function install_buildenv() {
             ocaml-findlib \
             original-awk \
             perl-base \
-            pkgconf
+            pkgconf \
+            tar
     sed -Ei 's,^# (en_US\.UTF-8 .*)$,\1,' /etc/locale.gen
     dpkg-reconfigure locales
     dpkg-query --showformat '${Package}_${Version}_${Architecture}\n' --show > /packages.txt

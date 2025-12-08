@@ -16,3 +16,4 @@ packages:
   - ocaml-findlib
   - perl
   - pkg-config
+  - tar

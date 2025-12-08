@@ -6,6 +6,7 @@
 
 function install_buildenv() {
     zypper update -y
+    zypper addrepo -fc https://download.opensuse.org/update/leap/15.6/backports/openSUSE:Backports:SLE-15-SP6:Update.repo
     zypper install -y \
            autoconf \
            automake \
@@ -25,7 +26,8 @@ function install_buildenv() {
            ocaml \
            ocaml-findlib \
            perl-base \
-           pkgconfig
+           pkgconfig \
+           tar
     rpm -qa | sort > /packages.txt
     mkdir -p /usr/libexec/ccache-wrappers
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc

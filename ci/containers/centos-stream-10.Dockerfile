@@ -4,36 +4,48 @@
 #
 # https://gitlab.com/libvirt/libvirt-ci
 
-FROM quay.io/centos/centos:stream9
+FROM quay.io/centos/centos:stream10
 
 RUN dnf distro-sync -y && \
     dnf install 'dnf-command(config-manager)' -y && \
     dnf config-manager --set-enabled -y crb && \
     dnf install -y epel-release && \
-    dnf install -y epel-next-release && \
     dnf install -y \
         autoconf \
         automake \
         ca-certificates \
         ccache \
+        cpp \
         diffutils \
         gawk \
         gcc \
+        gettext \
         gettext-devel \
         git \
+        glib2-devel \
         glibc-devel \
         glibc-langpack-en \
+        gnutls-devel \
         gzip \
+        libnl3-devel \
+        libtirpc-devel \
         libtool \
-        libvirt-devel \
+        libxml2 \
+        libxml2-devel \
+        libxslt \
         make \
+        meson \
+        ninja-build \
         ocaml \
         ocaml-findlib \
         perl-base \
         pkgconfig \
+        python3 \
+        python3-docutils \
         tar && \
     dnf autoremove -y && \
     dnf clean all -y && \
+    rm -f /usr/lib*/python3*/EXTERNALLY-MANAGED && \
     rpm -qa | sort > /packages.txt && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
@@ -42,3 +54,5 @@ RUN dnf distro-sync -y && \
 ENV CCACHE_WRAPPERSDIR="/usr/libexec/ccache-wrappers"
 ENV LANG="en_US.UTF-8"
 ENV MAKE="/usr/bin/make"
+ENV NINJA="/usr/bin/ninja"
+ENV PYTHON="/usr/bin/python3"

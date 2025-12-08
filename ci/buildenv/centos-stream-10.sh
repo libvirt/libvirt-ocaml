@@ -9,28 +9,40 @@ function install_buildenv() {
     dnf install 'dnf-command(config-manager)' -y
     dnf config-manager --set-enabled -y crb
     dnf install -y epel-release
-    dnf install -y epel-next-release
     dnf install -y \
         autoconf \
         automake \
         ca-certificates \
         ccache \
+        cpp \
         diffutils \
         gawk \
         gcc \
+        gettext \
         gettext-devel \
         git \
+        glib2-devel \
         glibc-devel \
         glibc-langpack-en \
+        gnutls-devel \
         gzip \
+        libnl3-devel \
+        libtirpc-devel \
         libtool \
-        libvirt-devel \
+        libxml2 \
+        libxml2-devel \
+        libxslt \
         make \
+        meson \
+        ninja-build \
         ocaml \
         ocaml-findlib \
         perl-base \
         pkgconfig \
+        python3 \
+        python3-docutils \
         tar
+    rm -f /usr/lib*/python3*/EXTERNALLY-MANAGED
     rpm -qa | sort > /packages.txt
     mkdir -p /usr/libexec/ccache-wrappers
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc
@@ -40,3 +52,5 @@ function install_buildenv() {
 export CCACHE_WRAPPERSDIR="/usr/libexec/ccache-wrappers"
 export LANG="en_US.UTF-8"
 export MAKE="/usr/bin/make"
+export NINJA="/usr/bin/ninja"
+export PYTHON="/usr/bin/python3"

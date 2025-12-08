@@ -25,7 +25,8 @@ function install_buildenv() {
            ocaml \
            ocaml-findlib \
            perl-base \
-           pkgconfig
+           pkgconfig \
+           tar
     rpm -qa | sort > /packages.txt
     mkdir -p /usr/libexec/ccache-wrappers
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc
