@@ -6,34 +6,34 @@
 
 FROM quay.io/centos/centos:stream9
 
-RUN dnf distro-sync -y && \
-    dnf install 'dnf-command(config-manager)' -y && \
-    dnf config-manager --set-enabled -y crb && \
-    dnf install -y epel-release && \
-    dnf install -y epel-next-release && \
-    dnf install -y \
-        autoconf \
-        automake \
-        ca-certificates \
-        ccache \
-        diffutils \
-        gawk \
-        gcc \
-        gettext-devel \
-        git \
-        glibc-devel \
-        glibc-langpack-en \
-        gzip \
-        libtool \
-        libvirt-devel \
-        make \
-        ocaml \
-        ocaml-findlib \
-        perl-base \
-        pkgconfig \
-        tar && \
-    dnf autoremove -y && \
-    dnf clean all -y && \
+RUN dnf --quiet distro-sync -y && \
+    dnf --quiet install 'dnf-command(config-manager)' -y && \
+    dnf --quiet config-manager --set-enabled -y crb && \
+    dnf --quiet install -y epel-release && \
+    dnf --quiet install -y epel-next-release && \
+    dnf --quiet install -y \
+                autoconf \
+                automake \
+                ca-certificates \
+                ccache \
+                diffutils \
+                gawk \
+                gcc \
+                gettext-devel \
+                git \
+                glibc-devel \
+                glibc-langpack-en \
+                gzip \
+                libtool \
+                libvirt-devel \
+                make \
+                ocaml \
+                ocaml-findlib \
+                perl-base \
+                pkgconfig \
+                tar && \
+    dnf --quiet autoremove -y && \
+    dnf --quiet clean all -y && \
     rpm -qa | sort > /packages.txt && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \

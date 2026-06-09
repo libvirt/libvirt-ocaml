@@ -54,8 +54,8 @@ website:
     paths:
       - public
   variables:
-    NAME: ubuntu-2204
-    TARGET_BASE_IMAGE: docker.io/library/ubuntu:22.04
+    NAME: ubuntu-2604
+    TARGET_BASE_IMAGE: docker.io/library/ubuntu:26.04
 
 pages:
   stage: pages
