@@ -57,7 +57,7 @@ upload:
 # Check no files are missing from EXTRA_DIST.
 # (You must have done 'make dist' first)
 maintainer-check-extra-dist:
-	@zcat $(PACKAGE_NAME)-$(VERSION).tar.gz | tar tf - | sort | \
+	@zcat $(PACKAGE_NAME)-$(VERSION).tar.gz | tar tf - | LANG=C sort | \
 	  sed 's,^$(PACKAGE_NAME)-$(VERSION)/,,' > tarfiles
 	@git ls-files | \
 	  grep -v \
@@ -65,8 +65,8 @@ maintainer-check-extra-dist:
 	    -e '^\.gitlab-ci.yml' \
 	    -e '^web/' \
 	    -e '^ci/' | \
-	    sort > gitfiles
-	@comm -13 tarfiles gitfiles > comm-out
+	    LANG=C sort > gitfiles
+	@LANG=C comm -13 tarfiles gitfiles > comm-out
 	@echo Checking for differences between EXTRA_DIST and git ...
 	@cat comm-out
 	@[ ! -s comm-out ]
